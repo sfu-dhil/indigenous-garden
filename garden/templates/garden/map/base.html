@@ -1,0 +1,77 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'ol/ol.css' %}" />
+<link rel="stylesheet" href="{% static 'fonts/first_nations_unicode/font.css' %}" />
+<link rel="stylesheet" href="{% static 'pannellum/pannellum.css' %}" />
+<link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome.min.css' %}" />
+<link rel="stylesheet" href="{% static 'fontawesome/css/solid.min.css' %}" />
+<link rel="stylesheet" href="{% static 'css/map.css' %}" />
+
+<script src="{% static 'ol/dist/ol.js' %}"></script>
+<script src="{% static 'pannellum/pannellum.js' %}"></script>
+
+<div class="garden_projection_wrapper position-relative overflow-hidden">
+    <div id="overhead_map" class="garden_projection">
+        <div class="select-theme-control ol-unselectable ol-control text-secondary">
+            {% include "garden/map/ui/btn/themes.html" %}
+        </div>
+        <div class="show-features-control ol-unselectable ol-control text-secondary">
+            {% include "garden/map/ui/btn/features.html" %}
+        </div>
+        {% if not force_display %}
+            <div class="select-map-control ol-unselectable ol-control text-secondary">
+                <button type="button" data-display-type-toggle="PANORAMA" title="Overhead map. Click to switch to Panorama map">
+                    <i class="fa-solid fa-street-view" aria-hidden="true"></i>
+                </button>
+            </div>
+        {% endif %}
+    </div>
+    <div id="pannellum_panorama" class="garden_projection">
+        <div class="pannellum-control ol-zoom ol-unselectable ol-control text-secondary">
+            <button type="button" id="pannellum_zoom_in" class="ol-zoom-in" title="Zoom in">+</button>
+            <button type="button" id="pannellum_zoom_out" class="ol-zoom-out" title="Zoom out">–</button>
+        </div>
+        <div class="show-features-control pannellum-control ol-unselectable ol-control text-secondary">
+            {% include "garden/map/ui/btn/features.html" %}
+        </div>
+        {% if not force_display %}
+            <div class="select-map-control pannellum-control ol-unselectable ol-control text-secondary">
+                <button type="button" data-display-type-toggle="OVERHEAD" title="Panorama map. Click to switch to Overhead map">
+                    <i class="bi bi-pin-map-fill" aria-hidden="true"></i>
+                </button>
+            </div>
+        {% endif %}
+        <div class="select-theme-control pannellum-control ol-unselectable ol-control text-secondary">
+            {% include "garden/map/ui/btn/themes.html" %}
+        </div>
+    </div>
+    {% include "garden/map/ui/offcanvas/features.html" with features=features can_edit=can_edit only %}
+    {% for feature in features %}
+        {% include "garden/map/ui/offcanvas/feature.html" with feature=feature can_edit=can_edit only %}
+    {% endfor %}
+</div>
+
+<script
+    src="{% static 'js/map_controls.js' %}"
+    {% if force_display %}data-default-display="{{ force_display }}"{% endif %}
+></script>
+{% if not force_display or force_display == 'OVERHEAD' %}
+    <script
+        src="{% static 'js/map_overhead.js' %}"
+        data-image-url="{% static 'images/garden.png' %}"
+        data-points="{{ overhead_points_json }}"
+        {% if force_display %}data-force-display="{{ force_display }}"{% endif %}
+        {% if is_edit %}data-is-edit="1"{% endif %}
+        {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
+        {% if is_new %}data-is-new="1"{% endif %}
+    ></script>
+{% endif %}
+{% if not force_display or force_display == 'PANORAMA' %}
+    <script
+        src="{% static 'js/map_panorama.js' %}"
+        data-image-url="{% static 'images/panorama.jpg' %}"
+        data-points="{{ panorama_points_json }}"
+        {% if is_edit %}data-is-edit="1"{% endif %}
+        {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
+        {% if is_new %}data-is-new="1"{% endif %}
+    ></script>
+{% endif %}

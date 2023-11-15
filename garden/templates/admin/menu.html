@@ -1,0 +1,19 @@
+{% extends "admin/menu.html" %}
+{% load i18n static admin_urls admin_kubi_tags %}
+
+{% block userlinks %}
+    {% url 'two_factor:profile' as two_factor_url %}
+    {% if two_factor_url %}
+        <a class="dropdown-item" href="{{ two_factor_url }}"><i class="fa fa-lock"></i> {% trans 'Account Security' %}</a>
+    {% endif %}
+    {% if user.has_usable_password %}
+        <a class="dropdown-item" href="{% url 'admin:password_change' %}"><i class="fa fa-key"></i> {% trans 'Change password' %}</a>
+    {% endif %}
+    <div class="dropdown-divider"></div>
+    <form method="post" action="{% url 'admin:logout' %}" class="dropdown-item">
+        {% csrf_token %}
+        <button type="submit" class="dropdown-item" style="color: var(--bs-dropdown-link-color) !important; font-size: 1rem;">
+            <i class="fa fa-power-off"></i> {% trans 'Log out' %}
+        </button>
+    </form>
+{% endblock %}
