@@ -1,0 +1,15 @@
+# Django
+Django==4.2.7
+Pillow==10.1.0
+django-safe-filefield==1.0.0
+django-jsonform==2.21.0
+django-colorfield==0.10.1
+djangorestframework==3.14.0
+django-admin-kubi==1.0.5
+six==1.16.0
+
+# Environment variables
+environs==9.5.0
+
+# Dataabse (psycopg[binary] cannot be locked to specific version number)
+psycopg[binary]

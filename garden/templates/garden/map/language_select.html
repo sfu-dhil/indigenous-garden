@@ -1,0 +1,14 @@
+{% load static %}
+
+<div class="btn-group d-block m-3 text-end" role="group" aria-label="Select display langauge">
+    <input type="radio" class="btn-check" name="language-select" id="language-select-english" autocomplete="off" value="english">
+    <label class="btn btn-outline-primary" for="language-select-english">English</label>
+
+    <input type="radio" class="btn-check" name="language-select" id="language-select-halkomelem" autocomplete="off" value="halkomelem">
+    <label class="btn btn-outline-primary" for="language-select-halkomelem">hən̓q̓əmin̓əm̓</label>
+
+    <input type="radio" class="btn-check" name="language-select" id="language-select-squamish" autocomplete="off" value="squamish">
+    <label class="btn btn-outline-primary" for="language-select-squamish">Sḵwx̱wú7mesh Sníchim</label>
+</div>
+
+<script src="{% static 'js/language_select.js' %}"></script>
