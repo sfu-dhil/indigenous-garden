@@ -1,0 +1,54 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'ol/ol.css' %}" />
+<link rel="stylesheet" href="{% static 'bc-sans/css/BC_Sans.css' %}" />
+<link rel="stylesheet" href="{% static 'pannellum/pannellum.css' %}" />
+<link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome.min.css' %}" />
+<link rel="stylesheet" href="{% static 'fontawesome/css/solid.min.css' %}" />
+<link rel="stylesheet" href="{% static 'css/map.css' %}" />
+
+<script src="{% static 'ol/dist/ol.js' %}"></script>
+<script src="{% static 'pannellum/pannellum.js' %}"></script>
+
+<div id="overhead_map" class="garden_projection">
+    <div style="pointer-events: auto;" class="select-map-control ol-unselectable ol-control text-secondary">
+        <button id="toggle_display_to_panorama">
+            <i class="fa-solid fa-street-view" title="Panorama Map"></i>
+        </button>
+    </div>
+</div>
+<div id="pannellum_panorama" class="garden_projection">
+    <div style="pointer-events: auto;" class="pannellum-control ol-zoom ol-unselectable ol-control text-secondary">
+        <button id="pannellum_zoom_in" class="ol-zoom-in" type="button" title="Zoom in">+</button>
+        <button id="pannellum_zoom_out" class="ol-zoom-out" type="button" title="Zoom out">–</button>
+    </div>
+    <div style="pointer-events: auto;" class="select-map-control pannellum-control ol-unselectable ol-control text-secondary">
+        <button id="toggle_display_to_overhead">
+            <i class="bi bi-pin-map-fill" title="Overhead Map"></i>
+        </button>
+    </div>
+</div>
+<div id="modal" class="modal fade" tabindex="-1" aria-labelledby="mapModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-lg-down modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 w-100" id="modalTitle"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+            <div id="modalFooter" class="modal-footer d-none"></div>
+        </div>
+    </div>
+</div>
+
+<script
+    src="{% static 'js/map.js' %}"
+    data-media-url-prefix="{% get_media_prefix %}"
+    data-overhead-image-url="{% static 'images/garden.jpg' %}"
+    data-panorama-image-url="{% static 'images/panorama.jpg' %}"
+    data-map-features="{{ features_json }}"
+    {% if force_display %}data-force-display="{{ force_display }}"{% endif %}
+    {% if can_edit %}data-can-edit="1"{% endif %}
+    {% if is_edit %}data-is-edit="1"{% endif %}
+    {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
+    {% if is_new %}data-is-new="1"{% endif %}
+></script>

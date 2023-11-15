@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  db:
+    container_name: indigenous_garden_db
+    image: postgres:16.1
+    ports:
+      - "15432:5432"
+    volumes:
+      - .data/postgres:/var/lib/postgresql/data/pgdata
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: indigenous_garden
+      POSTGRES_USER: indigenous_garden
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "indigenous_garden", "-d", "indigenous_garden"]
+      interval: 2s
+      retries: 120
+
+  app:
+    container_name: indigenous_garden_app
+    # image: dhil/indigenous_garden
+    build:
+      context: .
+      target: indigenous-garden
+    ports:
+      - "8080:80"
+    volumes:
+      # code for development
+      - .:/app
+
+      # files uploads
+      - .data/media:/media
+
+      # # use the container's static & node_modules folders (don't override with local dev)
+      - /app/static
+      - /app/node_modules
+    environment:
+      DEBUG: True
+      DB_HOST: db
+      DB_NAME: indigenous_garden
+      DB_USER: indigenous_garden
+      DB_PASSWORD: password
+      EMAIL_HOST: mail
+      EMAIL_HOST_USER: indigenous_garden
+      EMAIL_HOST_PASSWORD: password
+    depends_on:
+      db:
+        condition: service_healthy
+
+  mail:
+    container_name: indigenous_garden_mail
+    image: jcalonso/mailhog:v1.0.1
+    ports:
+      - "8025:8025"

@@ -1,0 +1,87 @@
+.garden_projection {
+    height: 700px;
+    max-height: 700px;
+    width: 100%;
+    position: relative;
+    cursor: grab;
+}
+
+.ol-control button {
+    font-size: 1.5em;
+}
+
+.ol-button i {
+    color: inherit;
+}
+
+.pannellum-control  {
+    z-index: 100 !important;
+}
+
+.select-map-control {
+    left: .5em;
+    top: 5em;
+    z-index: 2;
+}
+
+.hot-spot-wrapper {
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+}
+
+.hot-spot-wrapper .number-label {
+    color: white;
+    font-size: 0.7em;
+    z-index: 1001;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(50% - 0.35em);
+    text-align: center;
+}
+
+.hot-spot-wrapper i {
+    font-size: 1.6em;
+    z-index: 1000;
+}
+
+.view-hotspot .hot-spot-wrapper i {
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: white;
+}
+
+.edit-hotspot .hot-spot-wrapper {
+    cursor: pointer;
+}
+
+.edit-hotspot .hot-spot-wrapper:hover::after {
+    content: "\F287";
+    font-family: bootstrap-icons !important;
+    font-size: 0.6em;
+    position: absolute;
+    bottom: -0.3em;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgb(0, 153, 255);
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;
+}
+
+.edit-hotspot .hot-spot-wrapper i {
+    color: red;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+}
+
+/* modal */
+#modalCarousel .carousel-item img {
+    max-height: 400px;
+}
+
+:root {
+    --bs-font-sans-serif: "BC Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-font-monospace: "BC Sans", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
