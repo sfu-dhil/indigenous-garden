@@ -32,9 +32,6 @@ class ImageInlineAdmin(admin.StackedInline):
     ordering = ['id']
     model = Image
     extra=0
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMceEditorWidget},
-    }
 
 class EnglishNameInlineAdmin(admin.TabularInline):
     fields = [

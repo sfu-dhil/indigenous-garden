@@ -1,6 +1,13 @@
 from django.db import models
 from safe_filefield.models import SafeFileField
 from django_advance_thumbnail import AdvanceThumbnailField
+from PIL import Image as PIL_Image
+
+# modal signals
+def image_compressor(sender, **kwargs):
+    if kwargs["created"]:
+        with PIL_Image.open(kwargs["instance"].image.path) as image:
+            image.save(kwargs["instance"].image.path, optimize=True, quality=80)
 
 # models
 class Feature(models.Model):
@@ -203,15 +210,7 @@ class Image(models.Model):
 
     def __str__(self):
         return self.image.name if self.image else self.id
-
-    def is_square(self):
-        return self.image.width == self.image.height
-
-    def is_landscape(self):
-        return self.image.width > self.image.height
-
-    def is_portrait(self):
-        return self.image.width < self.image.height
+models.signals.post_save.connect(image_compressor, sender=Image)
 
 class OverheadPoint(models.Model):
     # relationships

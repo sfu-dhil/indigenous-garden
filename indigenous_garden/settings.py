@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'safe_filefield',
     'health_check',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
