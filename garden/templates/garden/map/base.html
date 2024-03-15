@@ -69,6 +69,7 @@
     <script
         src="{% static 'js/map_panorama.js' %}"
         data-image-url="{% static 'images/panorama.jpg' %}"
+        data-image-thumbnail-url="{% static 'images/panorama_thumbnail.jpg' %}"
         data-points="{{ panorama_points_json }}"
         {% if is_edit %}data-is-edit="1"{% endif %}
         {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
