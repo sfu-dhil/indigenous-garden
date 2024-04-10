@@ -1,5 +1,4 @@
 .garden_projection_wrapper {
-    min-height: 700px;
     height: 100%;
     width: 100%;
     position: relative;
@@ -263,6 +262,22 @@
     overflow: hidden;
 }
 
+.audio-with-captions figcaption,
+.audio-with-captions .hide-captions-btn {
+    display: none !important;
+}
+.audio-with-captions .show-captions-btn {
+    display: inherit !important;
+}
+
+.audio-with-captions.show-captions figcaption,
+.audio-with-captions.show-captions .hide-captions-btn {
+    display: inherit !important;
+}
+.audio-with-captions.show-captions .show-captions-btn {
+    display: none !important;
+}
+
 /* theme buttons */
 .toggle-theme-btn.light-theme-btn,
 [data-bs-theme=dark] .toggle-theme-btn.dark-theme-btn {
@@ -273,10 +288,16 @@
     display: none;
 }
 
-
 /* bootstrap :root */
 :root {
-    --bs-font-sans-serif: "First Nations Unicode", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-font-sans-serif: Arial, Helvetica, sans-serif;
     --bs-body-font-family: var(--bs-font-sans-serif);
-    --bs-font-monospace: "First Nations Unicode", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --bs-font-monospace: Arial, Helvetica, sans-serif;
+}
+
+.first-nations-unicode {
+    font-family: "First Nations Unicode" !important;
+}
+.first-nations-unicode .text-muted {
+    font-family: var(--bs-body-font-family);
 }

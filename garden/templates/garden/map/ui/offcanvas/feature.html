@@ -12,12 +12,12 @@
                     {% include "garden/map/ui/name_formatted.html" with item=item with_audio=True is_muted=True only %}
                 {% endfor %}
             </div>
-            <div class="col">
+            <div class="col first-nations-unicode">
                 {% for item in feature.halkomelem_names.all %}
                     {% include "garden/map/ui/name_formatted.html" with item=item with_audio=True only %}
                 {% endfor %}
             </div>
-            <div class="col">
+            <div class="col first-nations-unicode">
                 {% for item in feature.squamish_names.all %}
                     {% include "garden/map/ui/name_formatted.html" with item=item with_audio=True only %}
                 {% endfor %}
@@ -42,17 +42,28 @@
                 </div>
             {% endfor %}
         </div>
+        <h2 class="my-3">Plant Storytelling</h2>
         <div class="clearfix my-3">
             {% if feature.audio %}
                 <div class="card col-md-6 float-md-end ms-1 mb-3">
                     <figure class="figure {{ feature.captions|yesno:'audio-with-captions,' }} text-center m-0 lh-1">
-                        <audio controls src="{{ feature.audio.url }}" preload="metadata" class="w-100 m-0">
+                        <div class="btn-group w-100" role="group">
+                            <audio controls src="{{ feature.audio.url }}" preload="metadata" class="w-100 m-0">
+                                {% if feature.captions %}
+                                    <track src="{{ feature.captions.url }}" label="English captions"
+                                        kind="captions" srclang="en" default>
+                                {% endif %}
+                            </audio>
                             {% if feature.captions %}
-                                <track src="{{ feature.captions.url }}" label="English captions"
-                                    kind="captions" srclang="en" default>
+                                <button type="button" class="btn btn-secondary rounded-0 show-captions-btn" title="Show Audio Captions">
+                                    <i class="bi bi-badge-cc"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary rounded-0 hide-captions-btn" title="Hide Audio Captions">
+                                    <i class="bi bi-badge-cc-fill"></i>
+                                </button>
                             {% endif %}
-                        </audio>
-                        <figcaption class="figure-caption mx-2 mb-2 lh-base d-none">&nbsp;</figcaption>
+                        </div>
+                        <figcaption class="figure-caption mx-2 mb-2 lh-base">&nbsp;</figcaption>
                     </figure>
                 </div>
             {% endif %}

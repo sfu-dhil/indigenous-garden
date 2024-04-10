@@ -26,7 +26,6 @@ const updateNameAudioBtn = () => {
     if (!nameAudioBtnEl) {
         return;
     }
-    console.log(isNamedAudioPlayerPlaying())
     isNamedAudioPlayerPlaying() ? nameAudioBtnEl.classList.add('text-primary') : nameAudioBtnEl.classList.remove('text-primary');
 }
 nameAudioPlayer.addEventListener('ended', () => {
@@ -145,10 +144,18 @@ const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstra
 document.querySelectorAll('.audio-with-captions').forEach( (domEl) => {
     const audioEl = domEl.querySelector('audio');
     const captionEl = domEl.querySelector('.figure-caption');
+    const showCaptionsEl = domEl.querySelector('.show-captions-btn');
+    const hideCaptionsEl = domEl.querySelector('.hide-captions-btn');
+
+    showCaptionsEl.addEventListener('click', () => {
+        domEl.classList.add('show-captions');
+    });
+    hideCaptionsEl.addEventListener('click', () => {
+        domEl.classList.remove('show-captions');
+    });
 
     for (const track of audioEl.textTracks) {
         if (track.kind == 'captions') {
-            captionEl.classList.remove('d-none');
             track.addEventListener('cuechange', () => {
                 if (track.activeCues.length === 0) {
                     captionEl.innerHTML = '&nbsp;';

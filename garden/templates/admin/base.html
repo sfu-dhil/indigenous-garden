@@ -6,9 +6,24 @@
     <link rel="stylesheet" href="{% static 'fonts/first_nations_unicode/font.css' %}" />
     <style>
         :root {
-            --bs-font-sans-serif: "First Nations Unicode", "BC Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --bs-font-sans-serif: Arial, Helvetica, sans-serif;
             --bs-body-font-family: var(--bs-font-sans-serif);
-            --bs-font-monospace: "First Nations Unicode", "BC Sans", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --bs-font-monospace: Arial, Helvetica, sans-serif;
+        }
+        .garden_projection_wrapper {
+            min-height: 700px;
+        }
+        .first-nations-unicode {
+            font-family: "First Nations Unicode" !important;
         }
     </style>
+    <!-- make sure bootstrap js is loaded before other page content -->
+    <script type="text/javascript" src="{% static "admin/js/vendor/bootstrap.bundle.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/vendor/popper.min.js" %}"></script>
 {% endblock %}
+
+{% block js_footer_commons %}
+    <script type="text/javascript" src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/force_jquery.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/app.min.js" %}"></script>
+{% endblock js_footer_commons %}

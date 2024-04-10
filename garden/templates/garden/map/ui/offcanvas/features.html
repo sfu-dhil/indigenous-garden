@@ -21,12 +21,12 @@
                         {% include "garden/map/ui/name_formatted.html" with item=item is_muted=True only %}
                     {% endfor %}
                     <div class="row g-0">
-                        <div class="col">
+                        <div class="col first-nations-unicode">
                             {% for item in feature.halkomelem_names.all %}
                                 {% include "garden/map/ui/name_formatted.html" with item=item only %}
                             {% endfor %}
                         </div>
-                        <div class="col">
+                        <div class="col first-nations-unicode">
                             {% for item in feature.squamish_names.all %}
                                 {% include "garden/map/ui/name_formatted.html" with item=item only %}
                             {% endfor %}

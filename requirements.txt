@@ -1,13 +1,14 @@
 # Django
 Django==5.0.3
 Pillow==10.3.0
-django-safe-filefield==1.0.0
 djangorestframework==3.14.0
-django-admin-kubi==1.0.6
+django-admin-kubi==1.0.7
 six==1.16.0
 django-advance-thumbnail==1.0.0
 django-health-check==3.18.1
 django-cleanup==8.1.0
+django-constrainedfilefield==5.0.0
+django-constrainedfilefield[filetype]
 
 # Environment variables
 django-environ==0.11.2

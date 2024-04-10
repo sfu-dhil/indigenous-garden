@@ -63,6 +63,13 @@ class HalkomelemNameInlineAdmin(admin.TabularInline):
     model = HalkomelemName
     extra=0
     verbose_name = "hən̓q̓əmin̓əm̓ name"
+    classes=['first-nations-unicode']
+
+    # def formfield_for_dbfield(self, db_field, request, **kwargs):
+    #     field = super().formfield_for_dbfield(db_field, request, **kwargs)
+    #     if db_field.name == "name":
+    #         field.widget.attrs["style"] = 'font-family: "First Nations Unicode" !important;'
+    #     return field
 
 class SquamishNameInlineAdmin(admin.TabularInline):
     fields = [
@@ -74,6 +81,7 @@ class SquamishNameInlineAdmin(admin.TabularInline):
     model = SquamishName
     extra=0
     verbose_name="Sḵwx̱wú7mesh Sníchim name"
+    classes=['first-nations-unicode']
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
@@ -105,8 +113,6 @@ class FeatureAdmin(admin.ModelAdmin):
         ImageInlineAdmin,
     ]
 
-    change_list_template = 'garden/admin/change_list.html'
-
     def _english_names(self, obj):
         return format_html(' <br /> '.join([str(n) for n in obj.english_names.all()]))
     _english_names.short_description = "English names"
@@ -116,12 +122,12 @@ class FeatureAdmin(admin.ModelAdmin):
     _western_scientific_names.short_description = "Western scientific names"
 
     def _halkomelem_names(self, obj):
-        return format_html(' <br /> '.join([str(n) for n in obj.halkomelem_names.all()]))
-    _halkomelem_names.short_description = "hən̓q̓əmin̓əm̓ names"
+        return format_html(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.halkomelem_names.all()]))
+    _halkomelem_names.short_description = format_html("<span class='first-nations-unicode'>hən̓q̓əmin̓əm̓</span> names")
 
     def _squamish_names(self, obj):
-        return format_html(' <br /> '.join([str(n) for n in obj.squamish_names.all()]))
-    _squamish_names.short_description = "Sḵwx̱wú7mesh Sníchim names"
+        return format_html(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()]))
+    _squamish_names.short_description = format_html("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
@@ -141,11 +147,6 @@ class OverheadPointAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'feature', 'x', 'y')
     ordering = ['feature', 'x', 'y']
     list_per_page = 5
-
-    # maps
-    add_form_template = 'garden/admin/change_form.html'
-    change_form_template = 'garden/admin/change_form.html'
-    change_list_template = 'garden/admin/change_list.html'
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
@@ -180,11 +181,6 @@ class PanoramaPointAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'feature', 'yaw', 'pitch')
     ordering = ['feature', 'yaw', 'pitch']
     list_per_page = 5
-
-    # maps
-    add_form_template = 'garden/admin/change_form.html'
-    change_form_template = 'garden/admin/change_form.html'
-    change_list_template = 'garden/admin/change_list.html'
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)

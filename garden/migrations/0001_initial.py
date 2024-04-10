@@ -2,7 +2,7 @@
 
 import django.db.models.deletion
 import django_advance_thumbnail.fields
-import safe_filefield.models
+import constrainedfilefield.fields
 from django.db import migrations, models
 
 
@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('feature_type', models.CharField(choices=[('PLANT', 'Plant'), ('GARDEN_FEATURE', 'Garden Feature')], default='PLANT', max_length=255)),
                 ('number', models.IntegerField(blank=True, null=True, unique=True)),
-                ('audio', safe_filefield.models.SafeFileField(blank=True, help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', null=True, upload_to='audio/')),
-                ('captions', safe_filefield.models.SafeFileField(blank=True, help_text='Only <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a> is allowed.', null=True, upload_to='captions/')),
+                ('audio', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'], help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', mime_lookup_length=4096, null=True, upload_to='audio/')),
+                ('captions', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['text/vtt'], help_text='Only <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a> is allowed.', mime_lookup_length=4096, null=True, upload_to='captions/')),
                 ('content', models.TextField()),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('descriptor', models.CharField(blank=True, max_length=255, null=True)),
-                ('audio', safe_filefield.models.SafeFileField(blank=True, help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', null=True, upload_to='audio/')),
+                ('audio', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'], help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', mime_lookup_length=4096, null=True, upload_to='audio/')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('feature', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='english_names', to='garden.feature')),
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('descriptor', models.CharField(blank=True, max_length=255, null=True)),
-                ('audio', safe_filefield.models.SafeFileField(blank=True, help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', null=True, upload_to='audio/')),
+                ('audio', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'], help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', mime_lookup_length=4096, null=True, upload_to='audio/')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('feature', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='halkomelem_names', to='garden.feature')),
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('descriptor', models.CharField(blank=True, max_length=255, null=True)),
-                ('audio', safe_filefield.models.SafeFileField(blank=True, help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', null=True, upload_to='audio/')),
+                ('audio', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'], help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', mime_lookup_length=4096, null=True, upload_to='audio/')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('feature', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='squamish_names', to='garden.feature')),
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('descriptor', models.CharField(blank=True, max_length=255, null=True)),
-                ('audio', safe_filefield.models.SafeFileField(blank=True, help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', null=True, upload_to='audio/')),
+                ('audio', constrainedfilefield.fields.file.ConstrainedFileField(blank=True, content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'], help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.', mime_lookup_length=4096, null=True, upload_to='audio/')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('feature', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='western_scientific_names', to='garden.feature')),

@@ -1,5 +1,5 @@
 from django.db import models
-from safe_filefield.models import SafeFileField
+from constrainedfilefield.fields import ConstrainedFileField
 from django_advance_thumbnail import AdvanceThumbnailField
 from PIL import Image as PIL_Image
 
@@ -26,22 +26,19 @@ class Feature(models.Model):
         null=True,
         blank=True,
     )
-    audio = SafeFileField(
+    audio = ConstrainedFileField(
         upload_to='audio/',
         null=True,
         blank=True,
-        allowed_extensions=['mp3', 'wav', 'ogg'],
-        check_content_type=True,
+        content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'],
         help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.',
     )
-    captions = SafeFileField(
+    captions = ConstrainedFileField(
         upload_to='captions/',
         null=True,
         blank=True,
-        allowed_extensions=['vtt'],
-        check_content_type=True,
+        content_types=['text/vtt'],
         help_text='Only <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a> is allowed.',
-
     )
     content = models.TextField()
 
@@ -73,12 +70,11 @@ class Name(models.Model):
         null=True,
         blank=True,
     )
-    audio = SafeFileField(
+    audio = ConstrainedFileField(
         upload_to='audio/',
         null=True,
         blank=True,
-        allowed_extensions=['mp3', 'wav', 'ogg'],
-        check_content_type=True,
+        content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'],
         help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.',
     )
 

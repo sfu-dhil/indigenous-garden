@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'safe_filefield',
+    'constrainedfilefield',
     'health_check',
     'django_cleanup.apps.CleanupConfig',
 ]
@@ -153,6 +153,9 @@ MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# default upload permissions
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 # email host
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
