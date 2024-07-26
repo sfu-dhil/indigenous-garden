@@ -88,7 +88,7 @@ class FeatureAdmin(admin.ModelAdmin):
     fields = [
         ('feature_type', 'number'),
         'content',
-        ('audio', 'captions'),
+        ('video', 'captions'),
     ]
 
     list_display = ('id', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
@@ -146,6 +146,7 @@ class OverheadPointAdmin(admin.ModelAdmin):
     list_display = ('id', 'feature', 'x', 'y')
     list_display_links = ('id', 'feature', 'x', 'y')
     ordering = ['feature', 'x', 'y']
+    autocomplete_fields = ['feature']
     list_per_page = 5
 
     def changelist_view(self, request, extra_context=None):
@@ -180,6 +181,7 @@ class PanoramaPointAdmin(admin.ModelAdmin):
     list_display = ('id', 'feature', 'yaw', 'pitch')
     list_display_links = ('id', 'feature', 'yaw', 'pitch')
     ordering = ['feature', 'yaw', 'pitch']
+    autocomplete_fields = ['feature']
     list_per_page = 5
 
     def changelist_view(self, request, extra_context=None):

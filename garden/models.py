@@ -1,12 +1,22 @@
+import PIL
 from django.db import models
 from constrainedfilefield.fields import ConstrainedFileField
 from django_advance_thumbnail import AdvanceThumbnailField
-from PIL import Image as PIL_Image
+from admin_async_upload.models import AsyncFileField
+
+class AsyncConstrainedFileField(ConstrainedFileField, AsyncFileField):
+    def formfield(self, **kwargs):
+        formfield = super(AsyncConstrainedFileField, self).formfield(**kwargs)
+        if self.js_checker:
+            formfield.widget.attrs.update(
+                {"onchange": "validateFileSize(this, 0, %d);" % (self.max_upload_size,)}
+            )
+        return formfield
 
 # modal signals
 def image_compressor(sender, **kwargs):
     if kwargs["created"]:
-        with PIL_Image.open(kwargs["instance"].image.path) as image:
+        with PIL.Image.open(kwargs["instance"].image.path) as image:
             image.save(kwargs["instance"].image.path, optimize=True, quality=80)
 
 # models
@@ -26,12 +36,12 @@ class Feature(models.Model):
         null=True,
         blank=True,
     )
-    audio = ConstrainedFileField(
-        upload_to='audio/',
+    video = AsyncConstrainedFileField(
+        upload_to='videos/',
         null=True,
         blank=True,
-        content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'],
-        help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.',
+        content_types=['video/mp4', 'video/webm', 'video/ogg'],
+        help_text='Only MP4 (.mp4), WebM (.webm), or Ogg (.ogv) is allowed.',
     )
     captions = ConstrainedFileField(
         upload_to='captions/',
@@ -70,7 +80,7 @@ class Name(models.Model):
         null=True,
         blank=True,
     )
-    audio = ConstrainedFileField(
+    audio = AsyncConstrainedFileField(
         upload_to='audio/',
         null=True,
         blank=True,
@@ -175,16 +185,6 @@ class Image(models.Model):
         null=True,
         blank=True,
         size=(520, 520),
-        width_field='thumbnail_width',
-        height_field='thumbnail_height',
-    )
-    thumbnail_width = models.IntegerField(
-        null=True,
-        blank=True,
-    )
-    thumbnail_height = models.IntegerField(
-        null=True,
-        blank=True,
     )
 
     description = models.TextField(

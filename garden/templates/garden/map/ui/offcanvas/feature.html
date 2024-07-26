@@ -34,7 +34,7 @@
                      data-bs-target="#map-feature-{{ feature.id }}-carousel" data-bs-slide-to="{{ forloop.counter0 }}">
                     <button type="button" class="btn p-0 m-0 position-relative w-100 h-100 text-primary"
                             data-bs-toggle="modal" data-bs-target="#map-feature-{{ feature.id }}-gallery">
-                        <img src="{{ image.image.url }}" class="object-fit-cover" loading="lazy"
+                        <img src="{{ image.thumbnail.url }}" class="object-fit-cover" loading="lazy"
                                 alt="{{ image.description|striptags }}" />
                         <div class="position-absolute top-0 bottom-0 start-0 end-0 overlay"></div>
                         <i class="bi bi-search position-absolute top-50 start-50 translate-middle"></i>
@@ -44,28 +44,13 @@
         </div>
         <h2 class="my-3">Plant Storytelling</h2>
         <div class="clearfix my-3">
-            {% if feature.audio %}
-                <div class="card col-md-6 float-md-end ms-1 mb-3">
-                    <figure class="figure {{ feature.captions|yesno:'audio-with-captions,' }} text-center m-0 lh-1">
-                        <div class="btn-group w-100" role="group">
-                            <audio controls src="{{ feature.audio.url }}" preload="metadata" class="w-100 m-0">
-                                {% if feature.captions %}
-                                    <track src="{{ feature.captions.url }}" label="English captions"
-                                        kind="captions" srclang="en" default>
-                                {% endif %}
-                            </audio>
-                            {% if feature.captions %}
-                                <button type="button" class="btn btn-secondary rounded-0 show-captions-btn" title="Show Audio Captions">
-                                    <i class="bi bi-badge-cc"></i>
-                                </button>
-                                <button type="button" class="btn btn-secondary rounded-0 hide-captions-btn" title="Hide Audio Captions">
-                                    <i class="bi bi-badge-cc-fill"></i>
-                                </button>
-                            {% endif %}
-                        </div>
-                        <figcaption class="figure-caption mx-2 mb-2 lh-base">&nbsp;</figcaption>
-                    </figure>
-                </div>
+            {% if feature.video %}
+                <video src="{{ feature.video.url }}" controls class="w-100 object-fit-contain" preload="metadata" class="w-100 m-0">
+                    {% if feature.captions %}
+                        <track src="{{ feature.captions.url }}" label="English captions"
+                            kind="captions" srclang="en" default>
+                    {% endif %}
+                </video>
             {% endif %}
 
             {{ feature.content|safe }}
@@ -93,10 +78,12 @@
                                         title="{{ image.description|striptags }}" />
                                 <div class="carousel-caption">
                                     <h5 class="d-inline-block px-3 py-2">
-                                        <i class="bi bi-info-circle"
-                                            data-bs-toggle="tooltip" data-bs-html="true"
-                                            title="{{ image.license }}"></i>
                                         {{ forloop.counter }} of {{ feature.images.all|length }}
+                                        {% if image.license %}
+                                            <i class="bi bi-info-circle"
+                                                data-bs-toggle="tooltip" data-bs-html="true"
+                                                title="{{ image.license }}"></i>
+                                        {% endif %}
                                     </h5>
                                 </div>
                             </div>

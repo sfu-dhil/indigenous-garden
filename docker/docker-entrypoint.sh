@@ -15,7 +15,7 @@ export GIT_TAG=$(git tag --points-at HEAD | head -n 1)
 # fix media folder permissions for nginx
 MEDIA_FOLDER_UID=${MEDIA_FOLDER_UID-101}
 MEDIA_FOLDER_GID=${MEDIA_FOLDER_GID-101}
-mkdir -p /media/audio /media/captions /media/images /media/thumbnails
-chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /media /media/audio /media/captions /media/images /media/thumbnails
+mkdir -p /media/audio /media/videos /media/captions /media/images /media/thumbnails
+chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /media /media/audio /media/videos /media/captions /media/images /media/thumbnails
 
 python manage.py runserver 0.0.0.0:80

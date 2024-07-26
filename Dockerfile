@@ -1,5 +1,5 @@
 # Node deps
-FROM node:21.5-slim AS indigenous-garden-prod-assets
+FROM node:22.3-slim AS indigenous-garden-prod-assets
 WORKDIR /app
 
 RUN npm upgrade -g npm \

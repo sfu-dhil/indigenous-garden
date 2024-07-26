@@ -1,6 +1,47 @@
 {% extends "garden/base_site.html" %}
 {% load static %}
 
+{% block media_preload_prefetch %}
+    <link rel="preload" as="image" href="{% static 'images/garden.png' %}">
+    <link rel="preload" as="image" href="{% static 'images/panorama.jpg' %}">
+    <link rel="preload" as="image" href="{% static 'images/panorama_thumbnail.jpg' %}">
+
+    {% for feature in features %}
+        {% for image in feature.images.all %}
+            <link rel="prefetch" as="image" href="{{ image.thumbnail.url }}">
+            <link rel="prefetch" as="image" href="{{ image.image.url }}">
+        {% endfor %}
+
+        {% for item in feature.english_names.all %}
+            {% if item.audio %}
+                <link rel="prefetch" as="audio" href="{{ item.audio.url }}">
+            {% endif %}
+        {% endfor %}
+        {% for item in feature.western_scientific_names.all %}
+            {% if item.audio %}
+                <link rel="prefetch" as="audio" href="{{ item.audio.url }}">
+            {% endif %}
+        {% endfor %}
+        {% for item in feature.halkomelem_names.all %}
+            {% if item.audio %}
+                <link rel="prefetch" as="audio" href="{{ item.audio.url }}">
+            {% endif %}
+        {% endfor %}
+        {% for item in feature.squamish_names.all %}
+            {% if item.audio %}
+                <link rel="prefetch" as="audio" href="{{ item.audio.url }}">
+            {% endif %}
+        {% endfor %}
+
+        {% if feature.video %}
+            <link rel="prefetch" as="video" href="{{ feature.video.url }}">
+        {% endif %}
+        {% if feature.captions %}
+            <link rel="prefetch" as="track" href="{{ feature.captions.url }}">
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
 {% block content %}
 
 {% include "garden/map/base.html" %}

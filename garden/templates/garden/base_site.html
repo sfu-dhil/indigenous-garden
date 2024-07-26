@@ -16,6 +16,9 @@
         {% endblock %}
 
         <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+        {% block media_preload_prefetch %}
+        {% endblock %}
     </head>
     <body>
         {% block content %}

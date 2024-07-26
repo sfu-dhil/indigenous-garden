@@ -56,7 +56,7 @@ Command line:
 
 Through a database management tool:
 - Host:`127.0.0.1`
-- Port: `13306`
+- Port: `15432`
 - Username: `indigenous_garden`
 - Password: `password`
 
@@ -95,7 +95,7 @@ Then run the following as needed
 
 Note: If you are having problems starting/building the application due to javascript dependencies issues you can also run a standalone node container to help resolve them
 
-    docker run -it --rm -v $(pwd):/app -w /app node:19.5 bash
+    docker run -it --rm -v $(pwd):/app -w /app node:22.3 bash
 
     [check Dockerfile for the 'apt-get update' code piece of indigenous-garden-prod-assets]
 

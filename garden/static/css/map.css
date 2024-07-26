@@ -257,27 +257,6 @@
     cursor: pointer;
 }
 
-.audio-with-captions figcaption {
-    height: 3em;
-    overflow: hidden;
-}
-
-.audio-with-captions figcaption,
-.audio-with-captions .hide-captions-btn {
-    display: none !important;
-}
-.audio-with-captions .show-captions-btn {
-    display: inherit !important;
-}
-
-.audio-with-captions.show-captions figcaption,
-.audio-with-captions.show-captions .hide-captions-btn {
-    display: inherit !important;
-}
-.audio-with-captions.show-captions .show-captions-btn {
-    display: none !important;
-}
-
 /* theme buttons */
 .toggle-theme-btn.light-theme-btn,
 [data-bs-theme=dark] .toggle-theme-btn.dark-theme-btn {

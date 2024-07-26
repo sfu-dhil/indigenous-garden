@@ -38,10 +38,15 @@ nameAudioPlayer.addEventListener('pause', () => {
 nameAudioPlayer.addEventListener('play', () => {
     updateNameAudioBtn();
 });
-const stopAllAudio = () => {
+const stopAllMedia = () => {
     document.querySelectorAll('audio').forEach( (audio) => {
         if (!audio.paused && !audio.ended) {
             audio.pause();
+        }
+    });
+    document.querySelectorAll('video').forEach( (video) => {
+        if (!video.paused && !video.ended) {
+            video.pause();
         }
     });
     if (nameAudioPlayer.src) {
@@ -53,7 +58,7 @@ const stopAllAudio = () => {
 document.querySelectorAll('.name-audio-player').forEach( (btnEl) => {
     btnEl.addEventListener('click', () => {
         const wasPlaying = isNamedAudioPlayerPlaying();
-        stopAllAudio();
+        stopAllMedia();
         if (nameAudioBtnEl !== btnEl) {
             nameAudioBtnEl = btnEl;
             nameAudioPlayer.src = nameAudioBtnEl.dataset.src;
@@ -92,7 +97,7 @@ const toggleFeatureOffcanvas = (featureId, pointId, editPointType, hiddenCallbac
     hideFeatureOffcanvas();
     offCanvas = newOffCanvas;
     const offcanvasHiddenEvent = offCanvasEl.addEventListener('hide.bs.offcanvas', event => {
-        stopAllAudio();
+        stopAllMedia();
         offCanvas = null;
         offCanvasEl.removeEventListener('hide.bs.offcanvas', offcanvasHiddenEvent);
         if (hiddenCallback) {
@@ -139,30 +144,3 @@ document.querySelectorAll('.toggle-theme-btn').forEach( (btnEl) => {
 // enable tooltips
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
-// enable audio captions
-document.querySelectorAll('.audio-with-captions').forEach( (domEl) => {
-    const audioEl = domEl.querySelector('audio');
-    const captionEl = domEl.querySelector('.figure-caption');
-    const showCaptionsEl = domEl.querySelector('.show-captions-btn');
-    const hideCaptionsEl = domEl.querySelector('.hide-captions-btn');
-
-    showCaptionsEl.addEventListener('click', () => {
-        domEl.classList.add('show-captions');
-    });
-    hideCaptionsEl.addEventListener('click', () => {
-        domEl.classList.remove('show-captions');
-    });
-
-    for (const track of audioEl.textTracks) {
-        if (track.kind == 'captions') {
-            track.addEventListener('cuechange', () => {
-                if (track.activeCues.length === 0) {
-                    captionEl.innerHTML = '&nbsp;';
-                } else {
-                    captionEl.innerHTML = track.activeCues[0].text;
-                }
-            });
-        }
-    };
-});

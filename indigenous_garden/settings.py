@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'constrainedfilefield',
     'health_check',
     'django_cleanup.apps.CleanupConfig',
+    'kp_static_version',
+    'admin_async_upload',
 ]
 
 MIDDLEWARE = [
@@ -182,3 +184,6 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 256 * 1024 * 1024 # 256MB
 
 # logout redirection
 LOGOUT_REDIRECT_URL = 'admin:login'
+
+# add versions to static assets
+KP_STATIC_VERSION = env('GIT_COMMIT_SHORT', default='')
