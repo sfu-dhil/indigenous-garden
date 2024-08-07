@@ -40,7 +40,7 @@ class Feature(models.Model):
         upload_to='videos/',
         null=True,
         blank=True,
-        content_types=['video/mp4', 'video/webm', 'video/ogg'],
+        content_types=['application/octet-stream', 'video/mp4', 'video/webm', 'video/ogg'],
         help_text='Only MP4 (.mp4), WebM (.webm), or Ogg (.ogv) is allowed.',
     )
     captions = ConstrainedFileField(
@@ -84,7 +84,7 @@ class Name(models.Model):
         upload_to='audio/',
         null=True,
         blank=True,
-        content_types=['audio/mpeg', 'audio/wav', 'audio/ogg'],
+        content_types=['application/octet-stream', 'audio/mpeg', 'audio/wav', 'audio/ogg'],
         help_text='Only MP3 (.mp3), WAV (.wav), or Ogg (.ogg) is allowed.',
     )
 
