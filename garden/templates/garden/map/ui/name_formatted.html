@@ -14,8 +14,7 @@
             <span class="small text-muted">({{ item.descriptor }})</span>
         {% endif %}
         {% if with_audio and item.audio %}
-            <i class="name-audio-player bi bi-volume-up-fill" aria-hidden="true"
-               data-src="{{ item.audio.url }}" title=""></i>
+            <i class="name-audio-player bi bi-volume-up-fill" data-src="{{ item.audio.url }}"></i>
         {% endif %}
     </span>
 </div>

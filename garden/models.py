@@ -208,11 +208,11 @@ class Image(models.Model):
         return self.image.name if self.image else self.id
 models.signals.post_save.connect(image_compressor, sender=Image)
 
-class OverheadPoint(models.Model):
+class Point(models.Model):
     # relationships
     feature = models.ForeignKey(
         Feature,
-        related_name='overhead_points',
+        related_name='points',
         on_delete=models.CASCADE,
     )
 
@@ -225,29 +225,7 @@ class OverheadPoint(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'garden_overhead_point'
+        db_table = 'garden_point'
 
     def __str__(self):
-        return f"Overhead map point: ({self.x:.2f},{self.y:.2f}) for {self.feature}"
-
-class PanoramaPoint(models.Model):
-    # relationships
-    feature = models.ForeignKey(
-        Feature,
-        related_name='panorama_points',
-        on_delete=models.CASCADE,
-    )
-
-    # fields
-    yaw = models.FloatField() # x
-    pitch = models.FloatField() # y
-
-    # write tracking fields
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'garden_panorama_point'
-
-    def __str__(self):
-        return f"Panorama map point: ({self.yaw:.2f},{self.pitch:.2f}) for {self.feature}"
+        return f"Map point: ({self.x:.2f},{self.y:.2f}) for {self.feature}"

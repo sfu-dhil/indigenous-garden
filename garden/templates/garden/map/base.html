@@ -2,16 +2,18 @@
 {% load kp_static %}
 <link rel="stylesheet" href="{% vstatic 'ol/ol.css' %}" />
 <link rel="stylesheet" href="{% vstatic 'fonts/first_nations_unicode/font.css' %}" />
-<link rel="stylesheet" href="{% vstatic 'pannellum/pannellum.css' %}" />
+<link rel="stylesheet" href="{% vstatic 'video.js/dist/video-js.min.css' %}" />
+<link rel="stylesheet" href="{% vstatic 'videojs-vr/dist/videojs-vr.css' %}" />
 <link rel="stylesheet" href="{% vstatic 'fontawesome/css/fontawesome.min.css' %}" />
 <link rel="stylesheet" href="{% vstatic 'fontawesome/css/solid.min.css' %}" />
 <link rel="stylesheet" href="{% vstatic 'css/map.css' %}" />
 
 <script src="{% vstatic 'ol/dist/ol.js' %}"></script>
-<script src="{% vstatic 'pannellum/pannellum.js' %}"></script>
+<script src="{% vstatic 'video.js/dist/video.min.js' %}"></script>
+<script src="{% vstatic 'videojs-vr/dist/videojs-vr.min.js' %}"></script>
 
 <div class="garden_projection_wrapper position-relative overflow-hidden">
-    <div id="overhead_map" class="garden_projection">
+    <div id="map" class="garden_projection">
         <div class="select-theme-control ol-unselectable ol-control text-secondary">
             {% include "garden/map/ui/btn/themes.html" %}
         </div>
@@ -20,30 +22,35 @@
         </div>
         {% if not force_display %}
             <div class="select-map-control ol-unselectable ol-control text-secondary">
-                <button type="button" data-display-type-toggle="PANORAMA" title="Overhead map. Click to switch to Panorama map">
+                <button type="button" data-display-type-toggle="PANORAMA" title="Map view. Click to switch to Panorama view">
                     <i class="fa-solid fa-street-view" aria-hidden="true"></i>
                 </button>
             </div>
         {% endif %}
     </div>
-    <div id="pannellum_panorama" class="garden_projection">
-        <div class="pannellum-control ol-zoom ol-unselectable ol-control text-secondary">
-            <button type="button" id="pannellum_zoom_in" class="ol-zoom-in" title="Zoom in">+</button>
-            <button type="button" id="pannellum_zoom_out" class="ol-zoom-out" title="Zoom out">–</button>
+    <div id="panorama" class="garden_projection">
+        <div class="panorama-control ol-zoom ol-unselectable ol-control text-secondary">
+            <button type="button" id="panorama_zoom_in" class="ol-zoom-in" title="Zoom in">+</button>
+            <button type="button" id="panorama_zoom_out" class="ol-zoom-out" title="Zoom out">–</button>
         </div>
-        <div class="show-features-control pannellum-control ol-unselectable ol-control text-secondary">
+        <div class="show-features-control panorama-control ol-unselectable ol-control text-secondary">
             {% include "garden/map/ui/btn/features.html" %}
         </div>
         {% if not force_display %}
-            <div class="select-map-control pannellum-control ol-unselectable ol-control text-secondary">
-                <button type="button" data-display-type-toggle="OVERHEAD" title="Panorama map. Click to switch to Overhead map">
+            <div class="select-map-control panorama-control ol-unselectable ol-control text-secondary">
+                <button type="button" data-display-type-toggle="MAP" title="Panorama view. Click to switch to Map view">
                     <i class="bi bi-pin-map-fill" aria-hidden="true"></i>
                 </button>
             </div>
         {% endif %}
-        <div class="select-theme-control pannellum-control ol-unselectable ol-control text-secondary">
+        <div class="select-theme-control panorama-control ol-unselectable ol-control text-secondary">
             {% include "garden/map/ui/btn/themes.html" %}
         </div>
+        <video id="panorama_video"
+               class="player video-js vjs-fluid vjs-default-skin vjs-big-play-centered"
+               src="{% static 'videos/panorama.webm' %}"
+               preload="metadata" controls loop muted>
+        </video>
     </div>
     {% include "garden/map/ui/offcanvas/features.html" with features=features can_edit=can_edit only %}
     {% for feature in features %}
@@ -52,28 +59,20 @@
 </div>
 
 <script
-    src="{% vstatic 'js/map_controls.js' %}"
+    src="{% vstatic 'js/controls.js' %}"
     {% if force_display %}data-default-display="{{ force_display }}"{% endif %}
 ></script>
-{% if not force_display or force_display == 'OVERHEAD' %}
+{% if not force_display or force_display == 'MAP' %}
     <script
-        src="{% vstatic 'js/map_overhead.js' %}"
+        src="{% vstatic 'js/map.js' %}"
         data-image-url="{% static 'images/garden.png' %}"
-        data-points="{{ overhead_points_json }}"
+        data-points="{{ points_json }}"
         {% if force_display %}data-force-display="{{ force_display }}"{% endif %}
         {% if is_edit %}data-is-edit="1"{% endif %}
         {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
         {% if is_new %}data-is-new="1"{% endif %}
     ></script>
 {% endif %}
-{% if not force_display or force_display == 'PANORAMA' %}
-    <script
-        src="{% vstatic 'js/map_panorama.js' %}"
-        data-image-url="{% static 'images/panorama.jpg' %}"
-        data-image-thumbnail-url="{% static 'images/panorama_thumbnail.jpg' %}"
-        data-points="{{ panorama_points_json }}"
-        {% if is_edit %}data-is-edit="1"{% endif %}
-        {% if edit_point_id %}data-edit-point-id="{{ edit_point_id }}"{% endif %}
-        {% if is_new %}data-is-new="1"{% endif %}
-    ></script>
+{% if not force_display %}
+    <script src="{% vstatic 'js/panorama.js' %}"></script>
 {% endif %}

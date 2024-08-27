@@ -1,15 +1,30 @@
 {% extends "garden/base_site.html" %}
 {% load static %}
+{% load kp_static %}
 
 {% block media_preload_prefetch %}
     <link rel="preload" as="image" href="{% static 'images/garden.png' %}">
-    <link rel="preload" as="image" href="{% static 'images/panorama.jpg' %}">
-    <link rel="preload" as="image" href="{% static 'images/panorama_thumbnail.jpg' %}">
+    <link rel="prefetch" as="video" href="{% static 'videos/panorama.webm' %}">
+
+    <link rel="prefetch" as="style" href="{% vstatic 'ol/ol.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'fonts/first_nations_unicode/font.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'video.js/dist/video-js.min.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'videojs-vr/dist/videojs-vr.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'fontawesome/css/fontawesome.min.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'fontawesome/css/solid.min.css' %}" />
+    <link rel="prefetch" as="style" href="{% vstatic 'css/map.css' %}" />
+
+    <link rel="prefetch" as="script" href="{% vstatic 'ol/dist/ol.js' %}" />
+    <link rel="prefetch" as="script" href="{% vstatic 'video.js/dist/video.min.js' %}" />
+    <link rel="prefetch" as="script" href="{% vstatic 'videojs-vr/dist/videojs-vr.min.js' %}" />
+    <link rel="prefetch" as="script" href="{% vstatic 'js/controls.js' %}" />
+    <link rel="prefetch" as="script" href="{% vstatic 'js/map.js' %}" />
+    <link rel="prefetch" as="script" href="{% vstatic 'js/panorama.js' %}" />
 
     {% for feature in features %}
         {% for image in feature.images.all %}
             <link rel="prefetch" as="image" href="{{ image.thumbnail.url }}">
-            <link rel="prefetch" as="image" href="{{ image.image.url }}">
+            {% comment %} <link rel="prefetch" as="image" href="{{ image.image.url }}"> {% endcomment %}
         {% endfor %}
 
         {% for item in feature.english_names.all %}
@@ -33,12 +48,14 @@
             {% endif %}
         {% endfor %}
 
+        {% comment %}
         {% if feature.video %}
             <link rel="prefetch" as="video" href="{{ feature.video.url }}">
         {% endif %}
         {% if feature.captions %}
             <link rel="prefetch" as="track" href="{{ feature.captions.url }}">
         {% endif %}
+        {% endcomment %}
     {% endfor %}
 {% endblock %}
 

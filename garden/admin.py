@@ -4,10 +4,10 @@ from rest_framework.renderers import JSONRenderer
 from django_admin_kubi.widgets import TinyMceEditorWidget
 from django.utils.html import format_html
 
-from .models import Feature, Image, OverheadPoint, PanoramaPoint, \
+from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
-from .serializers import OverheadPointSerializer, PanoramaPointSerializer
+from .serializers import PointSerializer
 
 def add_map_context(extra_context):
     extra_context = extra_context or {}
@@ -17,10 +17,8 @@ def add_map_context(extra_context):
         'halkomelem_names', 'squamish_names'
     ).order_by('number', 'id').all()
     extra_context['is_map'] = True
-    overhead_points = OverheadPoint.objects.order_by('-y', 'x').all()
-    extra_context['overhead_points_json'] = JSONRenderer().render(OverheadPointSerializer(overhead_points, many=True).data).decode("utf8")
-    panorama_points = PanoramaPoint.objects.order_by('-pitch', 'yaw').all()
-    extra_context['panorama_points_json'] = JSONRenderer().render(PanoramaPointSerializer(panorama_points, many=True).data).decode("utf8")
+    points = Point.objects.order_by('-y', 'x').all()
+    extra_context['points_json'] = JSONRenderer().render(PointSerializer(points, many=True).data).decode("utf8")
 
     return extra_context
 
@@ -91,8 +89,8 @@ class FeatureAdmin(admin.ModelAdmin):
         ('video', 'captions'),
     ]
 
-    list_display = ('id', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
-    list_display_links = ('id', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
+    list_display = ('id', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
+    list_display_links = ('id', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
     ordering = ['number']
     search_fields = [
         'number',
@@ -136,8 +134,8 @@ class FeatureAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context=extra_context)
 
 
-@admin.register(OverheadPoint)
-class OverheadPointAdmin(admin.ModelAdmin):
+@admin.register(Point)
+class PointAdmin(admin.ModelAdmin):
     fields = [
         'feature',
         ('x', 'y'),
@@ -152,7 +150,7 @@ class OverheadPointAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
         extra_context['can_edit'] = True
-        extra_context['force_display'] = 'OVERHEAD'
+        extra_context['force_display'] = 'MAP'
 
         return super().changelist_view(request, extra_context=extra_context)
 
@@ -160,48 +158,13 @@ class OverheadPointAdmin(admin.ModelAdmin):
         extra_context = add_map_context(extra_context)
         extra_context['is_edit'] = True
         extra_context['edit_point_id'] = object_id
-        extra_context['force_display'] = 'OVERHEAD'
+        extra_context['force_display'] = 'MAP'
 
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
     def add_view(self, request, form_url='', extra_context=None):
         extra_context = add_map_context(extra_context)
         extra_context['is_new'] = True
-        extra_context['force_display'] = 'OVERHEAD'
-
-        return super().add_view(request, form_url, extra_context=extra_context)
-
-@admin.register(PanoramaPoint)
-class PanoramaPointAdmin(admin.ModelAdmin):
-    fields = [
-        'feature',
-        ('yaw', 'pitch'),
-    ]
-
-    list_display = ('id', 'feature', 'yaw', 'pitch')
-    list_display_links = ('id', 'feature', 'yaw', 'pitch')
-    ordering = ['feature', 'yaw', 'pitch']
-    autocomplete_fields = ['feature']
-    list_per_page = 5
-
-    def changelist_view(self, request, extra_context=None):
-        extra_context = add_map_context(extra_context)
-        extra_context['can_edit'] = True
-        extra_context['force_display'] = 'PANORAMA'
-
-        return super().changelist_view(request, extra_context=extra_context)
-
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context)
-        extra_context['is_edit'] = True
-        extra_context['edit_point_id'] = object_id
-        extra_context['force_display'] = 'PANORAMA'
-
-        return super().change_view(request, object_id, form_url, extra_context=extra_context)
-
-    def add_view(self, request, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context)
-        extra_context['is_new'] = True
-        extra_context['force_display'] = 'PANORAMA'
+        extra_context['force_display'] = 'MAP'
 
         return super().add_view(request, form_url, extra_context=extra_context)

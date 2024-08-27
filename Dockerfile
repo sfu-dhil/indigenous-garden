@@ -13,7 +13,7 @@ RUN yarn --production \
 
 
 # Django app
-FROM python:3.11-alpine as indigenous-garden
+FROM python:3.11-alpine AS indigenous-garden
 EXPOSE 80
 WORKDIR /app
 

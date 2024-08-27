@@ -63,7 +63,7 @@ urlpatterns = [
     # main garden map endpoints
     path('', include("garden.urls")),
 
-    # django-async-upload-kg endpoints
+    # django-async-upload endpoints
     path('admin_async_upload/', include("admin_async_upload.urls")),
 ]
 

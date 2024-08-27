@@ -126,10 +126,3 @@ Edit version number in `requirements.txt` with new locked version number
     docker exec -it indigenous_garden_app pip install -r requirements.txt
     # or
     docker compose up -d --build
-
-
-# Pannellum Note
-
-Current release `v2.5.6` does not have all the drag functionality so I downloaded and built separately outside of yarn. If they ever release a new version, clear out the current `pannellum` folder in static and add the library with yarn
-
-see [git issue](https://github.com/mpetroff/pannellum/issues/1182)

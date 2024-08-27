@@ -32,6 +32,8 @@ STATICFILES_DIRS = [
     ('bootstrap-icons', BASE_DIR / "node_modules/bootstrap-icons"),
     ('fontawesome', BASE_DIR / "node_modules/@fortawesome/fontawesome-free"),
     ('ol', BASE_DIR / "node_modules/ol"),
+    ('video.js', BASE_DIR / "node_modules/video.js"),
+    ('videojs-vr', BASE_DIR / "node_modules/videojs-vr"),
 ]
 
 # Quick-start development settings - unsuitable for production

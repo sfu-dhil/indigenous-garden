@@ -1,0 +1,151 @@
+let {
+    defaultDisplay,
+} = document.currentScript.dataset;
+
+// disable threejs warnings (and all js warnings in general)
+const warn = console.warn;
+console.warn = () => {};
+
+// handle display toggling
+const getDisplayType = () => localStorage.getItem('garden_display_type') || 'MAP';
+const setDisplayType = displayType => {
+    localStorage.setItem('garden_display_type', displayType);
+
+    videojs('panorama_video').pause(); // pause panorama video if needed
+    document.getElementById('map').style.display = displayType === 'MAP' ? 'block' : 'none';
+    document.getElementById('panorama').style.display = displayType === 'PANORAMA' ? 'block' : 'none';
+};
+setDisplayType(defaultDisplay || getDisplayType());
+document.querySelectorAll('.select-map-control button').forEach( (btnEl) => {
+    btnEl.addEventListener('click', () => {
+        setDisplayType(btnEl.dataset.displayTypeToggle);
+    });
+});
+
+// handle multiple audio players
+let nameAudioBtnEl;
+const nameAudioPlayer = new Audio();
+nameAudioPlayer.preload = 'none';
+const isNamedAudioPlayerPlaying = () => !!nameAudioPlayer.src && !nameAudioPlayer.paused && !nameAudioPlayer.ended;
+const updateNameAudioBtn = () => {
+    if (!nameAudioBtnEl) {
+        return;
+    }
+    isNamedAudioPlayerPlaying() ? nameAudioBtnEl.classList.add('text-primary') : nameAudioBtnEl.classList.remove('text-primary');
+}
+nameAudioPlayer.addEventListener('ended', () => {
+    nameAudioPlayer.currentTime = 0;
+    updateNameAudioBtn();
+});
+nameAudioPlayer.addEventListener('pause', () => {
+    updateNameAudioBtn();
+});
+nameAudioPlayer.addEventListener('play', () => {
+    updateNameAudioBtn();
+});
+const stopAllMedia = () => {
+    document.querySelectorAll('audio').forEach( (audio) => {
+        if (!audio.paused && !audio.ended) {
+            audio.pause();
+        }
+    });
+    document.querySelectorAll('video').forEach( (video) => {
+        if (!video.classList.contains('vjs-tech') && !video.paused && !video.ended) {
+            video.pause();
+        }
+    });
+    if (nameAudioPlayer.src) {
+        nameAudioPlayer.pause();
+        nameAudioPlayer.currentTime = 0;
+        updateNameAudioBtn();
+    }
+}
+document.querySelectorAll('.name-audio-player').forEach( (btnEl) => {
+    btnEl.addEventListener('click', () => {
+        const wasPlaying = isNamedAudioPlayerPlaying();
+        stopAllMedia();
+        if (nameAudioBtnEl !== btnEl) {
+            nameAudioBtnEl = btnEl;
+            nameAudioPlayer.src = nameAudioBtnEl.dataset.src;
+        } else if (wasPlaying) {
+            return;
+        }
+        nameAudioPlayer.play();
+    });
+});
+
+// handle off canvas
+let offCanvas;
+const hideFeatureOffcanvas = () => {
+    if (!offCanvas) {
+        return;
+    }
+    offCanvas.hide();
+    offCanvas = null;
+};
+const toggleFeatureOffcanvas = (featureId, pointId, editPointType, hiddenCallback) => {
+    const offCanvasEl = document.getElementById(`map-feature-${ featureId }`);
+    const newOffCanvas = new bootstrap.Offcanvas(offCanvasEl);
+
+    offCanvasEl.querySelectorAll('a.edit-point-btn').forEach ( linkEl => {
+        if (pointId && editPointType) {
+            linkEl.classList.remove('d-none');
+            linkEl.href = `/admin/garden/${editPointType}/${ pointId }/change/`;
+        } else {
+            linkEl.classList.add('d-none');
+        }
+    });
+
+    if (offCanvas === newOffCanvas) {
+        return;
+    }
+    hideFeatureOffcanvas();
+    offCanvas = newOffCanvas;
+    const offcanvasHiddenEvent = offCanvasEl.addEventListener('hide.bs.offcanvas', event => {
+        stopAllMedia();
+        offCanvas = null;
+        offCanvasEl.removeEventListener('hide.bs.offcanvas', offcanvasHiddenEvent);
+        if (hiddenCallback) {
+            hiddenCallback();
+        }
+    });
+    offCanvas.show();
+}
+
+const featuresHoverCallbacks = [];
+const addFeaturesHoverCallback = (callback) => featuresHoverCallbacks.push(callback);
+document.querySelectorAll('.feature-card-hover').forEach( (domEl) => {
+    domEl.addEventListener('mouseover', () => {
+        featuresHoverCallbacks.forEach( (callback) => {
+            callback(domEl.dataset.featureId);
+        })
+    });
+    domEl.addEventListener('mouseout', () => {
+        featuresHoverCallbacks.forEach( (callback) => {
+            callback();
+        })
+    });
+});
+
+// color theme
+const toggleThemeCallbacks = [];
+const addToggleThemeCallback = (callback) => toggleThemeCallbacks.push(callback);
+const getTheme = () => localStorage.getItem('garden_display_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const setTheme = theme => {
+    localStorage.setItem('garden_display_theme', theme);
+
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    toggleThemeCallbacks.forEach( (callback) => {
+        callback(theme);
+    })
+}
+setTheme(getTheme());
+document.querySelectorAll('.toggle-theme-btn').forEach( (btnEl) => {
+    btnEl.addEventListener('click', () => {
+        setTheme(btnEl.dataset.themeToggle);
+    });
+});
+
+// enable tooltips
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
