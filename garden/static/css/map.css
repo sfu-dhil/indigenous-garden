@@ -38,15 +38,21 @@
     z-index: 2;
 }
 
-.show-features-control {
+.show-menu-control {
     left: .5em;
     top: 7.5em;
     z-index: 2;
 }
 
-.select-map-control {
+.show-welcome-control {
     left: .5em;
     top: 10em;
+    z-index: 2;
+}
+
+.select-map-control {
+    left: .5em;
+    top: 12.5em;
     z-index: 2;
 }
 
@@ -125,27 +131,37 @@
     background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity)) !important;
 }
 
-.offcanvas.features {
+.offcanvas.topmenu {
     z-index: calc(var(--bs-offcanvas-zindex) + 11);
 }
 
-.offcanvas.feature {
+/* mimic active on hover */
+.offcanvas.topmenu .nav-pills .nav-link:hover {
+    color: #fff;
+    background-color: #0d6efd;
+}
+
+.offcanvas.submenu {
     z-index: calc(var(--bs-offcanvas-zindex) + 21);
+}
+
+.offcanvas.feature {
+    z-index: calc(var(--bs-offcanvas-zindex) + 31);
 }
 
 /* off canvas */
 @media (min-width: 992px) {
-    .offcanvas.feature {
+    .offcanvas.feature, #references.offcanvas, #history.offcanvas, #indian-residential-schools-map.offcanvas {
         width: 50vmax;
     }
 }
 @media (max-width: 991.98px) {
-    .offcanvas.feature {
+    .offcanvas.feature, #references.offcanvas, #history.offcanvas, #indian-residential-schools-map.offcanvas {
         width: 100vmax;
     }
 }
 @media (max-width: 575.98px) {
-    .offcanvas.features {
+    #top-level-menu.offcanvas, #feature-list.offcanvas, #plant-list.offcanvas {
         width: 100vmax;
     }
 }
@@ -201,6 +217,9 @@
 
 .modal {
     --bs-modal-zindex: 1100;
+}
+
+.feature-gallery {
     --bs-modal-bg: transparent;
 }
 
@@ -253,7 +272,7 @@
 }
 
 /* audio players  */
-.name-audio-player {
+.click-audio-player {
     cursor: pointer;
 }
 

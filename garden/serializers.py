@@ -1,17 +1,26 @@
 from rest_framework import serializers
-from .models import Point
+from .models import Point, Feature
 
 class PointSerializer(serializers.ModelSerializer):
-    number = serializers.SerializerMethodField()
-    feature_id = serializers.SerializerMethodField()
-
     class Meta:
         model = Point
         exclude = ['feature', 'created', 'modified']
         read_only = True
 
-    def get_number(self, object):
-        return object.feature.number
+class FeatureSerializer(serializers.ModelSerializer):
+    color = serializers.SerializerMethodField()
+    points = PointSerializer(many=True, read_only=True)
 
-    def get_feature_id(self, object):
-        return object.feature_id
+    class Meta:
+        model = Feature
+        fields = ['id', 'feature_type', 'number', 'color', 'points']
+        read_only = True
+
+
+        ordering = ['-y', 'x']
+
+    def get_color(self, object):
+        if object.feature_type == Feature.FeatureTypes.FEATURE:
+            return '#6495ED'
+
+        return '#7cb341'

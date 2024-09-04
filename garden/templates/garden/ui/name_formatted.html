@@ -1,0 +1,20 @@
+
+<div>
+    {% if display_number and number %}
+        {{ number }}.
+    {% endif %}
+    {% if item.icon_color and item.icon_title %}
+        <i class="bi bi-circle-fill fs-6" style="color: {{ item.icon_color }}"
+            data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
+            title="{{ item.icon_title }}"></i>
+    {% endif %}
+    <span class="{{ is_muted|yesno:'fw-lighter fst-italic fs-6,' }} {{ is_bold|yesno:'fw-bolder,' }}">
+        {{ item.name }}
+        {% if item.descriptor %}
+            <span class="small text-muted">({{ item.descriptor }})</span>
+        {% endif %}
+        {% if with_audio and item.audio %}
+            <i class="click-audio-player bi bi-volume-up-fill" data-src="{{ item.audio.url }}"></i>
+        {% endif %}
+    </span>
+</div>

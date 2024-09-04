@@ -1,5 +1,6 @@
 let {
     defaultDisplay,
+    skipWelcomeModal,
 } = document.currentScript.dataset;
 
 // disable threejs warnings (and all js warnings in general)
@@ -7,20 +8,41 @@ const warn = console.warn;
 console.warn = () => {};
 
 // handle display toggling
+const toggleDisplayCallbacks = [];
+const addToggleDisplayCallback = (callback) => toggleDisplayCallbacks.push(callback);
 const getDisplayType = () => localStorage.getItem('garden_display_type') || 'MAP';
 const setDisplayType = displayType => {
+    if (displayType != 'MAP' && displayType != 'PANORAMA') { displayType = 'MAP'; }
     localStorage.setItem('garden_display_type', displayType);
-
-    videojs('panorama_video').pause(); // pause panorama video if needed
     document.getElementById('map').style.display = displayType === 'MAP' ? 'block' : 'none';
     document.getElementById('panorama').style.display = displayType === 'PANORAMA' ? 'block' : 'none';
+
+    toggleDisplayCallbacks.forEach( (callback) => {
+        callback(displayType);
+    })
 };
 setDisplayType(defaultDisplay || getDisplayType());
-document.querySelectorAll('.select-map-control button').forEach( (btnEl) => {
-    btnEl.addEventListener('click', () => {
-        setDisplayType(btnEl.dataset.displayTypeToggle);
-    });
-});
+
+// handle welcome modal on page load (only force show once per day)
+const showWelcomeModal = () => {
+    // don't show welcome modal when editing
+    if (skipWelcomeModal) {
+        return;
+    }
+
+    // only show the welcome modal if the cookie isn't set (uses cookie so that it can expire after 1 day)
+    if (!document.cookie.split("; ").find((row) => row.startsWith("showWelcomeModal"))) {
+
+        // set cookie to expire 1 day from now
+        const exp = (new Date(Date.now() + 86400e3)).toUTCString();
+        document.cookie = `showWelcomeModal=true; expires=${exp}; SameSite=None; Secure`;
+
+        // show the modal
+        const welcomeModal = new bootstrap.Modal(document.getElementById('welcome-model'));
+        welcomeModal.show();
+    }
+}
+showWelcomeModal();
 
 // handle multiple audio players
 let nameAudioBtnEl;
@@ -60,21 +82,32 @@ const stopAllMedia = () => {
         updateNameAudioBtn();
     }
 }
-document.querySelectorAll('.name-audio-player').forEach( (btnEl) => {
-    btnEl.addEventListener('click', () => {
-        const wasPlaying = isNamedAudioPlayerPlaying();
-        stopAllMedia();
-        if (nameAudioBtnEl !== btnEl) {
-            nameAudioBtnEl = btnEl;
-            nameAudioPlayer.src = nameAudioBtnEl.dataset.src;
-        } else if (wasPlaying) {
-            return;
-        }
-        nameAudioPlayer.play();
-    });
-});
 
-// handle off canvas
+// handle submenu off canvas
+let subMenuOffCanvas;
+const hideSubmenuOffcanvas = () => {
+    if (!subMenuOffCanvas) {
+        return;
+    }
+    subMenuOffCanvas.hide();
+    subMenuOffCanvas = null;
+};
+const toggleSubmenuOffcanvas = (submenuId) => {
+    const subMenuOffCanvasEl = document.getElementById(submenuId);
+    const newSubMenuOffCanvas = new bootstrap.Offcanvas(subMenuOffCanvasEl);
+    if (subMenuOffCanvas === newSubMenuOffCanvas) {
+        return;
+    }
+    hideSubmenuOffcanvas();
+    subMenuOffCanvas = newSubMenuOffCanvas;
+    const subMenuOffCanvasHiddenEvent = subMenuOffCanvasEl.addEventListener('hide.bs.offcanvas', event => {
+        subMenuOffCanvas = null;
+        subMenuOffCanvasEl.removeEventListener('hide.bs.offcanvas', subMenuOffCanvasHiddenEvent);
+    });
+    subMenuOffCanvas.show();
+}
+
+// handle feature off canvas
 let offCanvas;
 const hideFeatureOffcanvas = () => {
     if (!offCanvas) {
@@ -83,14 +116,14 @@ const hideFeatureOffcanvas = () => {
     offCanvas.hide();
     offCanvas = null;
 };
-const toggleFeatureOffcanvas = (featureId, pointId, editPointType, hiddenCallback) => {
-    const offCanvasEl = document.getElementById(`map-feature-${ featureId }`);
+const toggleFeatureOffcanvas = (featureId, pointId, hiddenCallback) => {
+    const offCanvasEl = document.getElementById(`feature-${ featureId }`);
     const newOffCanvas = new bootstrap.Offcanvas(offCanvasEl);
 
     offCanvasEl.querySelectorAll('a.edit-point-btn').forEach ( linkEl => {
-        if (pointId && editPointType) {
+        if (pointId) {
             linkEl.classList.remove('d-none');
-            linkEl.href = `/admin/garden/${editPointType}/${ pointId }/change/`;
+            linkEl.href = `/admin/garden/point/${ pointId }/change/`;
         } else {
             linkEl.classList.add('d-none');
         }
@@ -112,20 +145,9 @@ const toggleFeatureOffcanvas = (featureId, pointId, editPointType, hiddenCallbac
     offCanvas.show();
 }
 
+// handle feature card hover
 const featuresHoverCallbacks = [];
 const addFeaturesHoverCallback = (callback) => featuresHoverCallbacks.push(callback);
-document.querySelectorAll('.feature-card-hover').forEach( (domEl) => {
-    domEl.addEventListener('mouseover', () => {
-        featuresHoverCallbacks.forEach( (callback) => {
-            callback(domEl.dataset.featureId);
-        })
-    });
-    domEl.addEventListener('mouseout', () => {
-        featuresHoverCallbacks.forEach( (callback) => {
-            callback();
-        })
-    });
-});
 
 // color theme
 const toggleThemeCallbacks = [];
@@ -140,12 +162,3 @@ const setTheme = theme => {
     })
 }
 setTheme(getTheme());
-document.querySelectorAll('.toggle-theme-btn').forEach( (btnEl) => {
-    btnEl.addEventListener('click', () => {
-        setTheme(btnEl.dataset.themeToggle);
-    });
-});
-
-// enable tooltips
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))

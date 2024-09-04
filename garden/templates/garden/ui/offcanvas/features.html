@@ -1,0 +1,50 @@
+<div id="feature-list" class="submenu offcanvas offcanvas-start position-absolute"
+     data-bs-scroll="true" data-bs-backdrop="false"
+     tabindex="-1" aria-labelledby="feature-list-label">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5" id="feature-list-label">Features</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        {% for feature in features %}
+            {% if feature.feature_type == feature.FeatureTypes.FEATURE %}
+                <div class="card mt-3 w-100 feature-card-hover" data-feature-id="{{ feature.id }}">
+                    <img src="{{ feature.images.first.thumbnail.url }}" class="card-img-top object-fit-cover" loading="lazy"
+                        data-bs-toggle="tooltip" data-bs-html="true"
+                        alt="{{ feature.images.first.description|striptags }}"
+                        title="{{ feature.images.first.description }}" />
+                    <div class="g-0 card-body">
+                        {% for item in feature.english_names.all %}
+                            {% include "garden/ui/name_formatted.html" with item=item is_bold=True number=feature.number display_number=forloop.first only %}
+                        {% endfor %}
+                        {% for item in feature.western_scientific_names.all %}
+                            {% include "garden/ui/name_formatted.html" with item=item is_muted=True only %}
+                        {% endfor %}
+                        <div class="row g-0">
+                            <div class="col first-nations-unicode">
+                                {% for item in feature.halkomelem_names.all %}
+                                    {% include "garden/ui/name_formatted.html" with item=item only %}
+                                {% endfor %}
+                            </div>
+                            <div class="col first-nations-unicode">
+                                {% for item in feature.squamish_names.all %}
+                                    {% include "garden/ui/name_formatted.html" with item=item only %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <a href="javascript:toggleFeatureOffcanvas({{ feature.id }})" class="stretched-link"></a>
+                    </div>
+                </div>
+                {% if can_edit %}
+                    <ul class="nav nav-pills nav-fill">
+                        <li class="nav-item">
+                            <a href="/admin/garden/feature/{{ feature.id }}/change/" class="nav-link">
+                                <i class="bi bi-pencil-square" aria-hidden="true"></i> Edit feature
+                            </a>
+                        </li>
+                    </ul>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

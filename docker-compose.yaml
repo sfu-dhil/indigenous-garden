@@ -45,6 +45,8 @@ services:
 
       # files uploads
       - .data/media:/media
+      # large static-assets
+      - .data/static-assets:/static-assets
 
       # # persist static outside of container so it can be shared with nginx
       # - .data/static:/app/static # do not mount in development mode

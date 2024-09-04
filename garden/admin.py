@@ -7,18 +7,19 @@ from django.utils.html import format_html
 from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
-from .serializers import PointSerializer
+from .serializers import FeatureSerializer
 
 def add_map_context(extra_context):
     extra_context = extra_context or {}
-    extra_context['features'] = Feature.objects.prefetch_related(
+    features = Feature.objects.prefetch_related(
         'images',
         'english_names', 'western_scientific_names',
-        'halkomelem_names', 'squamish_names'
-    ).order_by('number', 'id').all()
+        'halkomelem_names', 'squamish_names', 'points'
+    ).order_by('feature_type', 'number', 'id').all()
+
     extra_context['is_map'] = True
-    points = Point.objects.order_by('-y', 'x').all()
-    extra_context['points_json'] = JSONRenderer().render(PointSerializer(points, many=True).data).decode("utf8")
+    extra_context['features'] = features
+    extra_context['feature_points_json'] = JSONRenderer().render(FeatureSerializer(features, many=True).data).decode("utf8")
 
     return extra_context
 
@@ -84,14 +85,14 @@ class SquamishNameInlineAdmin(admin.TabularInline):
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
     fields = [
-        ('feature_type', 'number'),
+        ('published', 'feature_type', 'number'),
         'content',
         ('video', 'captions'),
     ]
 
-    list_display = ('id', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
-    list_display_links = ('id', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
-    ordering = ['number']
+    list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
+    list_display_links = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
+    ordering = ['feature_type', 'number']
     search_fields = [
         'number',
         'english_names__name', 'english_names__descriptor',

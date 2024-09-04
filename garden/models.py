@@ -26,6 +26,9 @@ class Feature(models.Model):
         FEATURE = "GARDEN_FEATURE", "Garden Feature"
 
     # fields
+    published = models.BooleanField(
+        default=True,
+    )
     feature_type = models.CharField(
         max_length=255,
         choices=FeatureTypes.choices,
@@ -226,6 +229,7 @@ class Point(models.Model):
 
     class Meta:
         db_table = 'garden_point'
+        ordering = ['-y', 'x']
 
     def __str__(self):
         return f"Map point: ({self.x:.2f},{self.y:.2f}) for {self.feature}"

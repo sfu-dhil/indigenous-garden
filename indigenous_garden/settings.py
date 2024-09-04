@@ -34,6 +34,8 @@ STATICFILES_DIRS = [
     ('ol', BASE_DIR / "node_modules/ol"),
     ('video.js', BASE_DIR / "node_modules/video.js"),
     ('videojs-vr', BASE_DIR / "node_modules/videojs-vr"),
+    ('img-comparison-slider', BASE_DIR / "node_modules/img-comparison-slider"),
+    '/static-assets',
 ]
 
 # Quick-start development settings - unsuitable for production
