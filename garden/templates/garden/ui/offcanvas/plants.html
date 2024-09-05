@@ -9,7 +9,8 @@
         {% for feature in features %}
             {% if feature.feature_type == feature.FeatureTypes.PLANT %}
                 <div class="card mt-3 w-100 feature-card-hover" data-feature-id="{{ feature.id }}">
-                    <img src="{{ feature.images.first.thumbnail.url }}" class="card-img-top object-fit-cover" loading="lazy"
+                    <img src="{{ feature.images.first.thumbnail.url }}" class="card-img-top object-fit-cover"
+                        loading="lazy" fetchpriority="low"
                         data-bs-toggle="tooltip" data-bs-html="true"
                         alt="{{ feature.images.first.description|striptags }}"
                         title="{{ feature.images.first.description }}" />

@@ -126,3 +126,13 @@ Edit version number in `requirements.txt` with new locked version number
     docker exec -it indigenous_garden_app pip install -r requirements.txt
     # or
     docker compose up -d --build
+
+#### Creating map tiles of static image
+
+install `gdal` (via homebrew): `brew install gdal`
+
+Generate the files from some import source:
+
+```shell
+gdal2tiles --xyz --profile=raster --zoom="1-6" .data/static-assets/images/garden.png .data/static-assets/images/garden
+```

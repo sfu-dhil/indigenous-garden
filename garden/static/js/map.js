@@ -1,5 +1,5 @@
 const {
-    imageUrl,
+    imageXyzPatternUrl,
     isEdit,
     editPointId,
     isNew,
@@ -22,18 +22,18 @@ const featurePoints = JSON.parse(document.currentScript.dataset.featurePoints).s
 })
 
 // Map Layer
-const imageExtent = [0, 0, IMAGE_WIDTH, IMAGE_HEIGHT];
-const viewExtent = [-IMAGE_WIDTH/2, -IMAGE_HEIGHT/2, IMAGE_WIDTH*1.5, IMAGE_HEIGHT*1.5];
+const imageExtent = [0, -IMAGE_HEIGHT, IMAGE_WIDTH, 0];
+const viewExtent = [-IMAGE_WIDTH/2, -IMAGE_HEIGHT*3/2, IMAGE_WIDTH*1.5, IMAGE_HEIGHT*0.5];
 const projection = new ol.proj.Projection({
-    code: 'static-image-garden',
     units: 'pixels',
     extent: imageExtent,
 });
-const imageLayer = new ol.layer.Image({
-    source: new ol.source.ImageStatic({
-        url: imageUrl,
+const imageTileLayer = new ol.layer.Tile({
+    source: new ol.source.ImageTile({
+        url: imageXyzPatternUrl,
+        tileSize: [256, 256],
+        maxResolution: 16,
         projection: projection,
-        imageExtent: imageExtent,
     }),
 });
 const northRotation = (15.0 * Math.PI) / 180.0;
@@ -151,7 +151,7 @@ const map = new ol.Map({
     ]),
     interactions: ol.interaction.defaults.defaults().extend([new ol.interaction.DragRotateAndZoom()]),
     layers: [
-        imageLayer,
+        imageTileLayer,
         ...featureLayers,
     ],
     view: view,

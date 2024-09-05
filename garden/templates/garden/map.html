@@ -69,7 +69,7 @@
     {% if not force_display or force_display == 'MAP' %}
         <script
             src="{% vstatic 'js/map.js' %}"
-            data-image-url="{% static 'images/garden.png' %}"
+            data-image-xyz-pattern-url="{% static 'images/garden/' %}{z}/{x}/{y}.png"
             data-feature-points="{{ feature_points_json }}"
             {% if force_display %}data-force-display="{{ force_display }}"{% endif %}
             {% if is_edit %}data-is-edit="1"{% endif %}
