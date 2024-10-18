@@ -3,6 +3,8 @@ from django.db import models
 from constrainedfilefield.fields import ConstrainedFileField
 from django_advance_thumbnail import AdvanceThumbnailField
 from admin_async_upload.models import AsyncFileField
+from django.utils.safestring import mark_safe
+from html import unescape
 
 class AsyncConstrainedFileField(ConstrainedFileField, AsyncFileField):
     def formfield(self, **kwargs):
@@ -51,7 +53,7 @@ class Feature(models.Model):
         null=True,
         blank=True,
         content_types=['text/vtt'],
-        help_text='Only <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a> is allowed.',
+        help_text=mark_safe(unescape('Only <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank" class="text-primary-600 dark:text-primary-500">WebVTT (.vtt)</a> is allowed.')),
     )
     content = models.TextField()
 
@@ -135,12 +137,6 @@ class HalkomelemName(Name):
     class Meta:
         db_table = 'garden_feature_halkomelem_name'
 
-    def icon_color(self):
-        return '#64c4cf'
-
-    def icon_title(self):
-        return 'hən̓q̓əmin̓əm̓'
-
 class SquamishName(Name):
     # relationships
     feature = models.ForeignKey(
@@ -151,12 +147,6 @@ class SquamishName(Name):
 
     class Meta:
         db_table = 'garden_feature_squamish_name'
-
-    def icon_color(self):
-        return '#7cb341'
-
-    def icon_title(self):
-        return 'Sḵwx̱wú7mesh Sníchim'
 
 class Image(models.Model):
     # relationships
@@ -169,7 +159,7 @@ class Image(models.Model):
     # fields
     image = models.ImageField(
         upload_to='images/',
-        help_text='Please use <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types" target="_blank">standard web image types</a>. PNG, JPEG, and WebP are recommended.',
+        help_text=mark_safe(unescape('Please use <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types" target="_blank" class="text-primary-600 dark:text-primary-500">standard web image types</a>. PNG, JPEG, and WebP are recommended.')),
         width_field='image_width',
         height_field='image_height',
     )

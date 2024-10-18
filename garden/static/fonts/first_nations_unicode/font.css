@@ -1,9 +1,0 @@
-@font-face {
-    font-family: 'First Nations Unicode';
-    src: url('FirstNationsUnicode.woff2') format('woff2'),
-        url('FirstNationsUnicode.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-

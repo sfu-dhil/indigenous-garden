@@ -1,35 +1,17 @@
 {% extends "admin/base.html" %}
 {% load static %}
+{% load django_vite %}
 
 {% block extrahead %}
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
-    <link rel="stylesheet" href="{% static 'fonts/first_nations_unicode/font.css' %}" />
+    {{ block.super }}
+    {% vite_hmr_client %}
+    {% vite_asset 'first_nations_unicode.js' crossorigin="" %}
     <style>
-        :root {
-            --bs-font-sans-serif: Arial, Helvetica, sans-serif;
-            --bs-body-font-family: var(--bs-font-sans-serif);
-            --bs-font-monospace: Arial, Helvetica, sans-serif;
-        }
-        .garden_projection_wrapper {
-            min-height: 700px;
-        }
-        .first-nations-unicode {
-            font-family: "First Nations Unicode" !important;
-        }
-        .select2-container--admin-autocomplete.select2-container {
-            width: 100% !important;
-        }
         progress {
-            width: 100% !important;
+            max-width: 100% !important;
+        }
+        #submit-row.z-20 {
+            z-index: 10020
         }
     </style>
-    <!-- make sure bootstrap js is loaded before other page content -->
-    <script type="text/javascript" src="{% static "admin/js/vendor/bootstrap.bundle.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/vendor/popper.min.js" %}"></script>
 {% endblock %}
-
-{% block js_footer_commons %}
-    <script type="text/javascript" src="{% static "js/jquery-3.3.1.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/force_jquery.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/app.min.js" %}"></script>
-{% endblock js_footer_commons %}

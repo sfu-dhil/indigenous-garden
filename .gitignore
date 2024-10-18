@@ -160,5 +160,4 @@ cython_debug/
 .data/
 
 # project specific
-node_modules/
 /static/

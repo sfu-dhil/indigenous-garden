@@ -4,6 +4,8 @@ set -e
 # app specific setup here
 python manage.py migrate
 
+mkdir -p /app/static
+chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /app/static
 # collect static if needed
 python manage.py collectstatic --noinput
 
@@ -19,5 +21,10 @@ mkdir -p /media/audio /media/videos /media/captions /media/images /media/thumbna
 chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /media /media/audio /media/videos /media/captions /media/images /media/thumbnails
 mkdir -p /static-assets/audio /static-assets/videos /static-assets/captions /static-assets/images
 chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /static-assets/audio /static-assets/videos /static-assets/captions /static-assets/images
+mkdir -p /static-vite/dist/assets
+chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /static-vite/dist /static-vite/dist/assets
 
-python manage.py runserver 0.0.0.0:80
+# ensure django file cache directory exists
+mkdir -p /django_cache
+
+gunicorn --config /app/gunicorn.config.py garden_app.wsgi:application

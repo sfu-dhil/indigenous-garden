@@ -1,5 +1,5 @@
 # Node deps
-FROM node:22.3-slim AS indigenous-garden-prod-assets
+FROM node:23.0-slim AS indigenous-garden-vite
 WORKDIR /app
 
 RUN npm upgrade -g npm \
@@ -7,10 +7,16 @@ RUN npm upgrade -g npm \
     && rm -rf /var/lib/apt/lists/*
 
 # build js deps
-COPY package.json yarn.lock /app/
+COPY garden_vite/package.json garden_vite/yarn.lock /app/
+RUN yarn
+
+# run vite build
+COPY garden_vite /app
+RUN yarn build
+
+FROM indigenous-garden-vite AS indigenous-garden-vite-prod
 RUN yarn --production \
     && yarn cache clean
-
 
 # Django app
 FROM python:3.11-alpine AS indigenous-garden
@@ -31,7 +37,7 @@ RUN pip install -r requirements.txt --no-cache-dir
 COPY . /app
 
 # add prod assets
-COPY --from=indigenous-garden-prod-assets /app/node_modules /app/node_modules
+COPY --from=indigenous-garden-vite-prod /app/dist /static-vite/dist
 
 # collect static assets for production
 RUN python manage.py collectstatic --noinput

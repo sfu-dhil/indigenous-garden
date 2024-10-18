@@ -1,0 +1,1 @@
+import './assets/first_nations_unicode/font.css'

@@ -78,28 +78,14 @@ Create new migrations
 
 ### Yarn (javascript)
 
-First setup an image to build the yarn deps in
-
-    docker build -t indigenous_garden_yarn_helper --target indigenous-garden-prod-assets .
-
-Then run the following as needed
-
     # add new package
-    docker run -it --rm -v $(pwd):/app indigenous_garden_yarn_helper yarn add [package]
+    docker exec -it indigenous_garden_vite yarn add [package]
 
     # update a package
-    docker run -it --rm -v $(pwd):/app indigenous_garden_yarn_helper yarn upgrade [package]
+    docker exec -it indigenous_garden_vite yarn upgrade [package]
 
     # update all packages
-    docker run -it --rm -v $(pwd):/app indigenous_garden_yarn_helper yarn upgrade
-
-Note: If you are having problems starting/building the application due to javascript dependencies issues you can also run a standalone node container to help resolve them
-
-    docker run -it --rm -v $(pwd):/app -w /app node:22.3 bash
-
-    [check Dockerfile for the 'apt-get update' code piece of indigenous-garden-prod-assets]
-
-    yarn ...
+    docker exec -it indigenous_garden_vite yarn upgrade
 
 After you update a dependency make sure to rebuild the images
 
@@ -127,12 +113,12 @@ Edit version number in `requirements.txt` with new locked version number
     # or
     docker compose up -d --build
 
-#### Creating map tiles of static image
+## Creating map tiles of static image
 
 install `gdal` (via homebrew): `brew install gdal`
 
 Generate the files from some import source:
 
 ```shell
-gdal2tiles --xyz --profile=raster --zoom="1-6" .data/static-assets/images/garden.png .data/static-assets/images/garden
+gdal2tiles --xyz --profile=raster --zoom=1-6 --tiledriver=WEBP --tilesize=128 .data/static-assets/images/garden.png .data/static-assets/images/garden
 ```

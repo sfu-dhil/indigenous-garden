@@ -1,66 +1,52 @@
 from django.contrib import admin
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin, UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group, User
 from django.db import models
+from django.utils.safestring import mark_safe
 from rest_framework.renderers import JSONRenderer
-from django_admin_kubi.widgets import TinyMceEditorWidget
-from django.utils.html import format_html
+from html import unescape
+from unfold.admin import ModelAdmin, TabularInline, StackedInline
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
+from unfold.contrib.forms.widgets import WysiwygWidget
+from unfold.decorators import display
 
 from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
 from .serializers import FeatureSerializer
 
-def add_map_context(extra_context):
-    extra_context = extra_context or {}
-    features = Feature.objects.prefetch_related(
-        'images',
-        'english_names', 'western_scientific_names',
-        'halkomelem_names', 'squamish_names', 'points'
-    ).order_by('feature_type', 'number', 'id').all()
+# override the Auth User and Group models to use unfold UI theme
+admin.site.unregister(User)
+@admin.register(User)
+class UserAdmin(BaseUserAdmin, ModelAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
 
-    extra_context['is_map'] = True
-    extra_context['features'] = features
-    extra_context['feature_points_json'] = JSONRenderer().render(FeatureSerializer(features, many=True).data).decode("utf8")
+admin.site.unregister(Group)
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+    pass
 
-    return extra_context
-
-class ImageInlineAdmin(admin.StackedInline):
-    fields = [
-        'image',
-        ('description', 'license'),
-    ]
+class ImageInlineAdmin(StackedInline):
+    fields = [('image', 'description', 'license')]
     ordering = ['id']
     model = Image
     extra=0
 
-class EnglishNameInlineAdmin(admin.TabularInline):
-    fields = [
-        'name',
-        'descriptor',
-        'audio',
-    ]
+class NameInlineAdmin(TabularInline):
+    fields = ['name', 'descriptor', 'audio']
     ordering = ['id']
+    extra=0
+
+class EnglishNameInlineAdmin(NameInlineAdmin):
     model = EnglishName
-    extra=0
 
-class WesternScientificNameInlineAdmin(admin.TabularInline):
-    fields = [
-        'name',
-        'descriptor',
-        'audio',
-    ]
-    ordering = ['id']
+class WesternScientificNameInlineAdmin(NameInlineAdmin):
     model = WesternScientificName
-    extra=0
 
-class HalkomelemNameInlineAdmin(admin.TabularInline):
-    fields = [
-        'name',
-        'descriptor',
-        'audio',
-    ]
-    ordering = ['id']
+class HalkomelemNameInlineAdmin(NameInlineAdmin):
     model = HalkomelemName
-    extra=0
     verbose_name = "hən̓q̓əmin̓əm̓ name"
     classes=['first-nations-unicode']
 
@@ -70,22 +56,34 @@ class HalkomelemNameInlineAdmin(admin.TabularInline):
     #         field.widget.attrs["style"] = 'font-family: "First Nations Unicode" !important;'
     #     return field
 
-class SquamishNameInlineAdmin(admin.TabularInline):
-    fields = [
-        'name',
-        'descriptor',
-        'audio',
-    ]
-    ordering = ['id']
+class SquamishNameInlineAdmin(NameInlineAdmin):
     model = SquamishName
-    extra=0
     verbose_name="Sḵwx̱wú7mesh Sníchim name"
     classes=['first-nations-unicode']
 
+def add_map_context(extra_context, is_edit_mode=False, point_id=None):
+    extra_context = extra_context or {}
+    features = Feature.objects.prefetch_related(
+        'points', 'images',
+        'english_names', 'western_scientific_names',
+        'halkomelem_names', 'squamish_names',
+    ).order_by('number', 'id').all()
+
+    extra_context['is_map'] = True
+    extra_context['features'] = FeatureSerializer(features, many=True).data
+    extra_context['display_options'] = {
+        'canEdit': True,
+        'isEditMode': is_edit_mode,
+        'editPointId': point_id,
+    }
+
+    return extra_context
+
 @admin.register(Feature)
-class FeatureAdmin(admin.ModelAdmin):
+class FeatureAdmin(ModelAdmin):
     fields = [
-        ('published', 'feature_type', 'number'),
+        'published',
+        ('feature_type', 'number'),
         'content',
         ('video', 'captions'),
     ]
@@ -101,7 +99,7 @@ class FeatureAdmin(admin.ModelAdmin):
         'squamish_names__name', 'squamish_names__descriptor',
     ]
     formfield_overrides = {
-        models.TextField: {'widget': TinyMceEditorWidget},
+        models.TextField: {'widget': WysiwygWidget},
     }
 
     inlines = [
@@ -112,31 +110,30 @@ class FeatureAdmin(admin.ModelAdmin):
         ImageInlineAdmin,
     ]
 
+    @display(description="English names")
     def _english_names(self, obj):
-        return format_html(' <br /> '.join([str(n) for n in obj.english_names.all()]))
-    _english_names.short_description = "English names"
+        return mark_safe(unescape(' <br /> '.join([str(n) for n in obj.english_names.all()])))
 
+    @display(description="Western scientific names")
     def _western_scientific_names(self, obj):
-        return format_html(' <br /> '.join([str(n) for n in obj.western_scientific_names.all()]))
-    _western_scientific_names.short_description = "Western scientific names"
+        return mark_safe(unescape(' <br /> '.join([str(n) for n in obj.western_scientific_names.all()])))
 
+    @display(description=mark_safe(unescape("<span class='first-nations-unicode'>hən̓q̓əmin̓əm̓</span> names")))
     def _halkomelem_names(self, obj):
-        return format_html(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.halkomelem_names.all()]))
-    _halkomelem_names.short_description = format_html("<span class='first-nations-unicode'>hən̓q̓əmin̓əm̓</span> names")
+        return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.halkomelem_names.all()])))
 
+    @display(description=mark_safe(unescape("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")))
     def _squamish_names(self, obj):
-        return format_html(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()]))
-    _squamish_names.short_description = format_html("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")
+        return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()])))
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
-        extra_context['can_edit'] = True
 
         return super().changelist_view(request, extra_context=extra_context)
 
 
 @admin.register(Point)
-class PointAdmin(admin.ModelAdmin):
+class PointAdmin(ModelAdmin):
     fields = [
         'feature',
         ('x', 'y'),
@@ -150,22 +147,13 @@ class PointAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
-        extra_context['can_edit'] = True
-        extra_context['force_display'] = 'MAP'
-
         return super().changelist_view(request, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context)
-        extra_context['is_edit'] = True
-        extra_context['edit_point_id'] = object_id
-        extra_context['force_display'] = 'MAP'
-
+        extra_context = add_map_context(extra_context, True, int(object_id))
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
     def add_view(self, request, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context)
-        extra_context['is_new'] = True
-        extra_context['force_display'] = 'MAP'
+        extra_context = add_map_context(extra_context, True)
 
         return super().add_view(request, form_url, extra_context=extra_context)
