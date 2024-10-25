@@ -37,6 +37,7 @@ export const useDisplayStore = defineStore('display', {
     menuFeatureShown: false,
     selectedFeatureId: null,
     selectedPointId: null,
+    selectedGalleryIndex: null,
   }),
   getters: {
     plants: () => [...featureMap.values()].filter((o) => o.feature_type == 'PLANT').sort((a, b) => a.number - b.number),

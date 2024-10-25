@@ -15,6 +15,7 @@ const {
   menuFeatureShown,
   selectedFeatureId,
   selectedPointId,
+  selectedGalleryIndex,
 } = storeToRefs(store)
 const mediaStore = useMediaStore()
 const {
@@ -60,10 +61,10 @@ onMounted(() => {
     <div v-if="feature" class="offcanvas-body">
       <div class="row row-cols-4 g-2">
         <div v-for="(image, index) in feature.images" class="col feature-gallery-image p-0 m-0"
-            :title="image.description" data-bs-target="#feature-gallery-carousel" :data-bs-slide-to="index">
+            :title="image.description" @click="() => selectedGalleryIndex = index">
           <button type="button" class="btn p-0 m-0 position-relative w-100 h-100 text-primary"
               data-bs-toggle="modal" data-bs-target="#feature-gallery-modal">
-            <img :src="image.thumbnail" class="object-fit-cover" loading="lazy" :alt="image.description" />
+            <img :src="image.thumbnail" class="object-fit-cover" :alt="image.description" />
             <div class="position-absolute top-0 bottom-0 start-0 end-0 overlay"></div>
             <i class="bi bi-search position-absolute top-50 start-50 translate-middle"></i>
           </button>

@@ -3,7 +3,7 @@ import { useTemplateRef, onMounted, computed, watch, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useData } from '../../stores/data.js'
 import { useDisplayStore } from '../../stores/display.js'
-import { Tooltip } from 'bootstrap'
+import { Tooltip, Carousel } from 'bootstrap'
 
 const {
   featureMap,
@@ -11,12 +11,35 @@ const {
 const store = useDisplayStore()
 const {
   selectedFeatureId,
+  selectedGalleryIndex,
 } = storeToRefs(store)
 
 const iconElArray = useTemplateRef('icon-el')
+const carouselItemElArray = useTemplateRef('carousel-item-el')
+const carouselIndicatorElArray = useTemplateRef('carousel-indicator-el')
+const carouselEl = useTemplateRef('carousel-el')
 
 const feature = computed(() => selectedFeatureId.value && featureMap.get(selectedFeatureId.value) ? featureMap.get(selectedFeatureId.value) : null)
 
+const carouselTo = (to) => {
+  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
+  bsCarouse.to(to)
+}
+const carouselPrev = () => {
+  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
+  bsCarouse.prev()
+}
+const carouselNext = () => {
+  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
+  bsCarouse.next()
+}
+const toggleActiveClass = (el, isActive) => {
+  isActive ? el.classList.add("active") : el.classList.remove("active")
+}
+const updateCarouselActive = () => {
+  carouselItemElArray.value.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  carouselIndicatorElArray.value.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+}
 const refreshTooltips = () => {
   if (iconElArray.value) {
     iconElArray.value.forEach(iconEl => {
@@ -27,8 +50,16 @@ const refreshTooltips = () => {
 watch(selectedFeatureId, (newValue, oldValue) => {
   if (newValue !== oldValue) { nextTick(refreshTooltips) }
 })
+watch(selectedGalleryIndex, (newValue, oldValue) => {
+  if (newValue !== oldValue) { updateCarouselActive() }
+})
 onMounted(() => {
   nextTick(refreshTooltips)
+  updateCarouselActive()
+  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
+  carouselEl.value.addEventListener('slid.bs.carousel', event => {
+    selectedGalleryIndex.value = event.to
+  })
 })
 </script>
 
@@ -38,11 +69,10 @@ onMounted(() => {
       <div class="modal-content">
         <div class="modal-body p-0">
           <button type="button" class="btn-close bg-white position-fixed top-0 end-0 m-3 p-2" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div id="feature-gallery-carousel" class="carousel slide h-100" data-bs-ride="false">
+          <div ref="carousel-el" class="carousel slide h-100" data-bs-ride="false">
             <div class="carousel-inner h-100">
-              <div v-for="(image, index) in feature.images" class="carousel-item text-center h-100" :class="`${index == 0 ? 'active' : ''}`">
-                <img :src="image.image" class="img-fluid h-100 object-fit-contain mx-auto" loading="lazy"
-                    :alt="image.description" :title="image.description" />
+              <div ref="carousel-item-el" v-for="(image, index) in feature.images" class="carousel-item text-center h-100">
+                <img :src="image.image" class="img-fluid h-100 object-fit-contain mx-auto" :alt="image.description" :title="image.description" />
                 <div class="carousel-caption">
                   <h5 class="d-inline-block px-3 py-2">
                     {{ index+1 }} of {{ feature.images.length }}
@@ -54,13 +84,13 @@ onMounted(() => {
               </div>
             </div>
             <div class="carousel-indicators">
-              <button v-for="(image, index) in feature.images" type="button" data-bs-target="#feature-gallery-carousel" :data-bs-slide-to="index" :class="`${index == 0 ? 'active' : ''}`"></button>
+              <button ref="carousel-indicator-el" v-for="(image, index) in feature.images" type="button" @click="() => carouselTo(index)" data-bs-target="" :data-bs-slide-to="index"></button>
             </div>
-            <button type="button" class="carousel-control-prev" data-bs-target="#feature-gallery-carousel" data-bs-slide="prev">
+            <button type="button" class="carousel-control-prev" @click="carouselPrev" data-bs-target="" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button type="button" class="carousel-control-next" data-bs-target="#feature-gallery-carousel" data-bs-slide="next">
+            <button type="button" class="carousel-control-next" @click="carouselNext" data-bs-target="" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
@@ -80,7 +110,7 @@ onMounted(() => {
     z-index: calc(var(--bs-modal-zindex) + 5);
   }
 }
-#feature-gallery-carousel {
+.carousel {
   .carousel-item img {
     height: 100vmin;
   }
