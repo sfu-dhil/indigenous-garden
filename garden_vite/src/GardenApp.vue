@@ -42,6 +42,8 @@ onMounted(() => {
   min-height: 700px;
   position: relative;
   overflow: hidden;
+  color: #dee2e6;
+  background-color: #212529;
 
   &::v-deep {
     @import 'bootstrap/scss/bootstrap.scss';

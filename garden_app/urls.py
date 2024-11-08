@@ -19,27 +19,34 @@ from django.views.decorators.cache import cache_control
 from django.contrib.staticfiles.views import serve
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path
-from .views import UnfoldPasswordResetView, UnfoldPasswordResetDoneView, UnfoldPasswordResetConfirmView, UnfoldPasswordResetCompleteView
+
+admin.site.site_header = "Indigenous Garden"
+admin.site.site_title = "Indigenous Garden"
+admin.site.index_title = "Welcome to the Intertidal admin interface"
 
 urlpatterns = [
     # health check ping endpoint
     path('health_check/', include('health_check.urls')),
 
     # admin password reset endpoints (from https://docs.djangoproject.com/en/5.0/ref/contrib/admin/#adding-a-password-reset-feature)
-    path('admin/password_reset/', UnfoldPasswordResetView.as_view(), name="admin_password_reset"),
-    path('admin/password_reset/done/', UnfoldPasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('reset/<uidb64>/<token>/', UnfoldPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('reset/done/', UnfoldPasswordResetCompleteView.as_view(), name="password_reset_complete"),
+    path("admin/password_reset/", auth_views.PasswordResetView.as_view(), name="admin_password_reset"),
+    path("admin/password_reset/done/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path("reset/done/", auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
 
     # admin site endpoints
     path('admin/', admin.site.urls),
 
-    # main garden map endpoints
-    path('', include("garden.urls")),
-
     # django-async-upload endpoints
     path('admin_async_upload/', include("admin_async_upload.urls")),
+
+    # tinymce urls
+    path('tinymce/', include('tinymce.urls')),
+
+    # main garden map endpoints
+    path('', include("garden.urls")),
 ]
 
 if settings.DEBUG:

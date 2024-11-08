@@ -1,5 +1,5 @@
 # Node deps
-FROM node:23.0-slim AS indigenous-garden-vite
+FROM node:23.1-slim AS indigenous-garden-vite
 WORKDIR /app
 
 RUN npm upgrade -g npm \

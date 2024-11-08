@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from environ import FileAwareEnv
 from dotenv import load_dotenv, find_dotenv
-from django.templatetags.static import static
+import warnings
 
 env = FileAwareEnv()
 load_dotenv(find_dotenv())
@@ -48,10 +48,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 INSTALLED_APPS = [
     'garden.apps.GardenConfig',
-    'unfold',
-    'unfold.contrib.filters',
-    'unfold.contrib.forms',
-    'unfold.contrib.inlines',
+    'admin_interface',
+    'colorfield',
+    'tinymce',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,7 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'health_check',
-    'django_extensions',
     'django_cleanup.apps.CleanupConfig',
     'constrainedfilefield',
     'admin_async_upload',
@@ -181,32 +179,35 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['http://localho
 
 # iframe settings
 X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 256 * 1024 * 1024 # 256MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 256 * 1024 * 1024 # 256MB
 
 # logout redirection
+LOGIN_URL = 'admin:login'
 LOGIN_REDIRECT_URL = 'admin:index'
 LOGOUT_REDIRECT_URL = 'admin:login'
-
-UNFOLD = {
-    "SITE_TITLE": 'Indigenous Garden',
-    "SITE_HEADER": 'Indigenous Garden',
-    "SHOW_HISTORY": True,
-    "SHOW_VIEW_ON_SITE": True,
-    "SITE_FAVICONS": [
-        {
-            "rel": "icon",
-            "sizes": "48x48",
-            "type": "image/x-icon",
-            "href": lambda request: static("images/favicon.ico"),
-        },
-    ],
-}
 
 DJANGO_VITE = {
     "default": {
         "dev_mode": DEBUG,
         "static_url_prefix": "dist",
     }
+}
+
+# admin interface
+warnings.filterwarnings("ignore", module="admin_interface.templatetags.admin_interface_tags")
+
+# tinymce settings
+TINYMCE_DEFAULT_CONFIG = {
+    'height': '250px',
+    'branding': False,
+    'menubar': False,
+    'plugins': 'autolink, code, link, anchor, lists, table, quickbars, wordcount, pagebreak, nonbreaking',
+    'toolbar': 'undo redo | numlist bullist | fontfamily | fontsize | alignleft aligncenter alignright | link anchor | hr | removeformat',
+    'quickbars_insert_toolbar': False,
+    'quickbars_selection_toolbar': 'bold italic underline strikethrough | fontfamily | fontsize | forecolor | blockquote',
+    'contextmenu': 'undo redo | inserttable | cell row column deletetable',
+    'font_family_formats': 'Arial=arial,helvetica,sans-serif;First Nations Unicode="First Nations Unicode";',
 }

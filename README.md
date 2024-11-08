@@ -14,6 +14,20 @@ The Indigenous Gardens grows on the traditional and unceded territories of the k
 Indigenous Garden Map will be available at `http://localhost:8080/`
 Indigenous Garden Admin will be available at `http://localhost:8080/admin/`
 
+### Install/Switch the admin theme
+
+    # Bootstrap
+    docker exec -it indigenous_garden_app python manage.py loaddata admin_interface_theme_bootstrap.json
+
+    # Django
+    docker exec -it indigenous_garden_app python manage.py loaddata  admin_interface_theme_django.json
+
+    # Foundation
+    docker exec -it indigenous_garden_app python manage.py loaddata  admin_interface_theme_foundation.json
+
+    # U.S. Web Design Standards
+    docker exec -it indigenous_garden_app python manage.py loaddata  admin_interface_theme_uswds.json
+
 ### Create your superuser
 
     docker exec -it indigenous_garden_app python manage.py createsuperuser

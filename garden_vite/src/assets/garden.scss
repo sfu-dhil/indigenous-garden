@@ -38,6 +38,10 @@
   line-height: var(--bs-body-line-height);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+
+  ul > li {
+    list-style-type: none;
+  }
 }
 
 :root {

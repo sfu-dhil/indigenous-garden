@@ -4,6 +4,7 @@
 
 {% block extrahead %}
     {{ block.super }}
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     {% vite_hmr_client %}
     {% vite_asset 'first_nations_unicode.js' crossorigin="" %}
     <style>

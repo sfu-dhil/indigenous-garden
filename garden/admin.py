@@ -1,43 +1,27 @@
 from django.contrib import admin
-from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin, UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import Group, User
 from django.db import models
 from django.utils.safestring import mark_safe
-from rest_framework.renderers import JSONRenderer
 from html import unescape
-from unfold.admin import ModelAdmin, TabularInline, StackedInline
-from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
-from unfold.contrib.forms.widgets import WysiwygWidget
-from unfold.decorators import display
+from django.contrib.admin import ModelAdmin, TabularInline
+from tinymce.widgets import TinyMCE
 
 from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
 from .serializers import FeatureSerializer
 
-# override the Auth User and Group models to use unfold UI theme
-admin.site.unregister(User)
-@admin.register(User)
-class UserAdmin(BaseUserAdmin, ModelAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
-    change_password_form = AdminPasswordChangeForm
-
-admin.site.unregister(Group)
-@admin.register(Group)
-class GroupAdmin(BaseGroupAdmin, ModelAdmin):
-    pass
-
-class ImageInlineAdmin(StackedInline):
-    fields = [('image', 'description', 'license')]
+class ImageInlineAdmin(TabularInline):
+    fields = ['image', 'description', 'license']
     ordering = ['id']
     model = Image
     extra=0
+    classes = ['collapse']
 
 class NameInlineAdmin(TabularInline):
     fields = ['name', 'descriptor', 'audio']
     ordering = ['id']
     extra=0
+    classes = ['collapse']
 
 class EnglishNameInlineAdmin(NameInlineAdmin):
     model = EnglishName
@@ -48,18 +32,12 @@ class WesternScientificNameInlineAdmin(NameInlineAdmin):
 class HalkomelemNameInlineAdmin(NameInlineAdmin):
     model = HalkomelemName
     verbose_name = "hən̓q̓əmin̓əm̓ name"
-    classes=['first-nations-unicode']
-
-    # def formfield_for_dbfield(self, db_field, request, **kwargs):
-    #     field = super().formfield_for_dbfield(db_field, request, **kwargs)
-    #     if db_field.name == "name":
-    #         field.widget.attrs["style"] = 'font-family: "First Nations Unicode" !important;'
-    #     return field
+    classes=['first-nations-unicode', 'collapse']
 
 class SquamishNameInlineAdmin(NameInlineAdmin):
     model = SquamishName
     verbose_name="Sḵwx̱wú7mesh Sníchim name"
-    classes=['first-nations-unicode']
+    classes=['first-nations-unicode', 'collapse']
 
 def add_map_context(extra_context, is_edit_mode=False, point_id=None):
     extra_context = extra_context or {}
@@ -99,7 +77,7 @@ class FeatureAdmin(ModelAdmin):
         'squamish_names__name', 'squamish_names__descriptor',
     ]
     formfield_overrides = {
-        models.TextField: {'widget': WysiwygWidget},
+        models.TextField: {'widget': TinyMCE},
     }
 
     inlines = [
@@ -110,21 +88,21 @@ class FeatureAdmin(ModelAdmin):
         ImageInlineAdmin,
     ]
 
-    @display(description="English names")
     def _english_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([str(n) for n in obj.english_names.all()])))
+    _english_names.short_description = "English names"
 
-    @display(description="Western scientific names")
     def _western_scientific_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([str(n) for n in obj.western_scientific_names.all()])))
+    _western_scientific_names.short_description = "Western scientific names"
 
-    @display(description=mark_safe(unescape("<span class='first-nations-unicode'>hən̓q̓əmin̓əm̓</span> names")))
     def _halkomelem_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.halkomelem_names.all()])))
+    _halkomelem_names.short_description = mark_safe("<span class='first-nations-unicode'>hən̓q̓əmin̓əm̓</span> names")
 
-    @display(description=mark_safe(unescape("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")))
     def _squamish_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()])))
+    _squamish_names.short_description = mark_safe("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
