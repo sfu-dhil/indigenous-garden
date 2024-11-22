@@ -73,12 +73,16 @@ onMounted(() => {
       <h2 class="my-3">
         {{ feature.feature_type == "PLANT" ? 'Plant Storytelling' : 'Storytelling' }}
       </h2>
-      <div class="clearfix my-3">
+      <div class="my-3">
         <video v-if="feature.video" :src="feature.video" controls class="w-100 m-0 object-fit-contain" preload="metadata">
           <track v-if="feature.captions" :src="feature.captions" label="English captions" kind="captions" srclang="en" default>
         </video>
-        <div v-html="feature.content"></div>
       </div>
+      <div class="my-3" v-html="feature.content"></div>
+
+      <h2 v-if="feature.references" class="my-3">References</h2>
+      <div v-if="feature.references" class="my-3" v-html="feature.references"></div>
+
       <hr v-if="canEdit" />
       <div v-if="canEdit" class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a :href="`/admin/garden/feature/${ feature.id }/change/`" class="btn btn-primary ms-auto">

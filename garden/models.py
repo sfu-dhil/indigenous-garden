@@ -54,7 +54,14 @@ class Feature(models.Model):
         content_types=['text/vtt'],
         help_text=mark_safe('Only <u><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a></u> is allowed.'),
     )
-    content = models.TextField()
+    content = models.TextField(
+        null=True,
+        blank=True,
+    )
+    references = models.TextField(
+        null=True,
+        blank=True,
+    )
 
     # write tracking fields
     created = models.DateTimeField(auto_now_add=True)

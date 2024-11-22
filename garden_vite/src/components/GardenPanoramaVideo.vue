@@ -56,7 +56,7 @@ const updateFov = (delta) => {
     </div>
     <div class="show-welcome-control ol-unselectable ol-control text-secondary">
       <button @click="() => displayStore.showWelcomeMessage()" type="button" title="Show Welcome Message">
-        <i class="fa-solid fa-door-open"></i>
+        <i class="fa-solid fa-message"></i>
       </button>
     </div>
     <div class="select-view-control ol-unselectable ol-control text-secondary">

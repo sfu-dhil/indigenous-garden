@@ -232,7 +232,7 @@ const {
         v-if="!isEditMode"
         className="show-welcome-control"
         title="Show Welcome Message"
-        html='<i class="fa-solid fa-door-open"></i>'
+        html='<i class="fa-solid fa-message"></i>'
         :onToggle="() => displayStore.showWelcomeMessage()"
       />
       <ol-toggle-control

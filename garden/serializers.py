@@ -33,7 +33,7 @@ class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feature
         fields = [
-            'id', 'feature_type', 'number', 'video', 'captions', 'content',
+            'id', 'feature_type', 'number', 'video', 'captions', 'content', 'references',
             'english_names', 'western_scientific_names', 'halkomelem_names', 'squamish_names',
             'points', 'images',
         ]

@@ -60,10 +60,10 @@ def add_map_context(extra_context, is_edit_mode=False, point_id=None):
 @admin.register(Feature)
 class FeatureAdmin(ModelAdmin):
     fields = [
-        'published',
-        ('feature_type', 'number'),
+        ('feature_type', 'number', 'published'),
         'content',
         ('video', 'captions'),
+        'references',
     ]
 
     list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
