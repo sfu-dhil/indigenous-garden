@@ -11,6 +11,7 @@ export default defineConfig({
     host: true,
     strictPort: true,
     origin: 'http://localhost:5173',
+    cors: 'http://localhost:8080',
   },
   root: resolve("./src"),
   base: "/static/dist/",

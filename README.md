@@ -66,7 +66,7 @@ example:
 
 Command line:
 
-    docker exec -it indigenous_garden_db mysql -u indigenous_garden -ppassword indigenous_garden
+    PGPASSWORD=password docker exec -it indigenous_garden_db psql --username=indigenous_garden indigenous_garden
 
 Through a database management tool:
 - Host:`127.0.0.1`
