@@ -1,10 +1,19 @@
-const featureMap = JSON.parse(document.getElementById('garden-features-data').textContent)
-  .reduce((result, o) => result.set(o.id, o), new Map())
-const points = [...featureMap.values()].reduce((result, o) => result.concat(o.points.map((p) => ({...p, featureId: o.id}))), [])
+import { defineStore } from 'pinia'
 
-export const useData = () => {
-  return {
-    featureMap,
-    points,
-  }
-}
+export const useDataStore = defineStore('data', {
+  state: () => ({
+    features: [],
+  }),
+  getters: {
+    featuresMap: (state) => state.features.reduce((result, o) => result.set(o.id, o), new Map()),
+    points: (state) => state.features.reduce((result, o) => result.concat(o.points.map((p) => ({...p, featureId: o.id}))), []),
+    plants: (state) => state.features.filter((o) => o.feature_type == 'PLANT').sort((a, b) => a.number - b.number),
+    gardenFeatures: (state) => state.features.filter((o) => o.feature_type == 'GARDEN_FEATURE').sort((a, b) => a.number - b.number),
+  },
+  actions: {
+    getFeature(id) {
+      return this.featuresMap.has(id) ? this.featuresMap.get(id) : null
+    },
+  },
+  persist: false,
+})

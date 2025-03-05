@@ -6,10 +6,10 @@ import { toggleOffcanvas } from '../../helpers/utils.js'
 import { ImgComparisonSlider } from '@img-comparison-slider/vue';
 import { loremIpsum } from 'lorem-ipsum'
 
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   menuHistoryShown,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 

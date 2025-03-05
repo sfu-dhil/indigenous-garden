@@ -1,14 +1,16 @@
 <script setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useDisplayStore, useDisplaySetting } from '../../stores/display.js'
+import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
 import { useMapStore } from '../../stores/map.js'
 import DisplayName from '../DisplayName.vue'
 
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
+const displaySettingStore = useDisplaySettingStore()
 const {
   canEdit,
-} = useDisplaySetting()
+} = storeToRefs(displaySettingStore)
+
 const mapStore = useMapStore()
 const {
   hoverId,
@@ -39,7 +41,7 @@ const hoverClass = computed(() => hoverId.value == props.item.id ? 'card-hover' 
           <DisplayName v-for="name in item.squamish_names" :item="name" iconColor="#7cb341" iconTitle="Sḵwx̱wú7mesh Sníchim" />
         </div>
       </div>
-      <a href="javascript:" @click="() => store.showFeature(item.id)" class="stretched-link"></a>
+      <a href="javascript:" @click="() => displayStore.showFeature(item.id)" class="stretched-link"></a>
     </div>
   </div>
   <ul class="nav nav-pills nav-fill" v-if="canEdit">

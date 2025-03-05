@@ -1,29 +1,50 @@
 <script setup>
-import { computed, onMounted, nextTick } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import GardenMap from './components/GardenMap.vue'
 import GardenPanoramaVideo from './components/GardenPanoramaVideo.vue'
 import ModalWelcomeMessage from './components/ModalWelcomeMessage.vue'
 import Menu from './components/Menu.vue'
-import { useDisplayStore, useDisplaySetting } from './stores/display'
+import { useDisplayStore, useDisplaySettingStore } from './stores/display.js'
+import { useDataStore } from './stores/data.js'
 
+const props = defineProps({
+  features: {
+    type: Array,
+    required: true,
+  },
+  displayOptions: {
+    type: Object,
+    required: true,
+  },
+})
+
+const displaySettingStore = useDisplaySettingStore()
+const {
+  canEdit,
+  isEditMode,
+  editPointId,
+} = storeToRefs(displaySettingStore)
 const displayStore = useDisplayStore()
 const {
   panoramaViewShown,
 } = storeToRefs(displayStore)
+const dataStore = useDataStore()
 const {
-  canEdit,
-  isEditMode,
+  features,
+} = storeToRefs(dataStore)
 
-} = useDisplaySetting()
+// setup init data
+canEdit.value = !!props.displayOptions.canEdit
+isEditMode.value = !!props.displayOptions.isEditMode
+editPointId.value = props.displayOptions.editPointId
+features.value = props.features
+if (canEdit.value) {
+  panoramaViewShown.value = false
+}
 
 const displayMap = computed(() => panoramaViewShown.value ? 'd-none' : 'd-block')
 const displayPanorama = computed(() => panoramaViewShown.value ? 'd-block' : 'd-none')
-onMounted(() => {
-  if (canEdit) {
-    panoramaViewShown.value = false
-  }
-})
 </script>
 
 <template>

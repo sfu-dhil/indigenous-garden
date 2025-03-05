@@ -1,7 +1,5 @@
 {% load static %}
 {% load django_vite %}
 
-{{ features|json_script:"garden-features-data" }}
-{{ display_options|json_script:"garden-display-options" }}
 {% vite_asset 'garden.js' crossorigin="" %}
-<div id="garden-app"></div>
+<div id="garden-app" data-display-options-json="{{ display_options|escape }}" data-features-json="{{ features|escape }}"></div>

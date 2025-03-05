@@ -14,7 +14,14 @@ console.warn = () => {};
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
-const app = createApp(GardenApp)
-app.use(pinia)
-app.use(OpenLayersMap)
-app.mount('#garden-app')
+const mountElList = document.querySelectorAll('#garden-app')
+mountElList.forEach((mountEl) => {
+  const app = createApp(GardenApp, {
+    ...mountEl.dataset,
+    features: JSON.parse(mountEl.dataset.featuresJson),
+    displayOptions: JSON.parse(mountEl.dataset.displayOptionsJson),
+  })
+  app.use(pinia)
+  app.use(OpenLayersMap)
+  app.mount(mountEl)
+})

@@ -4,10 +4,10 @@ import { storeToRefs } from 'pinia'
 import { useDisplayStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   menuMainShown,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 
@@ -30,31 +30,31 @@ onMounted(() => {
     <div class="offcanvas-body">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <button @click="() => store.showHistory()" class="nav-link">
+          <button @click="() => displayStore.showHistory()" class="nav-link">
             <i class="fa-solid fa-timeline"></i>
             History
           </button>
         </li>
         <li class="nav-item">
-          <button @click="() => store.showIndianResidentialSchoolsMap()" class="nav-link">
+          <button @click="() => displayStore.showIndianResidentialSchoolsMap()" class="nav-link">
             <i class="fa-solid fa-children"></i>
             Indian Residential Schools Map
           </button>
         </li>
         <li class="nav-item">
-          <button @click="() => store.showPlantList()" class="nav-link">
+          <button @click="() => displayStore.showPlantList()" class="nav-link">
             <i class="fa-solid fa-seedling"></i>
             Plants
           </button>
         </li>
         <li class="nav-item">
-          <button @click="() => store.showFeatureList()" class="nav-link">
+          <button @click="() => displayStore.showFeatureList()" class="nav-link">
             <i class="fa-solid fa-monument"></i>
             Features
           </button>
         </li>
         <li class="nav-item">
-          <button @click="() => store.showReferences()" class="nav-link">
+          <button @click="() => displayStore.showReferences()" class="nav-link">
             <i class="fa-solid fa-book-open"></i>
             References
           </button>

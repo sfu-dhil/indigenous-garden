@@ -1,22 +1,15 @@
 import { defineStore } from 'pinia'
-import { useData } from './data'
 
-const {
-  featureMap,
-} = useData()
-const {
-  canEdit,
-  isEditMode,
-  editPointId,
-} = JSON.parse(document.getElementById('garden-display-options').textContent)
-
-export const useDisplaySetting = () => {
-  return {
-    canEdit: !!canEdit,
-    isEditMode: !!isEditMode,
-    editPointId,
-  }
-}
+export const useDisplaySettingStore = defineStore('display-settings', {
+  state: () => ({
+    canEdit: false,
+    isEditMode: false,
+    editPointId: null,
+  }),
+  getters: {},
+  actions: {},
+  persist: false,
+})
 
 export const useDisplayStore = defineStore('display', {
   state: () => ({
@@ -39,16 +32,13 @@ export const useDisplayStore = defineStore('display', {
     selectedPointId: null,
     selectedGalleryIndex: null,
   }),
-  getters: {
-    plants: () => [...featureMap.values()].filter((o) => o.feature_type == 'PLANT').sort((a, b) => a.number - b.number),
-    features: () => [...featureMap.values()].filter((o) => o.feature_type == 'GARDEN_FEATURE').sort((a, b) => a.number - b.number),
-  },
+  getters: {},
   actions: {
     forceShowInitialWelcomeMessage() {
       if (!document.cookie.split("; ").find((row) => row.startsWith("showInitialWelcomeModal"))) {
         // set cookie to expire 1 day from now
-        const exp = (new Date(Date.now() + 86400e3)).toUTCString();
-        document.cookie = `showInitialWelcomeModal=true; expires=${exp}; SameSite=None; Secure`;
+        const exp = (new Date(Date.now() + 86400e3)).toUTCString()
+        document.cookie = `showInitialWelcomeModal=true; expires=${exp}; SameSite=None; Secure`
         this.modalWelcomeShown = true
       }
     },
@@ -101,6 +91,8 @@ export const useDisplayStore = defineStore('display', {
       this.selectedPointId = pointId
     },
   },
-  persist: true,
+  persist: {
+    storage: sessionStorage,
+  },
 })
 

@@ -32,10 +32,10 @@ const props = defineProps({
   },
 })
 
-const store = useMediaStore()
+const mediaStore = useMediaStore()
 const {
   currentAudio,
-} = storeToRefs(store)
+} = storeToRefs(mediaStore)
 
 const iconEl = useTemplateRef('icon-el')
 const audioPlaying = computed(() => props.withAudio && props.item.audio && currentAudio.value === props.item.audio)
@@ -56,7 +56,7 @@ onMounted(() => {
       <span v-if="item.descriptor" class="small text-muted">({{ item.descriptor }})</span>
       <i v-if="withAudio && item.audio"
         class="click-audio-player bi bi-volume-up-fill ps-1" :class="`${audioPlaying ? 'text-primary' : ''}`"
-        @click="() => store.toggleAudio(item.audio)"
+        @click="() => mediaStore.toggleAudio(item.audio)"
       ></i>
     </span>
   </div>

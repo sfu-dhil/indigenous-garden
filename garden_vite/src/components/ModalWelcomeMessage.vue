@@ -1,17 +1,18 @@
 <script setup>
 import { useTemplateRef, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useDisplayStore, useDisplaySetting } from '../stores/display.js'
+import { useDisplayStore, useDisplaySettingStore } from '../stores/display.js'
 import { loremIpsum } from 'lorem-ipsum'
 import { toggleModal } from '../helpers/utils.js'
 
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   modalWelcomeShown,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
+const displaySettingStore = useDisplaySettingStore()
 const {
   canEdit,
-} = useDisplaySetting()
+} = storeToRefs(displaySettingStore)
 
 const modalEl = useTemplateRef('welcome-modal')
 
@@ -19,10 +20,10 @@ watch(modalWelcomeShown, (newValue, oldValue) => {
   if (newValue !== oldValue) { toggleModal(modalEl.value, newValue) }
 })
 onMounted(() => {
-  if (canEdit) {
+  if (canEdit.value) {
     modalWelcomeShown.value = false
   } else {
-    store.forceShowInitialWelcomeMessage()
+    displayStore.forceShowInitialWelcomeMessage()
     toggleModal(modalEl.value, modalWelcomeShown.value)
   }
   modalEl.value.addEventListener('hidden.bs.modal', () => modalWelcomeShown.value = false)
@@ -64,10 +65,10 @@ onMounted(() => {
           <p>{{ loremIpsum({count: 1, units: 'paragraph'}) }}</p>
         </div>
         <div class="modal-footer">
-          <button data-bs-dismiss="modal" @click="store.showHistory()" class="btn btn-primary ms-auto">
+          <button data-bs-dismiss="modal" @click="displayStore.showHistory()" class="btn btn-primary ms-auto">
             History
           </button>
-          <button data-bs-dismiss="modal" @click="store.showIndianResidentialSchoolsMap()" class="btn btn-primary">
+          <button data-bs-dismiss="modal" @click="displayStore.showIndianResidentialSchoolsMap()" class="btn btn-primary">
             Indian Residential Schools Map
           </button>
           <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>

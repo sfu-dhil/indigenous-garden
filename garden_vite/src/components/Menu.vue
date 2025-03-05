@@ -1,5 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { useDataStore } from '../stores/data.js'
 import { useDisplayStore } from '../stores/display.js'
 import Main from './menu/Main.vue'
 import History from './menu/History.vue'
@@ -9,13 +10,16 @@ import References from './menu/References.vue'
 import Feature from './menu/Feature.vue'
 import FeatureGallery from './menu/FeatureGallery.vue'
 
-const store = useDisplayStore()
+const dataStore = useDataStore()
 const {
   plants,
-  features,
+  gardenFeatures,
+} = storeToRefs(dataStore)
+const displayStore = useDisplayStore()
+const {
   menuPlantListShown,
   menuFeatureListShown,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 </script>
 
 <template>
@@ -23,7 +27,7 @@ const {
   <History class="menu-lvl2 menu-wide"></History>
   <IndianResidentialSchoolsMap class="menu-lvl2 menu-wide"></IndianResidentialSchoolsMap>
   <FeatureList class="menu-lvl2" label="Plants" :items="plants" v-model:shown="menuPlantListShown"></FeatureList>
-  <FeatureList class="menu-lvl2" label="Features" :items="features" v-model:shown="menuFeatureListShown"></FeatureList>
+  <FeatureList class="menu-lvl2" label="Features" :items="gardenFeatures" v-model:shown="menuFeatureListShown"></FeatureList>
   <References class="menu-lvl2 menu-wide"></References>
   <Feature class="menu-lvl3 menu-wide"></Feature>
   <FeatureGallery></FeatureGallery>

@@ -5,10 +5,10 @@ import { useDisplayStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 import { loremIpsum } from 'lorem-ipsum'
 
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   menuReferencesShown,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 

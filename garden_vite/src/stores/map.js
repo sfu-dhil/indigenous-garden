@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { useData } from './data'
-import { useDisplaySetting } from './display'
+import { useDataStore } from './data'
+import { useDisplaySettingStore } from './display'
 import { getCenter } from 'ol/extent'
 
 const NORTH_ROTATION = (15.0 * Math.PI) / 180.0
@@ -12,14 +12,6 @@ const projection = {
   extent: imageExtent,
 }
 
-const {
-  points,
-} = useData()
-const {
-  isEditMode,
-  editPointId,
-} = useDisplaySetting()
-
 export const useMapStore = defineStore('map', {
   state: () => ({
     center: getCenter(imageExtent),
@@ -28,8 +20,8 @@ export const useMapStore = defineStore('map', {
     hoverId: null,
   }),
   getters: {
-    points: () => points.sort((a, b) => b.y - a.y || a.x -  b.x).filter((o) => !isEditMode || o.id !== editPointId),
-    editPoint: () => points.find((o) => o.id === editPointId),
+    points: () => useDataStore().points.sort((a, b) => b.y - a.y || a.x -  b.x).filter((o) => !useDisplaySettingStore().isEditMode || o.id !== useDisplaySettingStore().editPointId),
+    editPoint: () => useDataStore().points.find((o) => o.id === useDisplaySettingStore().editPointId),
     projection: () => projection,
     imageExtent: () => imageExtent,
     defaultRotation: () => NORTH_ROTATION,
@@ -46,5 +38,7 @@ export const useMapStore = defineStore('map', {
       return null
     }
   },
-  persist: true,
+  persist: {
+    storage: sessionStorage,
+  },
 })

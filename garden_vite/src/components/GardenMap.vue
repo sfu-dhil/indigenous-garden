@@ -6,36 +6,34 @@ import { storeToRefs } from 'pinia'
 import { Style, Text, Fill, Stroke } from "ol/style"
 import { easeOut } from "ol/easing"
 import { Collection } from 'ol'
-import { useData } from '../stores/data.js'
+import { useDataStore } from '../stores/data.js'
 import { useMapStore } from '../stores/map.js'
-import { useDisplayStore, useDisplaySetting } from '../stores/display.js'
+import { useDisplayStore, useDisplaySettingStore } from '../stores/display.js'
 
 
-const {
-  featureMap,
-} = useData()
-const store = useMapStore()
+const mapStore = useMapStore()
 const {
   center,
   rotation,
   zoom,
-} = store
+} = mapStore
 const {
   points,
   projection,
   hoverId,
   defaultRotation,
-} = storeToRefs(store)
+} = storeToRefs(mapStore)
 const displayStore = useDisplayStore()
+const displaySettingStore = useDisplaySettingStore()
 const {
   isEditMode,
-} = useDisplaySetting()
+} = storeToRefs(displaySettingStore)
 
 const mapRef = ref(null)
 const editFeatureRef = ref(null)
 const editFeatures = ref(new Collection())
-const editInitialX = ref(store.getEditInitialX())
-const editInitialY = ref(store.getEditInitialY())
+const editInitialX = ref(mapStore.getEditInitialX())
+const editInitialY = ref(mapStore.getEditInitialY())
 
 const overrideEditFeatureStyle = (openLayersFeature) => {
   return [
@@ -54,7 +52,7 @@ const overrideEditFeatureStyle = (openLayersFeature) => {
 }
 const overrideFeatureStyle = (openLayersFeature) => {
   const featureId = openLayersFeature.get('featureId')
-  const feature = featureMap.get(featureId)
+  const feature = useDataStore().getFeature(featureId)
   const fillColor = feature.feature_type == 'FEATURE' ? '#6495ED' : '#7cb341'
   return [
     new Style({
@@ -89,9 +87,9 @@ const overrideSelectedFeatureStyle = (openLayersFeature) => {
   return styles
 }
 
-const updateCenter = (event) => store.center = event.target.getCenter()
-const updateZoom = (event) => store.zoom = event.target.getZoom()
-const updateRotation = (event) => store.rotation = event.target.getRotation()
+const updateCenter = (event) => mapStore.center = event.target.getCenter()
+const updateZoom = (event) => mapStore.zoom = event.target.getZoom()
+const updateRotation = (event) => mapStore.rotation = event.target.getRotation()
 
 const hoverFeature = (event) => {
   if (event.selected.length > 0) {
@@ -140,7 +138,7 @@ const addNewEditFeatureClick = (event) => {
   nextTick(() => addEditFeature())
 }
 onMounted(() => {
-  if (isEditMode) {
+  if (isEditMode.value) {
     hoverId.value = null
     if (editInitialX.value && editInitialY.value) {
       addEditFeature()

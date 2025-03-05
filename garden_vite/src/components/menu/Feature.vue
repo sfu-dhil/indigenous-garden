@@ -1,30 +1,28 @@
 <script setup>
 import { useTemplateRef, onMounted, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useData } from '../../stores/data.js'
-import { useDisplayStore, useDisplaySetting } from '../../stores/display.js'
+import { useDataStore } from '../../stores/data.js'
+import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 import { useMediaStore } from '../../stores/media.js'
 import DisplayName from '../DisplayName.vue'
 
-const {
-  featureMap,
-} = useData()
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   menuFeatureShown,
   selectedFeatureId,
   selectedPointId,
   selectedGalleryIndex,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 const mediaStore = useMediaStore()
+const displaySettingStore = useDisplaySettingStore()
 const {
   canEdit,
-} = useDisplaySetting()
+} = storeToRefs(displaySettingStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 
-const feature = computed(() => selectedFeatureId.value && featureMap.get(selectedFeatureId.value) ? featureMap.get(selectedFeatureId.value) : null)
+const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 
 watch(menuFeatureShown, (newValue, oldValue) => {
   if (newValue !== oldValue) {

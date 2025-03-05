@@ -1,25 +1,22 @@
 <script setup>
 import { useTemplateRef, onMounted, computed, watch, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useData } from '../../stores/data.js'
+import { useDataStore } from '../../stores/data.js'
 import { useDisplayStore } from '../../stores/display.js'
 import { Tooltip, Carousel } from 'bootstrap'
 
-const {
-  featureMap,
-} = useData()
-const store = useDisplayStore()
+const displayStore = useDisplayStore()
 const {
   selectedFeatureId,
   selectedGalleryIndex,
-} = storeToRefs(store)
+} = storeToRefs(displayStore)
 
 const iconElArray = useTemplateRef('icon-el')
 const carouselItemElArray = useTemplateRef('carousel-item-el')
 const carouselIndicatorElArray = useTemplateRef('carousel-indicator-el')
 const carouselEl = useTemplateRef('carousel-el')
 
-const feature = computed(() => selectedFeatureId.value && featureMap.get(selectedFeatureId.value) ? featureMap.get(selectedFeatureId.value) : null)
+const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 
 const carouselTo = (to) => {
   const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
@@ -37,8 +34,8 @@ const toggleActiveClass = (el, isActive) => {
   isActive ? el.classList.add("active") : el.classList.remove("active")
 }
 const updateCarouselActive = () => {
-  carouselItemElArray.value.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
-  carouselIndicatorElArray.value.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  carouselItemElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  carouselIndicatorElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
 }
 const refreshTooltips = () => {
   if (iconElArray.value) {
