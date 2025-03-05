@@ -42,7 +42,7 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-0lgov2k26n+=bjocstuna-@8
 DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'health_check',
     'django_cleanup.apps.CleanupConfig',
     'constrainedfilefield',

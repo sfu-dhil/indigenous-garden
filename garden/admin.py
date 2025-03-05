@@ -1,3 +1,4 @@
+import json
 from django.contrib import admin
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -8,7 +9,7 @@ from tinymce.widgets import TinyMCE
 from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
-from .serializers import FeatureSerializer
+from .schema import FeatureSchema
 
 class ImageInlineAdmin(TabularInline):
     fields = ['image', 'description', 'license']
@@ -46,14 +47,15 @@ def add_map_context(extra_context, is_edit_mode=False, point_id=None):
         'english_names', 'western_scientific_names',
         'halkomelem_names', 'squamish_names',
     ).order_by('number', 'id').all()
+    data = [FeatureSchema.from_orm(feature).dict() for feature in features]
 
     extra_context['is_map'] = True
-    extra_context['features'] = FeatureSerializer(features, many=True).data
-    extra_context['display_options'] = {
+    extra_context['features'] = json.dumps(data)
+    extra_context['display_options'] = json.dumps({
         'canEdit': True,
         'isEditMode': is_edit_mode,
         'editPointId': point_id,
-    }
+    })
 
     return extra_context
 

@@ -1,5 +1,5 @@
 # Node deps
-FROM node:23.1-slim AS indigenous-garden-vite
+FROM node:23.9-slim AS indigenous-garden-vite
 WORKDIR /app
 
 RUN npm upgrade -g npm \
@@ -19,7 +19,7 @@ RUN yarn --production \
     && yarn cache clean
 
 # Django app
-FROM python:3.11-alpine AS indigenous-garden
+FROM python:3.13-alpine AS indigenous-garden
 EXPOSE 80
 WORKDIR /app
 
