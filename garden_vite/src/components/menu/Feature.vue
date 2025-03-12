@@ -1,11 +1,14 @@
 <script setup>
-import { useTemplateRef, onMounted, watch, computed } from 'vue'
+import { ref, useTemplateRef, onMounted, watch, computed, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDataStore } from '../../stores/data.js'
 import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 import { useMediaStore } from '../../stores/media.js'
 import DisplayName from '../DisplayName.vue'
+import 'vidstack/player'
+import 'vidstack/player/layouts'
+import 'vidstack/player/ui'
 
 const displayStore = useDisplayStore()
 const {
@@ -21,6 +24,7 @@ const {
 } = storeToRefs(displaySettingStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
+const mediaPlayer = useTemplateRef('media-player-el')
 
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 
@@ -29,6 +33,7 @@ watch(menuFeatureShown, (newValue, oldValue) => {
     toggleOffcanvas(offCanvasEl.value, newValue)
     if (newValue === false) {
       mediaStore.stopAllMedia()
+      mediaPlayer?.value?.pause()
     }
   }
 })
@@ -37,10 +42,11 @@ onMounted(() => {
   offCanvasEl.value.addEventListener('hidden.bs.offcanvas', () => menuFeatureShown.value = false)
   offCanvasEl.value.addEventListener('shown.bs.offcanvas', () => menuFeatureShown.value = true)
 })
+onBeforeUnmount(() => mediaPlayer?.value?.destroy())
 </script>
 
 <template>
-  <div ref="menu-el" class="offcanvas offcanvas-start position-absolute" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
+  <div ref="menu-el" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
     <div v-if="feature" class="offcanvas-header">
       <div class="row w-100">
         <div class="col-sm">
@@ -71,14 +77,23 @@ onMounted(() => {
       <h2 class="my-3">
         {{ feature.feature_type == "PLANT" ? 'Plant Storytelling' : 'Storytelling' }}
       </h2>
-      <div class="my-3">
-        <video v-if="feature.video" :src="feature.video" controls class="w-100 m-0 object-fit-contain" preload="metadata">
-          <track v-if="feature.captions" :src="feature.captions" label="English captions" kind="captions" srclang="en" default>
-        </video>
+
+      <div class="my-3" v-if="feature.video">
+        <media-player
+          ref="media-player-el" title="Plant Storytelling" streamType="on-demand"
+          :poster="feature.video_thumbnail" keep-alive
+        >
+          <media-provider>
+            <media-poster class="vds-poster"></media-poster>
+            <source :src="feature.video" />
+            <track v-if="feature.captions" :src="feature.captions" label="English" kind="captions" srclang="en" default />
+          </media-provider>
+          <media-video-layout :thumbnails="feature.video_thumbnails_vtt"></media-video-layout>
+        </media-player>
       </div>
       <div class="my-3" v-html="feature.content"></div>
 
-      <h2 v-if="feature.references" class="my-3">References</h2>
+      <h2 v-if="feature.references" class="my-3">Acknowledgements</h2>
       <div v-if="feature.references" class="my-3" v-html="feature.references"></div>
 
       <hr v-if="canEdit" />

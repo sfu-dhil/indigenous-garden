@@ -24,7 +24,7 @@ export const useDisplayStore = defineStore('display', {
     menuIndianResidentialSchoolsMapShown: false,
     menuPlantListShown: false,
     menuFeatureListShown: false,
-    menuReferencesShown: false,
+    menuAcknowledgementsShown: false,
 
     // third level menus
     menuFeatureShown: false,
@@ -58,7 +58,7 @@ export const useDisplayStore = defineStore('display', {
       this.menuIndianResidentialSchoolsMapShown = false
       this.menuPlantListShown = false
       this.menuFeatureListShown = false
-      this.menuReferencesShown = false
+      this.menuAcknowledgementsShown = false
       this.menuFeatureShown = false
     },
     showMainMenu() {
@@ -81,9 +81,9 @@ export const useDisplayStore = defineStore('display', {
       this.showMainMenu()
       this.menuFeatureListShown = true
     },
-    showReferences() {
+    showAcknowledgements() {
       this.showMainMenu()
-      this.menuReferencesShown = true
+      this.menuAcknowledgementsShown = true
     },
     showFeature(featureId, pointId = null) {
       this.menuFeatureShown = true

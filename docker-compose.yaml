@@ -16,6 +16,20 @@ services:
       interval: 2s
       retries: 120
 
+  redis:
+    container_name: indigenous_garden_redis
+    image: redis:7.4
+    command: redis-server --appendonly yes
+    volumes:
+      - ./.data/redis:/data
+    ports:
+      - "16379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
   nginx:
     container_name: indigenous_garden_nginx
     image: nginx:1.27
@@ -46,14 +60,12 @@ services:
       # use the container's node_modules folders (don't override with local dev)
       - /app/node_modules
 
-  app:
+  app: &app
     container_name: indigenous_garden_app
     # image: dhil/indigenous_garden
     build:
       context: .
       target: indigenous-garden
-    ports:
-      - "8888:80"
     volumes:
       # code for development
       - .:/app
@@ -71,6 +83,7 @@ services:
       DB_NAME: indigenous_garden
       DB_USER: indigenous_garden
       DB_PASSWORD: password
+      REDIS_HOST: redis
       EMAIL_HOST: mail
       EMAIL_HOST_USER: indigenous_garden
       EMAIL_HOST_PASSWORD: password
@@ -83,6 +96,18 @@ services:
       retries: 120
     depends_on:
       db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    <<: *app
+    container_name: indigenous_garden_worker
+    command: ./manage.py rqworker default
+    healthcheck:
+      disable: true
+    depends_on:
+      app:
         condition: service_healthy
 
   mail:

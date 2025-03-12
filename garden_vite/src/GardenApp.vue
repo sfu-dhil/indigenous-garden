@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import GardenMap from './components/GardenMap.vue'
-import GardenPanoramaVideo from './components/GardenPanoramaVideo.vue'
 import ModalWelcomeMessage from './components/ModalWelcomeMessage.vue'
 import Menu from './components/Menu.vue'
 import { useDisplayStore, useDisplaySettingStore } from './stores/display.js'
@@ -44,13 +43,11 @@ if (canEdit.value) {
 }
 
 const displayMap = computed(() => panoramaViewShown.value ? 'd-none' : 'd-block')
-const displayPanorama = computed(() => panoramaViewShown.value ? 'd-block' : 'd-none')
 </script>
 
 <template>
   <div class="app-wrapper" data-bs-theme="dark">
     <GardenMap :class="displayMap"></GardenMap>
-    <GardenPanoramaVideo v-if="!isEditMode" :class="displayPanorama"></GardenPanoramaVideo>
     <Menu v-if="!isEditMode"></Menu>
     <ModalWelcomeMessage v-if="!isEditMode"></ModalWelcomeMessage>
   </div>

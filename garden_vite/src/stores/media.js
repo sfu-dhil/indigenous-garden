@@ -15,7 +15,7 @@ export const useMediaStore = defineStore('media', {
         if (!audio.paused && !audio.ended) { audio.pause() }
       })
       document.querySelectorAll('video').forEach( (video) => {
-        if (!video.classList.contains('vjs-tech') && !video.paused && !video.ended) { video.pause() }
+        if (!video.paused && !video.ended) { video.pause() }
       })
     },
     stopAudio() {

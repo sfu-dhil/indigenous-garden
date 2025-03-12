@@ -25,7 +25,7 @@ WORKDIR /app
 
 # add system deps
 RUN apk update \
-    && apk add git libmagic curl \
+    && apk add git libmagic curl ffmpeg \
     && pip install --no-cache-dir --upgrade pip \
     && rm -rf /var/cache/apk/*
 

@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="menu-el" class="offcanvas offcanvas-start position-absolute" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
+  <div ref="menu-el" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title h5">Indigenous Garden</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -54,9 +54,9 @@ onMounted(() => {
           </button>
         </li>
         <li class="nav-item">
-          <button @click="() => displayStore.showReferences()" class="nav-link">
+          <button @click="() => displayStore.showAcknowledgements()" class="nav-link">
             <i class="fa-solid fa-book-open"></i>
-            References
+            Acknowledgements
           </button>
         </li>
       </ul>

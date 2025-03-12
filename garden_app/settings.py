@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'constrainedfilefield',
     'admin_async_upload',
     'django_vite',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -157,6 +158,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#media-url
 MEDIA_URL = 'media/'
 
+MEDIA_FOLDER_UID=env.int('MEDIA_FOLDER_UID', default=101)
+MEDIA_FOLDER_GID=env.int('MEDIA_FOLDER_GID', default=101)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -209,4 +213,15 @@ TINYMCE_DEFAULT_CONFIG = {
     'quickbars_selection_toolbar': 'bold italic underline strikethrough | fontfamily | fontsize | forecolor | blockquote',
     'contextmenu': 'undo redo | inserttable | cell row column deletetable',
     'font_family_formats': 'Arial=arial,helvetica,sans-serif;First Nations Unicode="First Nations Unicode";',
+}
+
+# background jobs
+RQ_SHOW_ADMIN_LINK = True
+RQ_QUEUES = {
+    'default': {
+        'HOST': env('REDIS_HOST', default=''),
+        'PORT': env.int('REDIS_PORT', default=6379),
+        'DB': env.int('REDIS_DB', default=0),
+        'DEFAULT_TIMEOUT': env.int('REDIS_DEFAULT_TIMEOUT', default=360),
+    }
 }

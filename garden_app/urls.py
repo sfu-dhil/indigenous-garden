@@ -45,6 +45,9 @@ urlpatterns = [
     # tinymce urls
     path('tinymce/', include('tinymce.urls')),
 
+    # django_rq admin urls
+    path('django-rq/', include('django_rq.urls')),
+
     # main garden map endpoints
     path('', include("garden.urls")),
 ]

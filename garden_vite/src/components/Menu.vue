@@ -6,7 +6,7 @@ import Main from './menu/Main.vue'
 import History from './menu/History.vue'
 import IndianResidentialSchoolsMap from './menu/IndianResidentialSchoolsMap.vue'
 import FeatureList from './menu/FeatureList.vue'
-import References from './menu/References.vue'
+import Acknowledgements from './menu/Acknowledgements.vue'
 import Feature from './menu/Feature.vue'
 import FeatureGallery from './menu/FeatureGallery.vue'
 
@@ -28,7 +28,7 @@ const {
   <IndianResidentialSchoolsMap class="menu-lvl2 menu-wide"></IndianResidentialSchoolsMap>
   <FeatureList class="menu-lvl2" label="Plants" :items="plants" v-model:shown="menuPlantListShown"></FeatureList>
   <FeatureList class="menu-lvl2" label="Features" :items="gardenFeatures" v-model:shown="menuFeatureListShown"></FeatureList>
-  <References class="menu-lvl2 menu-wide"></References>
+  <Acknowledgements class="menu-lvl2 menu-wide"></Acknowledgements>
   <Feature class="menu-lvl3 menu-wide"></Feature>
   <FeatureGallery></FeatureGallery>
 </template>

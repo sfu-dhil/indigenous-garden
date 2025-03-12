@@ -36,5 +36,6 @@ class FeatureSchema(ModelSchema):
     class Meta:
         model = Feature
         fields = [
-            'id', 'feature_type', 'number', 'video', 'captions', 'content', 'references',
+            'id', 'feature_type', 'number', 'content', 'references',
+            'video', 'video_thumbnail', 'video_thumbnails_vtt', 'captions',
         ]

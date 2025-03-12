@@ -15,10 +15,10 @@
 @import "node_modules/bootstrap/scss/_close.scss";
 @import "node_modules/bootstrap/scss/_tooltip.scss";
 
-
-// videojs
-@import "video.js/dist/video-js.min.css";
-@import "videojs-vr/dist/videojs-vr.css";
+// vidstack
+@import "vidstack/player/styles/default/theme.css";
+@import "vidstack/player/styles/default/layouts/audio.css";
+@import "vidstack/player/styles/default/layouts/video.css";
 
 // fontawesome & bootstrap icons
 @import "bootstrap-icons/font/bootstrap-icons.css";

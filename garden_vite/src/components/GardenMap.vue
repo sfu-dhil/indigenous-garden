@@ -233,13 +233,13 @@ const {
         html='<i class="fa-solid fa-message"></i>'
         :onToggle="() => displayStore.showWelcomeMessage()"
       />
-      <ol-toggle-control
+      <!-- <ol-toggle-control
         v-if="!isEditMode"
         className="select-view-control"
         title="Map view. Click to switch to Panorama view"
         html='<i class="fa-solid fa-street-view"></i>'
         :onToggle="() => displayStore.showPanoramaView()"
-      />
+      /> -->
     </ol-map>
   </div>
 </template>

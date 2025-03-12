@@ -63,8 +63,9 @@ def add_map_context(extra_context, is_edit_mode=False, point_id=None):
 class FeatureAdmin(ModelAdmin):
     fields = [
         ('feature_type', 'number', 'published'),
+        'video_original',
+        'captions',
         'content',
-        ('video', 'captions'),
         'references',
     ]
 

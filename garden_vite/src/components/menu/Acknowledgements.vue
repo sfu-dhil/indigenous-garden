@@ -7,25 +7,25 @@ import { loremIpsum } from 'lorem-ipsum'
 
 const displayStore = useDisplayStore()
 const {
-  menuReferencesShown,
+  menuAcknowledgementsShown,
 } = storeToRefs(displayStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 
-watch(menuReferencesShown, (newValue, oldValue) => {
+watch(menuAcknowledgementsShown, (newValue, oldValue) => {
   if (newValue !== oldValue) { toggleOffcanvas(offCanvasEl.value, newValue) }
 })
 onMounted(() => {
-  toggleOffcanvas(offCanvasEl.value, menuReferencesShown.value)
-  offCanvasEl.value.addEventListener('hidden.bs.offcanvas', () => menuReferencesShown.value = false)
-  offCanvasEl.value.addEventListener('shown.bs.offcanvas', () => menuReferencesShown.value = true)
+  toggleOffcanvas(offCanvasEl.value, menuAcknowledgementsShown.value)
+  offCanvasEl.value.addEventListener('hidden.bs.offcanvas', () => menuAcknowledgementsShown.value = false)
+  offCanvasEl.value.addEventListener('shown.bs.offcanvas', () => menuAcknowledgementsShown.value = true)
 })
 </script>
 
 <template>
-  <div ref="menu-el" class="offcanvas offcanvas-start position-absolute" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
+  <div ref="menu-el" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
     <div class="offcanvas-header">
-      <h2 class="offcanvas-title h5">References</h2>
+      <h2 class="offcanvas-title h5">Acknowledgements</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
