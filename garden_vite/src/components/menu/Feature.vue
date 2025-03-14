@@ -81,11 +81,11 @@ onBeforeUnmount(() => mediaPlayer?.value?.destroy())
       <div class="my-3" v-if="feature.video">
         <media-player
           ref="media-player-el" title="Plant Storytelling" streamType="on-demand"
-          :poster="feature.video_thumbnail" keep-alive
+          :poster="feature.video_thumbnail" keep-alive :autoQuality="true"
         >
           <media-provider>
             <media-poster class="vds-poster"></media-poster>
-            <source :src="feature.video" />
+            <source :src="feature.video" type="application/vnd.apple.mpegurl" />
             <track v-if="feature.captions" :src="feature.captions" label="English" kind="captions" srclang="en" default />
           </media-provider>
           <media-video-layout :thumbnails="feature.video_thumbnails_vtt"></media-video-layout>

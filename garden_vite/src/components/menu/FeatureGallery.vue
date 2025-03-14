@@ -19,23 +19,33 @@ const carouselEl = useTemplateRef('carousel-el')
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 
 const carouselTo = (to) => {
-  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
-  bsCarouse.to(to)
+  if (carouselEl.value) {
+    const bsCarousel = Carousel.getOrCreateInstance(carouselEl.value)
+    bsCarousel.to(to)
+  }
 }
 const carouselPrev = () => {
-  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
-  bsCarouse.prev()
+  if (carouselEl.value) {
+    const bsCarousel = Carousel.getOrCreateInstance(carouselEl.value)
+    bsCarousel.prev()
+  }
 }
 const carouselNext = () => {
-  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
-  bsCarouse.next()
+  if (carouselEl.value) {
+    const bsCarousel = Carousel.getOrCreateInstance(carouselEl.value)
+    bsCarousel.next()
+  }
 }
 const toggleActiveClass = (el, isActive) => {
   isActive ? el.classList.add("active") : el.classList.remove("active")
 }
 const updateCarouselActive = () => {
-  carouselItemElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
-  carouselIndicatorElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  if (carouselItemElArray.value) {
+    carouselItemElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  }
+  if (carouselIndicatorElArray.value) {
+    carouselIndicatorElArray.value?.forEach((carouselItemEl, index) => toggleActiveClass(carouselItemEl, index === selectedGalleryIndex.value))
+  }
 }
 const refreshTooltips = () => {
   if (iconElArray.value) {
@@ -44,19 +54,30 @@ const refreshTooltips = () => {
     })
   }
 }
+const setupCarousel = () => {
+  if (carouselEl.value) {
+    const bsCarousel = Carousel.getOrCreateInstance(carouselEl.value)
+    carouselEl.value.addEventListener('slid.bs.carousel', event => {
+      selectedGalleryIndex.value = event.to
+    })
+  }
+}
 watch(selectedFeatureId, (newValue, oldValue) => {
-  if (newValue !== oldValue) { nextTick(refreshTooltips) }
+  if (newValue !== oldValue) {
+    setupCarousel()
+    nextTick(refreshTooltips)
+  }
 })
 watch(selectedGalleryIndex, (newValue, oldValue) => {
-  if (newValue !== oldValue) { updateCarouselActive() }
+  if (newValue !== oldValue) {
+    setupCarousel()
+    updateCarouselActive()
+  }
 })
 onMounted(() => {
-  nextTick(refreshTooltips)
+  setupCarousel()
   updateCarouselActive()
-  const bsCarouse = Carousel.getOrCreateInstance(carouselEl.value)
-  carouselEl.value.addEventListener('slid.bs.carousel', event => {
-    selectedGalleryIndex.value = event.to
-  })
+  nextTick(refreshTooltips)
 })
 </script>
 
