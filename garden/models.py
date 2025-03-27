@@ -67,13 +67,6 @@ class Feature(models.Model):
         null=True,
         blank=True,
     )
-    captions = ConstrainedFileField(
-        upload_to='captions/',
-        null=True,
-        blank=True,
-        content_types=['text/vtt'],
-        help_text=mark_safe('Only <u><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank">WebVTT (.vtt)</a></u> is allowed.'),
-    )
 
     # write tracking fields
     created = models.DateTimeField(auto_now_add=True)

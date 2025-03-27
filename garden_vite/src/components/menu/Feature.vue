@@ -86,7 +86,6 @@ onBeforeUnmount(() => mediaPlayer?.value?.destroy())
           <media-provider>
             <media-poster class="vds-poster"></media-poster>
             <source :src="feature.video" type="application/vnd.apple.mpegurl" />
-            <track v-if="feature.captions" :src="feature.captions" label="English" kind="captions" srclang="en" default />
           </media-provider>
           <media-video-layout :thumbnails="feature.video_thumbnails_vtt"></media-video-layout>
         </media-player>

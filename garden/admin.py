@@ -64,7 +64,6 @@ class FeatureAdmin(ModelAdmin):
     fields = [
         ('feature_type', 'number', 'published'),
         'video_original',
-        'captions',
         'content',
         'references',
     ]

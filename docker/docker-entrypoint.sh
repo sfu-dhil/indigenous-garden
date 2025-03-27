@@ -17,10 +17,10 @@ export GIT_TAG=$(git tag --points-at HEAD | head -n 1)
 # fix media folder permissions for nginx
 MEDIA_FOLDER_UID=${MEDIA_FOLDER_UID-101}
 MEDIA_FOLDER_GID=${MEDIA_FOLDER_GID-101}
-mkdir -p /media/audio /media/videos /media/captions /media/images /media/thumbnails
-chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /media /media/audio /media/videos /media/captions /media/images /media/thumbnails
-mkdir -p /static-assets/audio /static-assets/videos /static-assets/captions /static-assets/images
-chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /static-assets/audio /static-assets/videos /static-assets/captions /static-assets/images
+mkdir -p /media/audio /media/videos /media/images /media/thumbnails
+chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /media /media/audio /media/videos /media/images /media/thumbnails
+mkdir -p /static-assets/audio /static-assets/videos /static-assets/images /static-assets/thumbnails
+chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /static-assets/audio /static-assets/videos /static-assets/images /static-assets/thumbnails
 mkdir -p /static-vite/dist/assets
 chown $MEDIA_FOLDER_UID:$MEDIA_FOLDER_GID /static-vite/dist /static-vite/dist/assets
 
