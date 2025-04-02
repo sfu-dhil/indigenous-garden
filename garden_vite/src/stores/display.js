@@ -2,12 +2,32 @@ import { defineStore } from 'pinia'
 
 export const useDisplaySettingStore = defineStore('display-settings', {
   state: () => ({
+    lockView: null,
     canEdit: false,
     isEditMode: false,
     editPointId: null,
   }),
   getters: {},
-  actions: {},
+  actions: {
+    isViewLocked() {
+      return !!this.lockView
+    },
+    isOverheadViewLocked() {
+      return this.lockView === 'overhead'
+    },
+    isPanoramaViewLocked() {
+      return ['panorama_location_1', 'panorama_location_2', 'panorama_location_3'].includes(this.lockView)
+    },
+    isPanoramaLocation1ViewLocked() {
+      return this.lockView === 'panorama_location_1'
+    },
+    isPanoramaLocation2ViewLocked() {
+      return this.lockView === 'panorama_location_2'
+    },
+    isPanoramaLocation3ViewLocked() {
+      return this.lockView === 'panorama_location_3'
+    },
+  },
   persist: false,
 })
 
@@ -31,6 +51,9 @@ export const useDisplayStore = defineStore('display', {
     selectedFeatureId: null,
     selectedPointId: null,
     selectedGalleryIndex: null,
+
+    // hover feature across map/panorama
+    hoverFeatureId: null,
   }),
   getters: {},
   actions: {

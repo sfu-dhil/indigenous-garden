@@ -9,6 +9,7 @@ from garden_app.settings import CACHE_SECONDS
 def dashboard(request):
     features = Feature.objects.prefetch_related(
         'points', 'images',
+        'location_1_panorama_points', 'location_2_panorama_points', 'location_3_panorama_points',
         'english_names', 'western_scientific_names',
         'halkomelem_names', 'squamish_names',
     ).order_by('number', 'id').filter(published=True).all()

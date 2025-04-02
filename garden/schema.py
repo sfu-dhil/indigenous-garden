@@ -1,7 +1,7 @@
 from ninja import ModelSchema, Field
 from typing import List, Optional
 
-from .models import Feature, Image, Point, Name
+from .models import Feature, Image, Point, PanoramaPoint, Name
 
 
 class NameSchema(ModelSchema):
@@ -18,6 +18,13 @@ class PointSchema(ModelSchema):
             'id', 'x', 'y'
         ]
 
+class PanoramaPointSchema(ModelSchema):
+    class Meta:
+        model = PanoramaPoint
+        fields = [
+            'id', 'yaw', 'pitch'
+        ]
+
 class ImageSchema(ModelSchema):
     class Meta:
         model = Image
@@ -31,6 +38,9 @@ class FeatureSchema(ModelSchema):
     halkomelem_names: List[NameSchema] = []
     squamish_names: List[NameSchema] = []
     points: List[PointSchema] = []
+    location_1_panorama_points: List[PanoramaPointSchema] = []
+    location_2_panorama_points: List[PanoramaPointSchema] = []
+    location_3_panorama_points: List[PanoramaPointSchema] = []
     images: List[ImageSchema] = []
 
     class Meta:

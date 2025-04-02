@@ -27,11 +27,29 @@ const offCanvasEl = useTemplateRef('menu-el')
 const mediaPlayer = useTemplateRef('media-player-el')
 
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
+const editPointHref = computed(() => {
+  if (canEdit.value) {
+    let pointType = 'point' // overhead
+    if (displaySettingStore.isOverheadViewLocked()) {
+      pointType = 'point'
+    } else if (displaySettingStore.isPanoramaLocation1ViewLocked()) {
+      pointType = 'location1panoramapoint'
+    } else if (displaySettingStore.isPanoramaLocation2ViewLocked()) {
+      pointType = 'location2panoramapoint'
+    } else if (displaySettingStore.isPanoramaLocation3ViewLocked()) {
+      pointType = 'location3panoramapoint'
+    }
+    return `/admin/garden/${pointType}/${ selectedPointId.value }/change/`
+  }
+  return null
+})
 
 watch(menuFeatureShown, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     toggleOffcanvas(offCanvasEl.value, newValue)
     if (newValue === false) {
+      selectedFeatureId.value = null
+      selectedPointId.value = null
       mediaStore.stopAllMedia()
       mediaPlayer?.value?.pause()
     }
@@ -100,7 +118,7 @@ onBeforeUnmount(() => mediaPlayer?.value?.destroy())
         <a :href="`/admin/garden/feature/${ feature.id }/change/`" class="btn btn-primary ms-auto">
           <i class="bi bi-pencil-square" aria-hidden="true"></i> Edit feature
         </a>
-        <a v-if="selectedPointId" :href="`/admin/garden/point/${ selectedPointId }/change/`" class="btn btn-primary">
+        <a v-if="selectedPointId" :href="editPointHref" class="btn btn-primary">
           <i class="bi bi-pencil-square" aria-hidden="true"></i> Edit point
         </a>
       </div>

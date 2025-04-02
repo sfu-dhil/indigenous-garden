@@ -150,7 +150,7 @@ def task_video_thumbnails_vtt_generator(object_pk):
                         start_time_str = f'{start_time//3600:02d}:{(start_time//60)%60:02d}:{start_time%60:06.3f}'
                         end_time_str = f'{end_time//3600:02d}:{(end_time//60)%60:02d}:{end_time%60:06.3f}'
                         f.write(f'{start_time_str} --> {end_time_str}\n')
-                        f.write(f'{storyboard_image_url}#xywh={w_index},{h_index},{width},{height}\n\n')
+                        f.write(f'/{storyboard_image_url}#xywh={w_index},{h_index},{width},{height}\n\n')
                     # remove storyboard segment
                     file.unlink(missing_ok=True)
                 storyboard_image.save(storyboard_file)

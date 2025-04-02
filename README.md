@@ -166,3 +166,28 @@ Generate the files from some import source:
 ```shell
 gdal2tiles --xyz --profile=raster --zoom=1-6 --tiledriver=WEBP --tilesize=128 .data/static-assets/images/garden.png .data/static-assets/images/garden
 ```
+
+## Create multi resolution tiles for panorama image
+
+See [pannellum docs](https://github.com/mpetroff/pannellum/tree/master/utils/multires) for using docker.
+
+First download pannellum master locally
+
+```shell
+cd <pannellum folder>/utils/multires/
+docker build -t generate-panorama .
+```
+
+Then in this project
+
+    docker run --rm -it \
+        -v $PWD/.data/static-assets/images/:/data \
+        generate-panorama --output /data/panorama_location_1 /data/panorama_location_1.png
+
+    docker run --rm -it \
+        -v $PWD/.data/static-assets/images/:/data \
+        generate-panorama --output /data/panorama_location_2 /data/panorama_location_2.png
+
+    docker run --rm -it \
+        -v $PWD/.data/static-assets/images/:/data \
+        generate-panorama --output /data/panorama_location_3 /data/panorama_location_3.png

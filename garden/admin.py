@@ -7,6 +7,7 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from tinymce.widgets import TinyMCE
 
 from .models import Feature, Image, Point, \
+    Location1PanoramaPoint, Location2PanoramaPoint, Location3PanoramaPoint, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
 from .schema import FeatureSchema
@@ -40,10 +41,11 @@ class SquamishNameInlineAdmin(NameInlineAdmin):
     verbose_name="Sḵwx̱wú7mesh Sníchim name"
     classes=['first-nations-unicode', 'collapse']
 
-def add_map_context(extra_context, is_edit_mode=False, point_id=None):
+def add_map_context(extra_context, lock_view=None, is_edit_mode=False, point_id=None):
     extra_context = extra_context or {}
     features = Feature.objects.prefetch_related(
         'points', 'images',
+        'location_1_panorama_points', 'location_2_panorama_points', 'location_3_panorama_points',
         'english_names', 'western_scientific_names',
         'halkomelem_names', 'squamish_names',
     ).order_by('number', 'id').all()
@@ -52,6 +54,7 @@ def add_map_context(extra_context, is_edit_mode=False, point_id=None):
     extra_context['is_map'] = True
     extra_context['features'] = json.dumps(data)
     extra_context['display_options'] = json.dumps({
+        'lockView': lock_view,
         'canEdit': True,
         'isEditMode': is_edit_mode,
         'editPointId': point_id,
@@ -108,7 +111,6 @@ class FeatureAdmin(ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)
-
         return super().changelist_view(request, extra_context=extra_context)
 
 
@@ -126,14 +128,67 @@ class PointAdmin(ModelAdmin):
     list_per_page = 5
 
     def changelist_view(self, request, extra_context=None):
-        extra_context = add_map_context(extra_context)
+        extra_context = add_map_context(extra_context, lock_view='overhead')
         return super().changelist_view(request, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context, True, int(object_id))
+        extra_context = add_map_context(extra_context, lock_view='overhead', is_edit_mode=True, point_id=int(object_id))
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
     def add_view(self, request, form_url='', extra_context=None):
-        extra_context = add_map_context(extra_context, True)
+        extra_context = add_map_context(extra_context, lock_view='overhead', is_edit_mode=True)
+        return super().add_view(request, form_url, extra_context=extra_context)
 
+class PanoramaPointAdmin(ModelAdmin):
+    fields = [
+        'feature',
+        ('yaw', 'pitch'),
+    ]
+
+    list_display = ('id', 'feature', 'yaw', 'pitch')
+    list_display_links = ('id', 'feature', 'yaw', 'pitch')
+    ordering = ['feature', '-pitch', 'yaw']
+    autocomplete_fields = ['feature']
+    list_per_page = 5
+
+@admin.register(Location1PanoramaPoint)
+class Location1PanoramaPointAdmin(PanoramaPointAdmin):
+    def changelist_view(self, request, extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_1')
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_1', is_edit_mode=True, point_id=int(object_id))
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_1', is_edit_mode=True)
+        return super().add_view(request, form_url, extra_context=extra_context)
+
+@admin.register(Location2PanoramaPoint)
+class Location2PanoramaPointAdmin(PanoramaPointAdmin):
+    def changelist_view(self, request, extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_2')
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_2', is_edit_mode=True, point_id=int(object_id))
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_2', is_edit_mode=True)
+        return super().add_view(request, form_url, extra_context=extra_context)
+
+@admin.register(Location3PanoramaPoint)
+class Location3PanoramaPointAdmin(PanoramaPointAdmin):
+    def changelist_view(self, request, extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_3')
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_3', is_edit_mode=True, point_id=int(object_id))
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = add_map_context(extra_context, lock_view='panorama_location_3', is_edit_mode=True)
         return super().add_view(request, form_url, extra_context=extra_context)

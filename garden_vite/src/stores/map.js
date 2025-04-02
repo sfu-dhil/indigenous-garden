@@ -2,29 +2,38 @@ import { defineStore } from 'pinia'
 import { useDataStore } from './data'
 import { useDisplaySettingStore } from './display'
 import { getCenter } from 'ol/extent'
+import { TileGrid } from 'ol/tilegrid'
 
-const NORTH_ROTATION = (15.0 * Math.PI) / 180.0
-const IMAGE_WIDTH = 2050
-const IMAGE_HEIGHT = 1510
-const imageExtent = [0, -IMAGE_HEIGHT, IMAGE_WIDTH, 0]
-const projection = {
+
+const DEFAULT_ROTATION = 0
+// const NORTH_ROTATION = (15.0 * Math.PI) / 180.0
+const IMAGE_WIDTH = 3840
+const IMAGE_HEIGHT = 2160
+const IMAGE_EXTENT = [0, -IMAGE_HEIGHT, IMAGE_WIDTH, 0]
+const PROJECTION = {
   units: "pixels",
-  extent: imageExtent,
+  extent: IMAGE_EXTENT,
 }
+const TILE_GRID = new TileGrid({
+  extent: IMAGE_EXTENT,
+  origin: [0, 0],
+  resolutions: [32, 16, 8, 4, 2, 1],
+  tileSize: [128, 128],
+})
 
 export const useMapStore = defineStore('map', {
   state: () => ({
-    center: getCenter(imageExtent),
+    center: getCenter(IMAGE_EXTENT),
     zoom: 2.5,
-    rotation: NORTH_ROTATION,
-    hoverId: null,
+    rotation: DEFAULT_ROTATION,
   }),
   getters: {
     points: () => useDataStore().points.sort((a, b) => b.y - a.y || a.x -  b.x).filter((o) => !useDisplaySettingStore().isEditMode || o.id !== useDisplaySettingStore().editPointId),
     editPoint: () => useDataStore().points.find((o) => o.id === useDisplaySettingStore().editPointId),
-    projection: () => projection,
-    imageExtent: () => imageExtent,
-    defaultRotation: () => NORTH_ROTATION,
+    projection: () => PROJECTION,
+    imageExtent: () => IMAGE_EXTENT,
+    defaultRotation: () => DEFAULT_ROTATION,
+    tileGrid: () => TILE_GRID,
   },
   actions: {
     getEditInitialX () {

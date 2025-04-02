@@ -20,10 +20,13 @@ const {
 const {
   points,
   projection,
-  hoverId,
   defaultRotation,
+  tileGrid,
 } = storeToRefs(mapStore)
 const displayStore = useDisplayStore()
+const {
+  hoverFeatureId,
+} = storeToRefs(displayStore)
 const displaySettingStore = useDisplaySettingStore()
 const {
   isEditMode,
@@ -91,17 +94,12 @@ const updateCenter = (event) => mapStore.center = event.target.getCenter()
 const updateZoom = (event) => mapStore.zoom = event.target.getZoom()
 const updateRotation = (event) => mapStore.rotation = event.target.getRotation()
 
-const hoverFeature = (event) => {
-  if (event.selected.length > 0) {
-    hoverId.value = event.selected[0].get('featureId')
-  } else {
-    hoverId.value = null
-  }
-}
+const hoverFeature = (event) => hoverFeatureId.value = event.selected.length > 0 ? event.selected[0].get('featureId') : null
 const clickFeature = (event) => {
   if (event.selected.length > 0) {
     const selected = event.selected[0]
     displayStore.showFeature(selected.get('featureId'), selected.get('pointId'))
+    event.target.getFeatures().clear()
   }
 }
 const resetNorth = () => {
@@ -139,7 +137,7 @@ const addNewEditFeatureClick = (event) => {
 }
 onMounted(() => {
   if (isEditMode.value) {
-    hoverId.value = null
+    hoverFeatureId.value = null
     if (editInitialX.value && editInitialY.value) {
       addEditFeature()
     } else {
@@ -178,8 +176,7 @@ const {
       <ol-tile-layer>
         <ol-source-xyz
           :url="'/static/images/garden/{z}/{x}/{y}.webp'"
-          :tileSize="[128, 128]"
-          :maxResolution="32"
+          :tileGrid="tileGrid"
           :projection="projection"
         />
       </ol-tile-layer>
@@ -188,7 +185,7 @@ const {
         <ol-source-vector>
           <ol-feature v-for="point in points" :properties="{ 'pointId': point.id, 'featureId': point.featureId }">
             <ol-geom-point :coordinates="[point.x, point.y]"></ol-geom-point>
-            <ol-style :overrideStyleFunction="!isEditMode && hoverId == point.featureId ? overrideSelectedFeatureStyle : overrideFeatureStyle"></ol-style>
+            <ol-style :overrideStyleFunction="!isEditMode && hoverFeatureId == point.featureId ? overrideSelectedFeatureStyle : overrideFeatureStyle"></ol-style>
           </ol-feature>
           <ol-interaction-select
             v-if="!isEditMode"
@@ -233,13 +230,13 @@ const {
         html='<i class="fa-solid fa-message"></i>'
         :onToggle="() => displayStore.showWelcomeMessage()"
       />
-      <!-- <ol-toggle-control
-        v-if="!isEditMode"
+      <ol-toggle-control
+        v-if="!displaySettingStore.isViewLocked()"
         className="select-view-control"
         title="Map view. Click to switch to Panorama view"
         html='<i class="fa-solid fa-street-view"></i>'
         :onToggle="() => displayStore.showPanoramaView()"
-      /> -->
+      />
     </ol-map>
   </div>
 </template>
@@ -251,13 +248,13 @@ const {
 #garden-map:active {
   cursor: grabbing;
 }
-#garden-map::v-deep {
+#garden-map:deep() {
   .ol-control button {
     font-size: 1.5em;
     pointer-events: auto;
-  }
-  .ol-button i {
-    color: inherit;
+    i {
+      cursor: pointer;
+    }
   }
   .show-menu-control {
     left: .5em;
@@ -274,9 +271,9 @@ const {
     top: 10em;
     z-index: 2;
   }
-  .rotation-correction {
-    transform: rotate(345deg);
-    display: block;
-  }
+  // .rotation-correction {
+  //   transform: rotate(345deg);
+  //   display: block;
+  // }
 }
 </style>

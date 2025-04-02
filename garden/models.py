@@ -113,6 +113,10 @@ class Feature(models.Model):
             self.video.delete(save=False)
             self.video_thumbnail.delete(save=False)
             self.video_thumbnails_vtt.delete(save=False)
+        elif not video_path:
+            self.video.delete(save=False)
+            self.video_thumbnail.delete(save=False)
+            self.video_thumbnails_vtt.delete(save=False)
 
         # save
         super().save(*args, **kwargs)
@@ -279,9 +283,63 @@ class Point(models.Model):
     class Meta:
         db_table = 'garden_point'
         ordering = ['-y', 'x']
+        verbose_name = 'Overhead Point'
 
     def __str__(self):
         return f"Map point: ({self.x:.2f},{self.y:.2f}) for {self.feature}"
+
+class PanoramaPoint(models.Model):
+    # fields
+    id = models.BigAutoField(primary_key=True)
+    yaw = models.FloatField()
+    pitch = models.FloatField()
+
+    # write tracking fields
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ['-pitch', 'yaw']
+
+    def __str__(self):
+        return f"Panorama point: ({self.yaw:.2f},{self.pitch:.2f}) for {self.feature}"
+
+class Location1PanoramaPoint(PanoramaPoint):
+    # relationships
+    feature = models.ForeignKey(
+        Feature,
+        related_name='location_1_panorama_points',
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        db_table = 'garden_feature_location_1_panorama_point'
+        verbose_name = 'Fire Pit Panorama Point'
+
+class Location2PanoramaPoint(PanoramaPoint):
+    # relationships
+    feature = models.ForeignKey(
+        Feature,
+        related_name='location_2_panorama_points',
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        db_table = 'garden_feature_location_2_panorama_point'
+        verbose_name = 'Location 2 Panorama Point'
+
+class Location3PanoramaPoint(PanoramaPoint):
+    # relationships
+    feature = models.ForeignKey(
+        Feature,
+        related_name='location_3_panorama_points',
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        db_table = 'garden_feature_location_3_panorama_point'
+        verbose_name = 'Location 3 Panorama Point'
 
 # signals
 @receiver(post_delete, sender=Feature)

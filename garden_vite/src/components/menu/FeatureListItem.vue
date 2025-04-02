@@ -2,19 +2,16 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
-import { useMapStore } from '../../stores/map.js'
 import DisplayName from '../DisplayName.vue'
 
 const displayStore = useDisplayStore()
+const {
+  hoverFeatureId,
+} = storeToRefs(displayStore)
 const displaySettingStore = useDisplaySettingStore()
 const {
   canEdit,
 } = storeToRefs(displaySettingStore)
-
-const mapStore = useMapStore()
-const {
-  hoverId,
-} = storeToRefs(mapStore)
 
 const props = defineProps({
   item: {
@@ -24,11 +21,11 @@ const props = defineProps({
 })
 
 const firstImage = computed(() => props.item.images.length > 0 ? props.item.images[0] : null)
-const hoverClass = computed(() => hoverId.value == props.item.id ? 'card-hover' : '')
+const hoverClass = computed(() => hoverFeatureId.value == props.item.id ? 'card-hover' : '')
 </script>
 
 <template>
-  <div class="card mt-3 w-100" :class="hoverClass" @mouseover="() => hoverId = item.id" @mouseout="() => hoverId = null">
+  <div class="card mt-3 w-100" :class="hoverClass" @mouseover="() => hoverFeatureId = item.id" @mouseout="() => hoverFeatureId = null">
     <img v-if="firstImage" :src="firstImage.thumbnail" class="card-img-top object-fit-cover" loading="lazy" />
     <div class="g-0 card-body">
       <DisplayName v-for="(name, index) in item.english_names" :item="name" :bold="true" :number="index == 0 ? item.number : null" />
