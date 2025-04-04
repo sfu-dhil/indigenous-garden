@@ -175,7 +175,7 @@ const {
 
       <ol-tile-layer>
         <ol-source-xyz
-          :url="'/static/images/garden/{z}/{x}/{y}.webp'"
+          :url="'/static/images/garden_overhead/{z}/{x}/{y}.webp'"
           :tileGrid="tileGrid"
           :projection="projection"
         />
