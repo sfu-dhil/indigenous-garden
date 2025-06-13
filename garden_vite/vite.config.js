@@ -26,6 +26,16 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'legacy'
+      },
+      sass: {
+        api: 'legacy'
+      },
+    }
+  },
   plugins: [
     vue({
       template: {
