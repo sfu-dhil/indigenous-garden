@@ -11,6 +11,7 @@ django-constrainedfilefield[filetype]
 django-async-upload-kg==4.0.5
 django-vite==3.1.0
 django-rq==3.0.0
+django-cache-cleaner==0.2.0
 
 # Environment variables
 django-environ==0.12.0
