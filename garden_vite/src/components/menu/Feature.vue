@@ -9,6 +9,7 @@ import DisplayName from '../DisplayName.vue'
 import 'vidstack/player'
 import 'vidstack/player/layouts'
 import 'vidstack/player/ui'
+import HLS from 'hls.js';
 
 const displayStore = useDisplayStore()
 const {
@@ -25,6 +26,14 @@ const {
 
 const offCanvasEl = useTemplateRef('menu-el')
 const mediaPlayer = useTemplateRef('media-player-el')
+
+const mediaPlayerProviderChange = (event) => {
+  const provider = event.detail
+  if (provider?.type === 'hls') {
+    provider.library = HLS
+    // provider.config = { debug: true, }
+  }
+}
 
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 const editPointHref = computed(() => {
@@ -60,7 +69,6 @@ onMounted(() => {
   offCanvasEl.value.addEventListener('hidden.bs.offcanvas', () => menuFeatureShown.value = false)
   offCanvasEl.value.addEventListener('shown.bs.offcanvas', () => menuFeatureShown.value = true)
 })
-onBeforeUnmount(() => mediaPlayer?.value?.destroy())
 </script>
 
 <template>
@@ -100,6 +108,7 @@ onBeforeUnmount(() => mediaPlayer?.value?.destroy())
         <media-player
           ref="media-player-el" title="Plant Storytelling" streamType="on-demand"
           :poster="feature.video_thumbnail" keep-alive :autoQuality="true"
+          @provider-change="mediaPlayerProviderChange"
         >
           <media-provider>
             <media-poster class="vds-poster"></media-poster>
