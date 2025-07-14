@@ -37,8 +37,8 @@ def task_video_thumbnail_generator(object_pk):
             )
         ffmpeg.execute()
 
-    feature.video_thumbnail.name = f'{(thumbnail_path).relative_to(Path(media_dir))}'
-    feature.save()
+        feature.video_thumbnail.name = f'{(thumbnail_path).relative_to(Path(media_dir))}'
+        feature.save()
 
 def task_video_hls_generator(object_pk):
     HSL_FRAGMENT_INTERVAL = 5 # in seconds

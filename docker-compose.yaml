@@ -40,6 +40,10 @@ services:
       # - .data/static:/static:ro # do not mount in development mode
     ports:
       - "8080:80"
+    healthcheck:
+      test: service nginx status || exit 1
+      interval: 2s
+      retries: 120
     depends_on:
       app:
         condition: service_healthy
