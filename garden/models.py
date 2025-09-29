@@ -77,10 +77,13 @@ class Feature(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.old_video_path = self.video_original.path if bool(self.video_original.name) and self.video_original.storage.exists(self.video_original.name) else None
+        self.old_video_path = self.video_original.path if self.has_video() else None
 
     def __str__(self):
         return f'{self.number} {self.all_names_str()}'
+
+    def has_video(self):
+        return bool(self.video_original.name) and self.video_original.storage.exists(self.video_original.name)
 
     def all_names_str(self):
         return ' / '.join(
@@ -105,7 +108,7 @@ class Feature(models.Model):
             out_dir.rmdir()
 
     def save(self, *args, **kwargs):
-        video_path = self.video_original.path if bool(self.video_original.name) and self.video_original.storage.exists(self.video_original.name) else None
+        video_path = self.video_original.path if self.has_video() else None
         has_new_video = video_path and video_path != self.old_video_path
 
         # remove old thumbnail and hls video files if needed

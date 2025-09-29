@@ -5,6 +5,8 @@ from django.utils.safestring import mark_safe
 from html import unescape
 from django.contrib.admin import ModelAdmin, TabularInline
 from tinymce.widgets import TinyMCE
+from django_rq import enqueue
+from django.contrib import messages
 
 from .models import Feature, Image, Point, \
     Location1PanoramaPoint, Location2PanoramaPoint, Location3PanoramaPoint, \
@@ -71,8 +73,8 @@ class FeatureAdmin(ModelAdmin):
         'references',
     ]
 
-    list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
-    list_display_links = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names')
+    list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_has_video')
+    list_display_links = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_has_video')
     ordering = ['feature_type', 'number']
     search_fields = [
         'number',
@@ -81,6 +83,7 @@ class FeatureAdmin(ModelAdmin):
         'halkomelem_names__name', 'halkomelem_names__descriptor',
         'squamish_names__name', 'squamish_names__descriptor',
     ]
+    actions = ['generate_thumbnail', 'generate_hls', 'generate_thumbnails_vtt']
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE},
     }
@@ -92,6 +95,48 @@ class FeatureAdmin(ModelAdmin):
         SquamishNameInlineAdmin,
         ImageInlineAdmin,
     ]
+
+    @admin.action(description="(Re)Generate video thumbnail for selected Features")
+    def generate_thumbnail(self, request, queryset):
+        from .tasks import task_video_thumbnail_generator
+        job_count = 0
+        for feature in queryset:
+            if feature.has_video():
+                enqueue(task_video_thumbnail_generator, feature.pk)
+                job_count+=1
+        self.message_user(
+            request,
+            f'Created {job_count} jobs to generate video thumbnails for features.',
+            messages.SUCCESS,
+        )
+
+    @admin.action(description="(Re)Generate HLS (dynamic quality) video streams for selected Features")
+    def generate_hls(self, request, queryset):
+        from .tasks import task_video_hls_generator
+        job_count = 0
+        for feature in queryset:
+            if feature.has_video():
+                enqueue(task_video_hls_generator, feature.pk)
+                job_count+=1
+        self.message_user(
+            request,
+            f'Created {job_count} jobs to generate HLS videos for features.',
+            messages.SUCCESS,
+        )
+
+    @admin.action(description="(Re)Generate video VTT thumbnails for selected Features")
+    def generate_thumbnails_vtt(self, request, queryset):
+        from .tasks import task_video_thumbnails_vtt_generator
+        job_count = 0
+        for feature in queryset:
+            if feature.has_video():
+                enqueue(task_video_thumbnails_vtt_generator, feature.pk)
+                job_count+=1
+        self.message_user(
+            request,
+            f'Created {job_count} jobs to generate VTT video thumbnails for features.',
+            messages.SUCCESS,
+        )
 
     def _english_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([str(n) for n in obj.english_names.all()])))
@@ -108,6 +153,12 @@ class FeatureAdmin(ModelAdmin):
     def _squamish_names(self, obj):
         return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()])))
     _squamish_names.short_description = mark_safe("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")
+
+    def _has_video(self, obj):
+        return obj.has_video()
+    _has_video.short_description = "Has Video"
+
+
 
     def changelist_view(self, request, extra_context=None):
         extra_context = add_map_context(extra_context)

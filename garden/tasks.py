@@ -67,22 +67,25 @@ def task_video_hls_generator(object_pk):
                     'c:v': 'libx264',
                     'c:a': 'aac',
 
-                    # 480p
-                    'filter:v:0': 'scale=w=640:h=480',
+                    # 360p
+                    'filter:v:0': 'scale=w=640:h=360',
                     'maxrate:v:0': '1498k',
+                    'b:v:0': '1400k',
                     'b:a:0': '96k',
 
                     # 720p
                     'filter:v:1': 'scale=w=1280:h=720',
                     'maxrate:v:1': '2996k',
+                    'b:v:1': '2800k',
                     'b:a:1': '128k',
 
                     # 1080p
                     'filter:v:2': 'scale=w=1920:h=1080',
                     'maxrate:v:2': '5350k',
+                    'b:v:2': '5000k',
                     'b:a:2': '192k',
 
-                    'var_stream_map': 'v:0,a:0,name:480p v:1,a:1,name:720p v:2,a:2,name:1080p',
+                    'var_stream_map': 'v:0,a:0,name:360p v:1,a:1,name:720p v:2,a:2,name:1080p',
                     'preset': 'fast',
                     'f': 'hls',
                     'hls_time': HSL_FRAGMENT_INTERVAL,
