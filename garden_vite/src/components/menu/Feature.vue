@@ -1,15 +1,11 @@
 <script setup>
-import { ref, useTemplateRef, onMounted, watch, computed, onBeforeUnmount } from 'vue'
+import { ref, useTemplateRef, onMounted, watch, computed, onBeforeUnmount, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDataStore } from '../../stores/data.js'
 import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 import { useMediaStore } from '../../stores/media.js'
 import DisplayName from '../DisplayName.vue'
-import 'vidstack/player'
-import 'vidstack/player/layouts'
-import 'vidstack/player/ui'
-import HLS from 'hls.js';
 
 const displayStore = useDisplayStore()
 const {
@@ -24,18 +20,20 @@ const {
   canEdit,
 } = storeToRefs(displaySettingStore)
 
-const offCanvasEl = useTemplateRef('menu-el')
-const mediaPlayer = useTemplateRef('media-player-el')
-
-const mediaPlayerProviderChange = (event) => {
-  const provider = event.detail
-  if (provider?.type === 'hls') {
-    provider.library = HLS
-    // provider.config = { debug: true, }
-  }
-}
+const offCanvasRef = ref()
 
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
+const videoPluginOptions = computed(() => {
+  const pluginOptions = {
+    qualityLevels: {},
+    hlsQualitySelector: { displayCurrentQuality: true }, //, vjsIconClass: 'vjs-icon-cog'
+    theme: { skin: 'slate' }
+  }
+  if (feature.value?.video_thumbnails_vtt) {
+    pluginOptions.vttThumbnails = { url: feature.value.video_thumbnails_vtt }
+  }
+  return pluginOptions
+})
 const editPointHref = computed(() => {
   if (canEdit.value) {
     let pointType = 'point' // overhead
@@ -53,26 +51,30 @@ const editPointHref = computed(() => {
   return null
 })
 
+watch(selectedFeatureId, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    mediaStore.stopAllMedia()
+  }
+})
 watch(menuFeatureShown, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    toggleOffcanvas(offCanvasEl.value, newValue)
+    toggleOffcanvas(offCanvasRef.value, newValue)
     if (newValue === false) {
       selectedFeatureId.value = null
       selectedPointId.value = null
       mediaStore.stopAllMedia()
-      mediaPlayer?.value?.pause()
     }
   }
 })
 onMounted(() => {
-  toggleOffcanvas(offCanvasEl.value, menuFeatureShown.value)
-  offCanvasEl.value.addEventListener('hidden.bs.offcanvas', () => menuFeatureShown.value = false)
-  offCanvasEl.value.addEventListener('shown.bs.offcanvas', () => menuFeatureShown.value = true)
+  toggleOffcanvas(offCanvasRef.value, menuFeatureShown.value)
+  offCanvasRef.value.addEventListener('hidden.bs.offcanvas', () => menuFeatureShown.value = false)
+  offCanvasRef.value.addEventListener('shown.bs.offcanvas', () => menuFeatureShown.value = true)
 })
 </script>
 
 <template>
-  <div ref="menu-el" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
+  <div ref="offCanvasRef" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
     <div v-if="feature" class="offcanvas-header">
       <div class="row w-100">
         <div class="col-sm">
@@ -105,17 +107,21 @@ onMounted(() => {
       </h2>
 
       <div class="my-3" v-if="feature.video">
-        <media-player
-          ref="media-player-el" title="Plant Storytelling" streamType="on-demand"
-          :poster="feature.video_thumbnail" keep-alive :autoQuality="true"
-          @provider-change="mediaPlayerProviderChange"
+        <video-player
+          :src="feature.video"
+          :poster="feature.video_thumbnail"
+          :controls="true" :fluid="true" :aspectRatio="'16:9'"
+          :disablePictureInPicture="true"
+          :plugins="videoPluginOptions"
         >
-          <media-provider>
-            <media-poster class="vds-poster"></media-poster>
-            <source :src="feature.video" type="application/vnd.apple.mpegurl" />
-          </media-provider>
-          <media-video-layout :thumbnails="feature.video_thumbnails_vtt"></media-video-layout>
-        </media-player>
+          <template v-slot="{ player, state }">
+            <div class="vjs-title-bar" v-if="feature.english_names[0]?.name">
+              <div class="vjs-title-bar-title">
+                {{ feature.english_names[0].name  }}
+              </div>
+            </div>
+          </template>
+        </video-player>
       </div>
       <div class="my-3" v-html="feature.content"></div>
 

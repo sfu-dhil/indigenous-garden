@@ -15,10 +15,35 @@
 @import "node_modules/bootstrap/scss/_close.scss";
 @import "node_modules/bootstrap/scss/_tooltip.scss";
 
-// vidstack
-@import "vidstack/player/styles/default/theme.css";
-@import "vidstack/player/styles/default/layouts/audio.css";
-@import "vidstack/player/styles/default/layouts/video.css";
+// videojs
+@import 'video.js/dist/video-js.css';
+@import 'videojs-theme-kit/style.css';
+.video-js .vjs-menu-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+// from https://github.com/Teyuto/videojs-vtt-thumbnails (manually adding it to play nicer with vite)
+.thumbnail-preview {
+  position: absolute;
+  bottom: 55px;
+  pointer-events: none;
+  display: none;
+}
+
+.thumbnail {
+  position: absolute;
+  height: 100%;
+  background-size: auto;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  display: none;
+  transform: translateX(-50%) translateY(-100%);
+}
+
+.video-js .thumbnail-preview .thumbnail {
+  border: 2px solid #fff;
+  border-radius:5px;
+}
 
 // pannellum
 @import "./pannellum/pannellum.css";

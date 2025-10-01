@@ -10,3 +10,8 @@
 .first-nations-unicode {
   font-family: "First Nations Unicode" !important;
 }
+span.first-nations-unicode {
+  display: inline-block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}

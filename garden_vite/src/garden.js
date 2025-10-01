@@ -4,9 +4,17 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import OpenLayersMap from 'vue3-openlayers'
 import GardenApp from './GardenApp.vue'
+import VideoPlayer from '@videojs-player/vue'
 
 // include global css (boostrap modal backdrops and tooltips are in here)
 import './assets/garden.scss'
+
+// make sure videojs plugins are working
+import 'video.js'
+// import 'videojs-contrib-quality-levels' // included in videojs-hls-quality-selector
+import 'videojs-hls-quality-selector/src/plugin'
+import 'videojs-theme-kit/videojs-skin.min.js'
+import './videojs-vtt-thumbnails.js'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -20,5 +28,6 @@ mountElList.forEach((mountEl) => {
   })
   app.use(pinia)
   app.use(OpenLayersMap)
+  app.use(VideoPlayer)
   app.mount(mountEl)
 })
