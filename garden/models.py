@@ -77,13 +77,22 @@ class Feature(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.old_video_path = self.video_original.path if self.has_video() else None
+        self.old_video_path = self.video_original.path if self.has_video_original() else None
 
     def __str__(self):
         return f'{self.number} {self.all_names_str()}'
 
-    def has_video(self):
+    def has_video_original(self):
         return bool(self.video_original.name) and self.video_original.storage.exists(self.video_original.name)
+
+    def has_video_thumbnail(self):
+        return bool(self.video_thumbnail.name) and self.video_thumbnail.storage.exists(self.video_thumbnail.name)
+
+    def has_video(self):
+        return bool(self.video.name) and self.video.storage.exists(self.video.name)
+
+    def has_video_thumbnails_vtt(self):
+        return bool(self.video_thumbnail.name) and self.video_thumbnail.storage.exists(self.video_thumbnail.name)
 
     def all_names_str(self):
         return ' / '.join(
@@ -93,7 +102,7 @@ class Feature(models.Model):
             [str(n) for n in self.squamish_names.all()]
         )
 
-    def cleanup_extra_hls_files(self):
+    def cleanup_extra_video_files(self):
         out_dir = Path(MEDIA_ROOT) / 'videos' / f'{self.pk}'
         if out_dir.exists() and out_dir.is_dir():
             for file in list(out_dir.glob('*')):
@@ -108,10 +117,10 @@ class Feature(models.Model):
             out_dir.rmdir()
 
     def save(self, *args, **kwargs):
-        video_path = self.video_original.path if self.has_video() else None
+        video_path = self.video_original.path if self.has_video_original() else None
         has_new_video = video_path and video_path != self.old_video_path
 
-        # remove old thumbnail and hls video files if needed
+        # remove old thumbnail and dash video files if needed
         if has_new_video:
             self.video.delete(save=False)
             self.video_thumbnail.delete(save=False)
@@ -124,15 +133,15 @@ class Feature(models.Model):
         # save
         super().save(*args, **kwargs)
 
-        # generate thumbnail and hls video files
+        # generate thumbnail and dash video files
         if has_new_video:
-            from .tasks import task_video_thumbnail_generator, task_video_hls_generator, task_video_thumbnails_vtt_generator
+            from .tasks import task_video_thumbnail_generator, task_video_dash_generator, task_video_thumbnails_vtt_generator
             enqueue(task_video_thumbnail_generator, self.pk)
-            enqueue(task_video_hls_generator, self.pk)
+            enqueue(task_video_dash_generator, self.pk)
             enqueue(task_video_thumbnails_vtt_generator, self.pk)
-        # no file, remove extra hls files if needed
+        # no file, remove extra dash files if needed
         elif not video_path:
-            self.cleanup_extra_hls_files()
+            self.cleanup_extra_video_files()
             self.cleanup_extra_thumbnail_files()
 
 class Name(models.Model):
@@ -347,5 +356,5 @@ class Location3PanoramaPoint(PanoramaPoint):
 # signals
 @receiver(post_delete, sender=Feature)
 def feature_cleanup_extra_files(sender, instance, **kwargs):
-    instance.cleanup_extra_hls_files()
+    instance.cleanup_extra_video_files()
     instance.cleanup_extra_thumbnail_files()

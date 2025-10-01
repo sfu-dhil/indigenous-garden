@@ -40,8 +40,62 @@ def task_video_thumbnail_generator(object_pk):
         feature.video_thumbnail.name = f'{(thumbnail_path).relative_to(Path(media_dir))}'
         feature.save()
 
+def task_video_dash_generator(object_pk):
+    feature = Feature.objects.get(pk=object_pk)
+
+    has_original = bool(feature.video_original.name) and feature.video_original.storage.exists(feature.video_original.name)
+    if has_original:
+        original_file = Path(feature.video_original.path)
+        media_dir = Path(MEDIA_ROOT)
+        out_dir = media_dir / 'videos' / f'{feature.pk}'
+        out_path = out_dir /  f'{Path(original_file).stem}.mpd'
+
+        # remove existing
+        feature.cleanup_extra_video_files()
+
+        # create new folder
+        out_dir.mkdir(parents=True, exist_ok=True)
+        os.chown(out_dir.absolute(), MEDIA_FOLDER_UID, MEDIA_FOLDER_GID)
+
+        ffmpeg = FFmpeg() \
+            .input(Path(original_file).absolute()) \
+            .output(
+                f'{out_path.absolute()}',
+                {
+                    'map': ['0:v:0', '0:a:0', '0:v:0', '0:a:0', '0:v:0', '0:a:0'],
+                    'c:v': 'libsvtav1',
+                    # 'c:v': 'libx264',
+                    'c:a': 'aac',
+
+                    # 360p
+                    'filter:v:0': 'scale=w=640:h=360',
+                    # 'maxrate:v:0': '1498k',
+                    'b:v:0': '1400k',
+                    'b:a:0': '96k',
+
+                    # 720p
+                    'filter:v:1': 'scale=w=1280:h=720',
+                    # 'maxrate:v:1': '2996k',
+                    'b:v:1': '2800k',
+                    'b:a:1': '128k',
+
+                    # 1080p
+                    'filter:v:2': 'scale=w=1920:h=1080',
+                    # 'maxrate:v:2': '5350k',
+                    'b:v:2': '5000k',
+                    'b:a:2': '192k',
+
+                    # 'dash_segment_type': 'webm',
+                    'adaptation_sets': 'id=0,streams=v id=1,streams=a',
+                    'f': 'dash',
+                }
+            )
+        ffmpeg.execute()
+
+        feature.video.name = f'{(out_path).relative_to(Path(media_dir))}'
+        feature.save()
+
 def task_video_hls_generator(object_pk):
-    HSL_FRAGMENT_INTERVAL = 5 # in seconds
     feature = Feature.objects.get(pk=object_pk)
 
     has_original = bool(feature.video_original.name) and feature.video_original.storage.exists(feature.video_original.name)
@@ -51,8 +105,7 @@ def task_video_hls_generator(object_pk):
         out_dir = media_dir / 'videos' / f'{feature.pk}'
         master_pl_name = f'{Path(original_file).stem}.m3u8'
 
-        # remove existing
-        feature.cleanup_extra_hls_files()
+        feature.cleanup_extra_video_files()
 
         # create new folder
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -88,7 +141,7 @@ def task_video_hls_generator(object_pk):
                     'var_stream_map': 'v:0,a:0,name:360p v:1,a:1,name:720p v:2,a:2,name:1080p',
                     'preset': 'fast',
                     'f': 'hls',
-                    'hls_time': HSL_FRAGMENT_INTERVAL,
+                    'hls_time': 5,
                     'hls_playlist_type': 'vod',
                     'hls_segment_type': 'mpegts',
                     'hls_flags': 'independent_segments',

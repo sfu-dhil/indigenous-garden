@@ -20,7 +20,7 @@ python-dotenv==1.1.0
 # prod server
 gunicorn==23.0.0
 
-# ffmpeg for hls and video thumbnails
+# ffmpeg for hls/dash and video thumbnails
 Pillow==11.3.0
 python-ffmpeg==2.0.12
 natsort==8.4.0

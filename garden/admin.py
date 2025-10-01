@@ -73,8 +73,8 @@ class FeatureAdmin(ModelAdmin):
         'references',
     ]
 
-    list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_has_video')
-    list_display_links = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_has_video')
+    list_display = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_video_status')
+    list_display_links = ('id', 'published', 'feature_type', 'number', '_english_names', '_western_scientific_names', '_halkomelem_names', '_squamish_names', '_video_status')
     ordering = ['feature_type', 'number']
     search_fields = [
         'number',
@@ -83,7 +83,7 @@ class FeatureAdmin(ModelAdmin):
         'halkomelem_names__name', 'halkomelem_names__descriptor',
         'squamish_names__name', 'squamish_names__descriptor',
     ]
-    actions = ['generate_thumbnail', 'generate_hls', 'generate_thumbnails_vtt']
+    actions = ['generate_thumbnail', 'generate_dash', 'generate_thumbnails_vtt']
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE},
     }
@@ -101,7 +101,7 @@ class FeatureAdmin(ModelAdmin):
         from .tasks import task_video_thumbnail_generator
         job_count = 0
         for feature in queryset:
-            if feature.has_video():
+            if feature.has_video_original():
                 enqueue(task_video_thumbnail_generator, feature.pk)
                 job_count+=1
         self.message_user(
@@ -110,17 +110,17 @@ class FeatureAdmin(ModelAdmin):
             messages.SUCCESS,
         )
 
-    @admin.action(description="(Re)Generate HLS (dynamic quality) video streams for selected Features")
-    def generate_hls(self, request, queryset):
-        from .tasks import task_video_hls_generator
+    @admin.action(description="(Re)Generate video streams for selected Features")
+    def generate_dash(self, request, queryset):
+        from .tasks import task_video_dash_generator
         job_count = 0
         for feature in queryset:
-            if feature.has_video():
-                enqueue(task_video_hls_generator, feature.pk)
+            if feature.has_video_original():
+                enqueue(task_video_dash_generator, feature.pk)
                 job_count+=1
         self.message_user(
             request,
-            f'Created {job_count} jobs to generate HLS videos for features.',
+            f'Created {job_count} jobs to generate video streams for features.',
             messages.SUCCESS,
         )
 
@@ -129,7 +129,7 @@ class FeatureAdmin(ModelAdmin):
         from .tasks import task_video_thumbnails_vtt_generator
         job_count = 0
         for feature in queryset:
-            if feature.has_video():
+            if feature.has_video_original():
                 enqueue(task_video_thumbnails_vtt_generator, feature.pk)
                 job_count+=1
         self.message_user(
@@ -154,9 +154,16 @@ class FeatureAdmin(ModelAdmin):
         return mark_safe(unescape(' <br /> '.join([f"<span class='first-nations-unicode'>{n}</span>" for n in obj.squamish_names.all()])))
     _squamish_names.short_description = mark_safe("<span class='first-nations-unicode'>Sḵwx̱wú7mesh Sníchim</span> names")
 
-    def _has_video(self, obj):
-        return obj.has_video()
-    _has_video.short_description = "Has Video"
+    def _video_status(self, obj):
+        success = '<strong><span style="color: green">✓<span></strong>'
+        failure = '<strong><span style="color: red">x<span></strong>'
+        return mark_safe(f'''
+            Original video: {success if obj.has_video_original() else failure}<br />
+            Streamable video: {success if obj.has_video() else failure}<br />
+            Poster thumbnail: {success if obj.has_video_thumbnail() else failure}<br />
+            Preview thumbnails: {success if obj.has_video_thumbnails_vtt() else failure}
+        ''')
+    _video_status.short_description = "Video Status"
 
 
 
