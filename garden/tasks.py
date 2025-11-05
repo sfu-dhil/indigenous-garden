@@ -48,7 +48,7 @@ def task_video_dash_generator(object_pk):
         original_file = Path(feature.video_original.path)
         media_dir = Path(MEDIA_ROOT)
         out_dir = media_dir / 'videos' / f'{feature.pk}'
-        out_path = out_dir /  f'{Path(original_file).stem}.mpd'
+        out_path = out_dir / 'master.mpd'
 
         # remove existing
         feature.cleanup_extra_video_files()
@@ -88,6 +88,7 @@ def task_video_dash_generator(object_pk):
                     # 'dash_segment_type': 'webm',
                     'adaptation_sets': 'id=0,streams=v id=1,streams=a',
                     'f': 'dash',
+                    'hls_playlist': 'true',
                 }
             )
         ffmpeg.execute()
@@ -103,7 +104,7 @@ def task_video_hls_generator(object_pk):
         original_file = Path(feature.video_original.path)
         media_dir = Path(MEDIA_ROOT)
         out_dir = media_dir / 'videos' / f'{feature.pk}'
-        master_pl_name = f'{Path(original_file).stem}.m3u8'
+        master_pl_name = 'master.m3u8'
 
         feature.cleanup_extra_video_files()
 

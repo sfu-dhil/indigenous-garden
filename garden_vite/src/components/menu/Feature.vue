@@ -22,17 +22,47 @@ const {
 
 const offCanvasRef = ref()
 
+const isSafari = () => {
+  const userAgent = navigator.userAgent;
+  return userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1;
+}
+
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
+const videoSources = computed(() => {
+  if (!feature.value?.video) {
+    return []
+  }
+  const sources = [{
+    src: feature.value.video,
+    type: 'application/dash+xml',
+  }, {
+    // we get a HLS playlist for free when generating the mpeg-dash with ffmpeg
+    src: feature.value.video.replace(/\/[^\/]+$/, '/master.m3u8'),
+    type: 'application/x-mpegURL',
+  }]
+  return isSafari() ? sources.reverse() : sources
+})
 const videoPluginOptions = computed(() => {
   const pluginOptions = {
     qualityLevels: {},
-    hlsQualitySelector: { displayCurrentQuality: true }, //, vjsIconClass: 'vjs-icon-cog'
-    theme: { skin: 'slate' }
+    theme: { skin: 'slate' },
+  }
+  if (!isSafari()) {
+    pluginOptions.hlsQualitySelector = { displayCurrentQuality: true }
   }
   if (feature.value?.video_thumbnails_vtt) {
     pluginOptions.vttThumbnails = { url: feature.value.video_thumbnails_vtt }
   }
   return pluginOptions
+})
+const videoHtml5Options = computed(() => {
+  const html5Options = {}
+  if (isSafari()) {
+    html5Options.nativeTextTracks = false
+    html5Options.nativeAudioTracks = false
+    // html5Options.nativeVideoTracks = false
+  }
+  return html5Options
 })
 const editPointHref = computed(() => {
   if (canEdit.value) {
@@ -108,11 +138,12 @@ onMounted(() => {
 
       <div class="my-3" v-if="feature.video">
         <video-player
-          :src="feature.video"
+          :sources="videoSources"
           :poster="feature.video_thumbnail"
           :controls="true" :fluid="true" :aspectRatio="'16:9'"
           :disablePictureInPicture="true"
           :plugins="videoPluginOptions"
+          :html5="videoHtml5Options"
         >
           <template v-slot="{ player, state }">
             <div class="vjs-title-bar" v-if="feature.english_names[0]?.name">
