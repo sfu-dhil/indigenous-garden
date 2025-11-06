@@ -45,6 +45,8 @@ export const useDisplayStore = defineStore('display', {
     menuPlantListShown: false,
     menuFeatureListShown: false,
     menuAcknowledgementsShown: false,
+    menuContextualEthicalFramingShown: false,
+    menuRelationalInterconnectedTeachingsShown: false,
 
     // third level menus
     menuFeatureShown: false,
@@ -79,6 +81,8 @@ export const useDisplayStore = defineStore('display', {
       this.menuMainShown = false
       this.menuHistoryShown = false
       this.menuIndianResidentialSchoolsMapShown = false
+      this.menuContextualEthicalFramingShown = false
+      this.menuRelationalInterconnectedTeachingsShown = false
       this.menuPlantListShown = false
       this.menuFeatureListShown = false
       this.menuAcknowledgementsShown = false
@@ -95,6 +99,14 @@ export const useDisplayStore = defineStore('display', {
     showIndianResidentialSchoolsMap() {
       this.showMainMenu()
       this.menuIndianResidentialSchoolsMapShown = true
+    },
+    showContextualEthicalFraming() {
+      this.showMainMenu()
+      this.menuContextualEthicalFramingShown = true
+    },
+    showRelationalInterconnectedTeachings() {
+      this.showMainMenu()
+      this.menuRelationalInterconnectedTeachingsShown = true
     },
     showPlantList() {
       this.showMainMenu()

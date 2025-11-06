@@ -42,6 +42,18 @@ onMounted(() => {
           </button>
         </li>
         <li class="nav-item">
+          <button @click="() => displayStore.showContextualEthicalFraming()" class="nav-link">
+            <i class="fa-solid fa-file-circle-question"></i>
+            Contextual and Ethical Framing
+          </button>
+        </li>
+        <li class="nav-item">
+          <button @click="() => displayStore.showRelationalInterconnectedTeachings()" class="nav-link">
+            <i class="fa-solid fa-circle-nodes"></i>
+            Relational and Interconnected Teachings
+          </button>
+        </li>
+        <li class="nav-item">
           <button @click="() => displayStore.showPlantList()" class="nav-link">
             <i class="fa-solid fa-seedling"></i>
             Plants

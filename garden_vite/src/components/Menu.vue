@@ -5,6 +5,8 @@ import { useDisplayStore } from '../stores/display.js'
 import Main from './menu/Main.vue'
 import History from './menu/History.vue'
 import IndianResidentialSchoolsMap from './menu/IndianResidentialSchoolsMap.vue'
+import ContextualEthicalFraming from './menu/ContextualEthicalFraming.vue'
+import RelationalInterconnectedTeachings from './menu/RelationalInterconnectedTeachings.vue'
 import FeatureList from './menu/FeatureList.vue'
 import Acknowledgements from './menu/Acknowledgements.vue'
 import Feature from './menu/Feature.vue'
@@ -26,6 +28,8 @@ const {
   <Main class="menu-lvl1"></Main>
   <History class="menu-lvl2 menu-wide"></History>
   <IndianResidentialSchoolsMap class="menu-lvl2 menu-wide"></IndianResidentialSchoolsMap>
+  <ContextualEthicalFraming class="menu-lvl2 menu-wide"></ContextualEthicalFraming>
+  <RelationalInterconnectedTeachings class="menu-lvl2 menu-wide"></RelationalInterconnectedTeachings>
   <FeatureList class="menu-lvl2" label="Plants" :items="plants" v-model:shown="menuPlantListShown"></FeatureList>
   <FeatureList class="menu-lvl2" label="Features" :items="gardenFeatures" v-model:shown="menuFeatureListShown"></FeatureList>
   <Acknowledgements class="menu-lvl2 menu-wide"></Acknowledgements>
