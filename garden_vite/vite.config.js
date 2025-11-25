@@ -29,10 +29,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'legacy'
-      },
-      sass: {
-        api: 'legacy'
+        api: 'legacy',
+        silenceDeprecations: ['import', 'legacy-js-api', 'color-functions', 'global-builtin'],
       },
     }
   },

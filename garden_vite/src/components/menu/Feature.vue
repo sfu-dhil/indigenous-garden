@@ -1,10 +1,11 @@
 <script setup>
-import { ref, useTemplateRef, onMounted, watch, computed, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, watch, computed, onBeforeUnmount, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDataStore } from '../../stores/data.js'
 import { useDisplayStore, useDisplaySettingStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 import { useMediaStore } from '../../stores/media.js'
+import VideoPlayerWrapper from '../VideoPlayerWrapper.vue'
 import DisplayName from '../DisplayName.vue'
 
 const displayStore = useDisplayStore()
@@ -28,42 +29,6 @@ const isSafari = () => {
 }
 
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
-const videoSources = computed(() => {
-  if (!feature.value?.video) {
-    return []
-  }
-  const sources = [{
-    src: feature.value.video,
-    type: 'application/dash+xml',
-  }, {
-    // we get a HLS playlist for free when generating the mpeg-dash with ffmpeg
-    src: feature.value.video.replace(/\/[^\/]+$/, '/master.m3u8'),
-    type: 'application/x-mpegURL',
-  }]
-  return isSafari() ? sources.reverse() : sources
-})
-const videoPluginOptions = computed(() => {
-  const pluginOptions = {
-    qualityLevels: {},
-    theme: { skin: 'slate' },
-  }
-  if (!isSafari()) {
-    pluginOptions.hlsQualitySelector = { displayCurrentQuality: true }
-  }
-  if (feature.value?.video_thumbnails_vtt) {
-    pluginOptions.vttThumbnails = { url: feature.value.video_thumbnails_vtt }
-  }
-  return pluginOptions
-})
-const videoHtml5Options = computed(() => {
-  const html5Options = {}
-  if (isSafari()) {
-    html5Options.nativeTextTracks = false
-    html5Options.nativeAudioTracks = false
-    // html5Options.nativeVideoTracks = false
-  }
-  return html5Options
-})
 const editPointHref = computed(() => {
   if (canEdit.value) {
     let pointType = 'point' // overhead
@@ -120,7 +85,7 @@ onMounted(() => {
       </div>
       <button type="button" class="btn-close mb-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div v-if="feature" class="offcanvas-body">
+    <div v-if="feature && menuFeatureShown" class="offcanvas-body">
       <div class="row row-cols-4 g-2">
         <div v-for="(image, index) in feature.images" class="col feature-gallery-image p-0 m-0"
             :title="image.description" @click="() => selectedGalleryIndex = index">
@@ -137,22 +102,12 @@ onMounted(() => {
       </h2>
 
       <div class="my-3" v-if="feature.video">
-        <video-player
-          :sources="videoSources"
-          :poster="feature.video_thumbnail"
-          :controls="true" :fluid="true" :aspectRatio="'16:9'"
-          :disablePictureInPicture="true"
-          :plugins="videoPluginOptions"
-          :html5="videoHtml5Options"
-        >
-          <template v-slot="{ player, state }">
-            <div class="vjs-title-bar" v-if="feature.english_names[0]?.name">
-              <div class="vjs-title-bar-title">
-                {{ feature.english_names[0].name  }}
-              </div>
-            </div>
-          </template>
-        </video-player>
+        <VideoPlayerWrapper
+          :video="feature.video"
+          :title="feature.english_names[0]?.name"
+          :thumbnail="feature.video_thumbnail"
+          :thumbnails_vtt="feature.video_thumbnails_vtt"
+        ></VideoPlayerWrapper>
       </div>
       <div class="my-3" v-html="feature.content"></div>
 

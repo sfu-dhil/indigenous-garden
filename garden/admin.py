@@ -116,6 +116,8 @@ class FeatureAdmin(ModelAdmin):
         job_count = 0
         for feature in queryset:
             if feature.has_video_original():
+                # uncomment for testing
+                # task_video_dash_generator(feature.pk)
                 enqueue(task_video_dash_generator, feature.pk)
                 job_count+=1
         self.message_user(
