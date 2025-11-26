@@ -27,7 +27,7 @@ onMounted(() => {
       <h2 class="offcanvas-title h5">Indigenous Garden</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" v-if="menuMainShown">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
           <button @click="() => displayStore.showHistory()" class="nav-link">

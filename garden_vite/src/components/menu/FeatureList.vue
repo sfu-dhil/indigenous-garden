@@ -32,7 +32,7 @@ onMounted(() => {
       <h2 class="offcanvas-title h5">{{ label }}</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" v-if="shown">
       <FeatureListItem v-for="item in items" :item="item"></FeatureListItem>
     </div>
   </div>

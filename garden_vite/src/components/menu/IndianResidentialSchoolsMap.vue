@@ -28,7 +28,7 @@ onMounted(() => {
       <h2 class="offcanvas-title h5">Indian Residential Schools Map</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" v-if="menuIndianResidentialSchoolsMapShown">
       <figure class="figure w-100">
         <img class="figure-img w-100 object-fit-contain m-0"
               loading="lazy" fetchpriority="low"
