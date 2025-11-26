@@ -65,7 +65,7 @@ services:
 
   app: &app
     container_name: indigenous_garden_app
-    # image: dhil/indigenous_garden
+    # image: ghcr.io/sfu-dhil/indigenous-garden
     build:
       context: .
       target: indigenous-garden
