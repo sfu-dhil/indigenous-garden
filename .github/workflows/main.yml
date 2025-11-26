@@ -9,6 +9,9 @@ on:
     tags:
     - 'v*'
 
+env:
+  GITLAB_PIPELINE_TRIGGER_URL: https://git.lib.sfu.ca/api/v4/projects/562/trigger/pipeline
+
 permissions:
   packages: write
   contents: read
@@ -27,9 +30,9 @@ jobs:
         - platform: linux/amd64
           runner: ubuntu-latest
         # - platform: linux/arm/v6 # No Node container for platform
-        #   runner: ubuntu-latest
+        #   runner: ubuntu-24.04-arm
         # - platform: linux/arm/v7 # psycopg[binary] install issue
-        #   runner: ubuntu-latest
+        #   runner: ubuntu-24.04-arm
         - platform: linux/arm64
           runner: ubuntu-24.04-arm
         - platform: linux/arm64/v8
@@ -140,4 +143,4 @@ jobs:
           -F token=${{ secrets.GITLAB_CI_TOKEN }} \
           -F "ref=main" \
           -F "variables[APP_RELEASE_TAG]=${{github.ref_name}}" \
-          https://git.lib.sfu.ca/api/v4/projects/562/trigger/pipeline
+          ${{ env.GITLAB_PIPELINE_TRIGGER_URL }}
