@@ -1,3 +1,6 @@
+![Docker Image Latest Badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/latest_tag?trim=major&label=latest)
+![Docker Image Size badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/size)
+
 # Indigenous Garden Map & Educational tool
 
 The Indigenous Gardens grows on the traditional and unceded territories of the kʷikʷəƛ̓əm (Kwikwetlem), Sḵwx̱wú7mesh Úxwumixw (Squamish), Səl̓ilw̓ətaʔɬ (Tsleil-Waututh), and Xʷməθkʷəy̓əm (Musqueam), who are the original caretakers of these lands and have been since time immemorial. We have a responsibility to ensure that their traditional ways of knowing, being, and doing are woven within this space and to give garden visitors an opportunity to reflect on their relationships with the natural world. Indigenous knowledge systems carry rich knowledge of plants and their traditional uses that result from being in relationship with these lands for thousands of years. This project will allow us to learn, preserve and share traditional plant knowledge with garden visitors in a unique and interactive way. The project will be used for general garden navigation as well as for learning and reflection.
