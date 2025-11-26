@@ -1,5 +1,5 @@
-![Docker Image Latest Badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/latest_tag?trim=major&label=latest)
-![Docker Image Size badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/size)
+[![Docker Image Latest Badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/latest_tag?trim=major&label=latest)](https://github.com/sfu-dhil/indigenous-garden/pkgs/container/indigenous-garden)
+[![Docker Image Size badge](https://ghcr-badge.egpl.dev/sfu-dhil/indigenous-garden/size)](https://github.com/sfu-dhil/indigenous-garden/pkgs/container/indigenous-garden)
 
 # Indigenous Garden Map & Educational tool
 
