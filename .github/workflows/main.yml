@@ -11,9 +11,6 @@ on:
 
 permissions:
   packages: write
-  # contents: read
-  # attestations: write
-  # id-token: write
 
 jobs:
   build:
