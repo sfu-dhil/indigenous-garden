@@ -1,7 +1,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDataStore } from '../stores/data'
 import { usePanoramaStore } from '../stores/panorama.js'
@@ -55,9 +55,10 @@ const hotSpotEditTooltip = (hotSpotDiv) => {
 }
 const hotSpotTooltip = (hotSpotDiv, {featureId, pointId}) => {
   const feature = useDataStore().getFeature(featureId)
+  const fillColor = feature.feature_type == 'GARDEN_FEATURE' ? '#6495ED' : '#7cb341'
   hotSpotDiv.innerHTML = `
     <div class="hot-spot-wrapper hot-spot" data-feature-id="${feature.id}">
-      <i class="fa-solid fa-location-pin" style="color: #7cb341"></i>
+      <i class="fa-solid fa-location-pin" style="color: ${fillColor}"></i>
       <span class="number-label">${feature.number}</span>
     </div>
   `
@@ -65,7 +66,7 @@ const hotSpotTooltip = (hotSpotDiv, {featureId, pointId}) => {
   hotSpotDiv.addEventListener('mouseout', () => hoverFeatureId.value = null)
 }
 
-const preview = `/static/images/panorama_${scene.value}_thumbnail.jpg`
+const preview = `/static/images/${scene.value}.png`
 const location1Scene = {
   title: 'Fire Pit',
   type: 'multires',
@@ -123,14 +124,14 @@ if (!displaySettingStore.isViewLocked()) {
   location3Scene.hotSpots.push({ type: 'scene', yaw: 155.36307243810427, pitch: -19.856401239086544, sceneId: 'panorama_location_1', text: 'Jump to Fire Pit' })
   location3Scene.hotSpots.push({ type: 'scene', yaw: 95.54536960098842, pitch: -7.897351828203455, sceneId: 'panorama_location_2', text: 'Jump to location' })
 }
-const pannellumSrc = {
+const pannellumSrc = computed(() => ({
   default: { firstScene: scene.value },
   scenes: {
     panorama_location_1: location1Scene,
     panorama_location_2: location2Scene,
     panorama_location_3: location3Scene,
   }
-}
+}))
 const zoomIn = () => hfov.value = hfov.value - 10
 const zoomOut = () => hfov.value = hfov.value + 10
 
@@ -267,17 +268,17 @@ onMounted(() => {
   }
   .hot-spot-wrapper .number-label {
     color: white;
-    font-size: 0.7em;
+    font-size: 1em;
     z-index: 1001;
     position: absolute;
     left: 0;
     right: 0;
-    bottom: calc(50% - 0.35em);
+    bottom: calc(50% - 0.5em);
     text-align: center;
   }
 
   .hot-spot-wrapper i {
-    font-size: 1.6em;
+    font-size: 2em;
     z-index: 1000;
   }
 

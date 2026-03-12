@@ -13,6 +13,7 @@ from .models import Feature, Image, Point, \
     EnglishName, WesternScientificName, \
     HalkomelemName, SquamishName
 from .schema import FeatureSchema
+from garden_config.helper import get_interface_content_dict
 
 class ImageInlineAdmin(TabularInline):
     fields = ['image', 'description', 'license']
@@ -55,6 +56,7 @@ def add_map_context(extra_context, lock_view=None, is_edit_mode=False, point_id=
 
     extra_context['is_map'] = True
     extra_context['features'] = json.dumps(data)
+    extra_context['interface_content'] = json.dumps(get_interface_content_dict())
     extra_context['display_options'] = json.dumps({
         'lockView': lock_view,
         'canEdit': True,

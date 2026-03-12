@@ -1,4 +1,4 @@
-import videojs from 'video.js';
+import videojs from 'video.js'
 
 // based on https://github.com/Teyuto/videojs-vtt-thumbnails but modified for vite and fixing some things
 function vttThumbnails(options) {

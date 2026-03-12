@@ -1,29 +1,32 @@
 # Django
-Django==5.2.8
-django-admin-interface==0.30.1
-django-tinymce==4.1.0
-django-advance-thumbnail==1.0.2
-django-health-check==3.19.2
+Django==6.0.3
+django-admin-interface==0.32.0
+django-tinymce==5.0.0
+django-advance-thumbnail==1.1.2
+django-health-check==3.20.8
 django-cleanup==9.0.0
-django-ninja==1.4.3
+django-ninja==1.5.3
 django-constrainedfilefield==5.0.0
 django-constrainedfilefield[filetype]
 django-async-upload-kg==4.0.5
 django-vite==3.1.0
-django-rq==3.2.1
+django-rq==3.2.2
 django-cache-cleaner==0.2.0
+django-solo==2.5.1
+django-admin-sortable2==2.3.1
+django-jsonform==2.23.2
 
 # Environment variables
-django-environ==0.12.0
-python-dotenv==1.1.0
+django-environ==0.13.0
+python-dotenv==1.2.1
 
 # prod server
-gunicorn==23.0.0
+gunicorn==25.1.0
 
 # ffmpeg for hls/dash and video thumbnails
-Pillow==11.3.0
+pillow==12.1.1
 python-ffmpeg==2.0.12
 natsort==8.4.0
 
-# Dataabse (psycopg[binary] cannot be locked to specific version number)
+# Database (psycopg[binary] cannot be locked to specific version number)
 psycopg[binary]

@@ -1,4 +1,4 @@
-import 'vite/modulepreload-polyfill';
+import 'vite/modulepreload-polyfill'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -25,6 +25,7 @@ mountElList.forEach((mountEl) => {
     ...mountEl.dataset,
     features: JSON.parse(mountEl.dataset.featuresJson),
     displayOptions: JSON.parse(mountEl.dataset.displayOptionsJson),
+    interfaceContent: JSON.parse(mountEl.dataset.interfaceContentJson),
   })
   app.use(pinia)
   app.use(OpenLayersMap)

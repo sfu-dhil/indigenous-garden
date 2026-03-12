@@ -61,7 +61,7 @@ const videoHtml5Options = computed(() => {
     <template v-slot="{ player, state }">
       <div class="vjs-title-bar" v-if="title">
         <div class="vjs-title-bar-title">
-          {{ title  }}
+          {{ title }}
         </div>
       </div>
     </template>
