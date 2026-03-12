@@ -4,6 +4,7 @@ from django.views.decorators.cache import cache_page
 from .models import Feature
 from .schema import FeatureSchema
 from garden_app.settings import CACHE_SECONDS
+from garden_config.helper import get_interface_content_dict
 
 @cache_page(CACHE_SECONDS)
 def dashboard(request):
@@ -17,4 +18,5 @@ def dashboard(request):
     return render(request, 'dashboard.html', {
         'features': json.dumps(data),
         'display_options': json.dumps({}),
+        'interface_content': json.dumps(get_interface_content_dict()),
     })

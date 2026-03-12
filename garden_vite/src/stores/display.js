@@ -131,3 +131,16 @@ export const useDisplayStore = defineStore('display', {
   },
 })
 
+export const useInterfaceContentStore = defineStore('interface-content', {
+  state: () => ({
+    welcomePopupContent: {},
+    acknowledgementsContent: {},
+    contextualEthicalFramingContent: {},
+    historyContent: {},
+    relationalInterconnectedTeachingsContent: {},
+    residentialSchoolsContent: {},
+  }),
+  getters: {},
+  actions: {},
+  persist: false,
+})

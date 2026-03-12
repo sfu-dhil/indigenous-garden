@@ -5,7 +5,7 @@ import GardenMap from './components/GardenMap.vue'
 import PanoramaView from './components/PanoramaView.vue'
 import ModalWelcomeMessage from './components/ModalWelcomeMessage.vue'
 import Menu from './components/Menu.vue'
-import { useDisplayStore, useDisplaySettingStore } from './stores/display.js'
+import { useDisplayStore, useDisplaySettingStore, useInterfaceContentStore } from './stores/display.js'
 import { usePanoramaStore } from './stores/panorama.js'
 import { useDataStore } from './stores/data.js'
 
@@ -15,6 +15,10 @@ const props = defineProps({
     required: true,
   },
   displayOptions: {
+    type: Object,
+    required: true,
+  },
+  interfaceContent: {
     type: Object,
     required: true,
   },
@@ -31,6 +35,15 @@ const displayStore = useDisplayStore()
 const {
   panoramaViewShown,
 } = storeToRefs(displayStore)
+const interfaceContentStore = useInterfaceContentStore()
+const {
+  welcomePopupContent,
+  acknowledgementsContent,
+  contextualEthicalFramingContent,
+  historyContent,
+  relationalInterconnectedTeachingsContent,
+  residentialSchoolsContent,
+} = storeToRefs(interfaceContentStore)
 const panoramaStore = usePanoramaStore()
 const {
   scene,
@@ -46,6 +59,13 @@ canEdit.value = !!props.displayOptions.canEdit
 isEditMode.value = !!props.displayOptions.isEditMode
 editPointId.value = props.displayOptions.editPointId
 features.value = props.features
+
+welcomePopupContent.value = props.interfaceContent.welcome_popup
+acknowledgementsContent.value = props.interfaceContent.acknowledgements
+contextualEthicalFramingContent.value = props.interfaceContent.contextual_ethical_framing
+historyContent.value = props.interfaceContent.history
+relationalInterconnectedTeachingsContent.value = props.interfaceContent.relational_interconnected_teachings
+residentialSchoolsContent.value = props.interfaceContent.residential_schools
 
 if (displaySettingStore.isOverheadViewLocked()) {
   panoramaViewShown.value = false

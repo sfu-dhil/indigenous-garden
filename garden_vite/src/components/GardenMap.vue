@@ -45,7 +45,7 @@ const overrideEditFeatureStyle = (openLayersFeature) => {
         text: '\uf041',
         scale: 1.6,
         textBaseline: 'bottom',
-        font: 'bold 16px "Font Awesome 6 Free"',
+        font: 'bold 16px "Font Awesome 7 Free"',
         fill: new Fill({ color: 'red' }),
         stroke: new Stroke({ color: 'white', width: 3 }),
       }),
@@ -56,14 +56,14 @@ const overrideEditFeatureStyle = (openLayersFeature) => {
 const overrideFeatureStyle = (openLayersFeature) => {
   const featureId = openLayersFeature.get('featureId')
   const feature = useDataStore().getFeature(featureId)
-  const fillColor = feature.feature_type == 'FEATURE' ? '#6495ED' : '#7cb341'
+  const fillColor = feature.feature_type == 'GARDEN_FEATURE' ? '#6495ED' : '#7cb341'
   return [
     new Style({
       text: new Text({
         text: '\uf041',
-        scale: 1.6,
+        scale: 2,
         textBaseline: 'bottom',
-        font: 'bold 1em "Font Awesome 6 Free"',
+        font: 'bold 1em "Font Awesome 7 Free"',
         fill: new Fill({ color: fillColor }),
         stroke: new Stroke({ color: 'white', width: 3 }),
       }),
@@ -71,11 +71,11 @@ const overrideFeatureStyle = (openLayersFeature) => {
     new Style({
       text: new Text({
         text: `${feature.number}`,
-        scale: 0.8,
+        scale: 1,
         textBaseline: 'bottom',
         font: 'bold 1em "BC Sans"',
         // offsetX: `${number}`.length - 1,
-        offsetY: -8,
+        offsetY: -12,
         fill: new Fill({ color: 'white' }),
       }),
     }),
@@ -213,7 +213,7 @@ const {
         </ol-source-vector>
       </ol-vector-layer>
 
-      <ol-interaction-dragrotatezoom />
+      <ol-interaction-drag-rotate-and-zoom />
       <ol-zoom-control zoomOutLabel="–" />
       <ol-rotate-control :autoHide="false" :resetNorth="resetNorth" :label="rotationLabel()" />
       <ol-toggle-control

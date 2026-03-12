@@ -58,6 +58,8 @@ example:
 ### Viewing logs (each container)
 
     docker logs -f indigenous_garden_app
+    docker logs -f indigenous_garden_vite
+    docker logs -f indigenous_garden_nginx
     docker logs -f indigenous_garden_db
     docker logs -f indigenous_garden_mail
 
@@ -107,7 +109,7 @@ Create new migrations
 After you update a dependency make sure to rebuild the images
 
     docker compose down
-    docker compose up -d
+    docker compose up -d --build
 
 ### Pip (python)
 
@@ -140,25 +142,36 @@ Then backup the postgres data folder
 
     cp -R .data/postgres .data/postgres-backup
 
-Finally run a handy docker image [pgautoupgrade](https://github.com/pgautoupgrade/docker-pgautoupgrade) for upgrading postgres (match postgres version and make sure to use bookworm to match default postgres linux)
+Setup the new version dir
 
-    docker run --rm -it \
-        -v ${PWD}/.data/postgres:/var/lib/postgresql/data/pgdata \
-        -e POSTGRES_USER=<POSTGRES_USER> \
-        -e POSTGRES_PASSWORD=<POSTGRES_PASSWORD> \
-        -e PGDATA=/var/lib/postgresql/data/pgdata \
-        -e PGAUTO_ONESHOT=yes \
-        pgautoupgrade/pgautoupgrade:{VERSION-HERE}-bookworm
+    sudo mkdir -p .data/postgres/<NEW POSTGRES VERSION>/docker
+    sudo chown 999:999 -R .data/postgres/<NEW POSTGRES VERSION>
+    # example:
+    sudo mkdir -p .data/postgres/18/docker
+    sudo chown 999:999 -R .data/postgres/18
+
+
+Using `https://github.com/tianon/docker-postgres-upgrade` to upgrade the postgres version
+
+    docker run --rm \
+        --volume .data/postgres:/var/lib/postgresql \
+        --env PGDATAOLD=/var/lib/postgresql/<OLD POSTGRES VERSION>/docker \
+        --env PGDATANEW=/var/lib/postgresql/<NEW POSTGRES VERSION>/docker \
+        --env POSTGRES_USER=indigenous_garden \
+        --env POSTGRES_PASSWORD=password \
+        tianon/postgres-upgrade:<OLD POSTGRES VERSION>-to-<NEW POSTGRES VERSION> \
+        --link
 
 example:
 
-    docker run --rm -it \
-        -v ${PWD}/.data/postgres:/var/lib/postgresql/data/pgdata \
-        -e POSTGRES_USER=indigenous_garden \
-        -e POSTGRES_PASSWORD=password \
-        -e PGDATA=/var/lib/postgresql/data/pgdata \
-        -e PGAUTO_ONESHOT=yes \
-        pgautoupgrade/pgautoupgrade:17-bookworm
+    docker run --rm \
+        --volume .data/postgres:/var/lib/postgresql \
+        --env PGDATAOLD=/var/lib/postgresql/17/docker \
+        --env PGDATANEW=/var/lib/postgresql/18/docker \
+        --env POSTGRES_USER=indigenous_garden \
+        --env POSTGRES_PASSWORD=password \
+        tianon/postgres-upgrade:17-to-18 \
+        --link
 
 ## Creating map tiles of static image
 

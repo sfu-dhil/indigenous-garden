@@ -48,15 +48,21 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     'garden.apps.GardenConfig',
+    'garden_config.apps.GardenConfig',
     'admin_interface',
     'colorfield',
     'tinymce',
+    'solo',
+    'adminsortable2',
+    'django_jsonform',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django.contrib.gis',
+    'django.contrib.postgres',
     'health_check',
     'django_cleanup.apps.CleanupConfig',
     'cache_cleaner',
@@ -97,7 +103,7 @@ TEMPLATES = [
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/django_cache',
+        'LOCATION': '/django-cache',
     }
 }
 ONE_MINUTE = 60
@@ -147,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'America/Vancouver'
 
@@ -215,9 +221,9 @@ TINYMCE_DEFAULT_CONFIG = {
     'branding': False,
     'menubar': False,
     'plugins': 'autolink, code, link, anchor, lists, table, quickbars, wordcount, pagebreak, nonbreaking',
-    'toolbar': 'undo redo | numlist bullist | fontfamily | fontsize | alignleft aligncenter alignright | link anchor | hr | removeformat',
+    'toolbar': 'undo redo | numlist bullist | styles | fontfamily | fontsize | alignleft aligncenter alignright | link anchor | hr | removeformat',
     'quickbars_insert_toolbar': False,
-    'quickbars_selection_toolbar': 'bold italic underline strikethrough | fontfamily | fontsize | forecolor | blockquote',
+    'quickbars_selection_toolbar': 'bold italic underline strikethrough | styles | fontfamily | fontsize | forecolor | blockquote',
     'contextmenu': 'undo redo | inserttable | cell row column deletetable',
     'font_family_formats': 'Arial=arial,helvetica,sans-serif;First Nations Unicode="First Nations Unicode";',
 }
@@ -229,6 +235,6 @@ RQ_QUEUES = {
         'HOST': env('REDIS_HOST', default=''),
         'PORT': env.int('REDIS_PORT', default=6379),
         'DB': env.int('REDIS_DB', default=0),
-        'DEFAULT_TIMEOUT': env.int('REDIS_DEFAULT_TIMEOUT', default=360),
+        'DEFAULT_TIMEOUT': env.int('REDIS_DEFAULT_TIMEOUT', default=(10 * ONE_MINUTE)),
     }
 }

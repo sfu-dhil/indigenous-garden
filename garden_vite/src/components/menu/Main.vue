@@ -1,13 +1,21 @@
 <script setup>
 import { useTemplateRef, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useDisplayStore } from '../../stores/display.js'
+import { useDisplayStore, useInterfaceContentStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
 
 const displayStore = useDisplayStore()
 const {
   menuMainShown,
 } = storeToRefs(displayStore)
+const interfaceContentStore = useInterfaceContentStore()
+const {
+  historyContent,
+  residentialSchoolsContent,
+  contextualEthicalFramingContent,
+  relationalInterconnectedTeachingsContent,
+  acknowledgementsContent,
+} = storeToRefs(interfaceContentStore)
 
 const offCanvasEl = useTemplateRef('menu-el')
 
@@ -32,25 +40,25 @@ onMounted(() => {
         <li class="nav-item">
           <button @click="() => displayStore.showHistory()" class="nav-link">
             <i class="fa-solid fa-timeline"></i>
-            History
+            {{ historyContent.heading }}
           </button>
         </li>
         <li class="nav-item">
           <button @click="() => displayStore.showIndianResidentialSchoolsMap()" class="nav-link">
             <i class="fa-solid fa-children"></i>
-            Indian Residential Schools Map
+            {{ residentialSchoolsContent.heading }}
           </button>
         </li>
         <li class="nav-item">
           <button @click="() => displayStore.showContextualEthicalFraming()" class="nav-link">
             <i class="fa-solid fa-file-circle-question"></i>
-            Contextual and Ethical Framing
+            {{ contextualEthicalFramingContent.heading }}
           </button>
         </li>
         <li class="nav-item">
           <button @click="() => displayStore.showRelationalInterconnectedTeachings()" class="nav-link">
             <i class="fa-solid fa-circle-nodes"></i>
-            Relational and Interconnected Teachings
+            {{ relationalInterconnectedTeachingsContent.heading }}
           </button>
         </li>
         <li class="nav-item">
@@ -68,7 +76,7 @@ onMounted(() => {
         <li class="nav-item">
           <button @click="() => displayStore.showAcknowledgements()" class="nav-link">
             <i class="fa-solid fa-book-open"></i>
-            Acknowledgements
+            {{ acknowledgementsContent.heading }}
           </button>
         </li>
       </ul>
