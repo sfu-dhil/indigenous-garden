@@ -22,7 +22,7 @@ pinia.use(piniaPluginPersistedstate)
 const mountElList = document.querySelectorAll('#garden-app')
 mountElList.forEach((mountEl) => {
   const app = createApp(GardenApp, {
-    ...mountEl.dataset,
+    // ...mountEl.dataset,
     features: JSON.parse(mountEl.dataset.featuresJson),
     displayOptions: JSON.parse(mountEl.dataset.displayOptionsJson),
     interfaceContent: JSON.parse(mountEl.dataset.interfaceContentJson),

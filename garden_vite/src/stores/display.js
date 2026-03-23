@@ -139,6 +139,7 @@ export const useInterfaceContentStore = defineStore('interface-content', {
     historyContent: {},
     relationalInterconnectedTeachingsContent: {},
     residentialSchoolsContent: {},
+    overheadMapContent: {},
   }),
   getters: {},
   actions: {},

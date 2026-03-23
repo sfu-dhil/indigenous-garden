@@ -47,6 +47,16 @@ onMounted(() => {
 
       <figure class="figure w-100">
         <VideoPlayerWrapper
+          :video="websiteOrigin+'/static/videos/ground_breaking_ceremony/master.mpd'"
+          title="Ground Breaking Ceremony"
+          :thumbnail="websiteOrigin+'/static/thumbnails/ground_breaking_ceremony.png'"
+          :thumbnails_vtt="websiteOrigin+'/static/thumbnails/ground_breaking_ceremony/thumbnails.vtt'"
+        ></VideoPlayerWrapper>
+      </figure>
+      <div v-if="historyContent.content_4" v-html="historyContent.content_4" />
+
+      <figure class="figure w-100">
+        <VideoPlayerWrapper
           :video="websiteOrigin+'/static/videos/garden_design_and_identifying_the_plants/master.mpd'"
           title="Design & Identifying the Plants"
           :thumbnail="websiteOrigin+'/static/thumbnails/garden_design_and_identifying_the_plants.png'"
@@ -64,16 +74,6 @@ onMounted(() => {
         ></VideoPlayerWrapper>
       </figure>
       <div v-if="historyContent.content_3" v-html="historyContent.content_3" />
-
-      <figure class="figure w-100">
-        <VideoPlayerWrapper
-          :video="websiteOrigin+'/static/videos/ground_breaking_ceremony/master.mpd'"
-          title="Ground Breaking Ceremony"
-          :thumbnail="websiteOrigin+'/static/thumbnails/ground_breaking_ceremony.png'"
-          :thumbnails_vtt="websiteOrigin+'/static/thumbnails/ground_breaking_ceremony/thumbnails.vtt'"
-        ></VideoPlayerWrapper>
-      </figure>
-      <div v-if="historyContent.content_4" v-html="historyContent.content_4" />
 
       <figure class="figure w-100">
         <VideoPlayerWrapper

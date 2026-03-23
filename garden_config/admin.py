@@ -12,7 +12,7 @@ from django.contrib import messages
 
 from .models import WelcomePopup, History, ResidentialSchools, \
     ContextualEthicalFraming, RelationalInterconnectedTeachings, \
-    Acknowledgements, AcknowledgementsContentBlock
+    Acknowledgements, AcknowledgementsContentBlock, OverheadMap
 
 # Admin Panel Items
 class AcknowledgementsContentBlockInline(SortableTabularInline):
@@ -153,6 +153,24 @@ class AcknowledgementsAdmin(SortableAdminBase, SingletonModelAdmin):
     inlines = [
         AcknowledgementsContentBlockInline,
     ]
+
+    # Fix user message success vs info
+    def response_change(self, request, obj):
+        msg = _("{obj} was changed successfully.").format(obj=force_str(obj))
+        if "_continue" in request.POST:
+            self.message_user(request, msg + " " + _("You may edit it again below."), messages.SUCCESS)
+            return HttpResponseRedirect(request.path)
+        else:
+            self.message_user(request, msg, messages.SUCCESS)
+            return HttpResponseRedirect("../../")
+
+@admin.register(OverheadMap)
+class OverheadMapAdmin(SingletonModelAdmin):
+    formfield_overrides = {
+        models.TextField: {
+            "widget": TinyMCE,
+        },
+    }
 
     # Fix user message success vs info
     def response_change(self, request, obj):

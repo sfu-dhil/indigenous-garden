@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from html import unescape
 from django.contrib.admin import ModelAdmin, TabularInline
+from django.core.serializers.json import DjangoJSONEncoder
 from tinymce.widgets import TinyMCE
 from django_rq import enqueue
 from django.contrib import messages
@@ -56,7 +57,7 @@ def add_map_context(extra_context, lock_view=None, is_edit_mode=False, point_id=
 
     extra_context['is_map'] = True
     extra_context['features'] = json.dumps(data)
-    extra_context['interface_content'] = json.dumps(get_interface_content_dict())
+    extra_context['interface_content'] = json.dumps(get_interface_content_dict(), cls=DjangoJSONEncoder)
     extra_context['display_options'] = json.dumps({
         'lockView': lock_view,
         'canEdit': True,

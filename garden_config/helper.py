@@ -1,11 +1,11 @@
 
 from .models import WelcomePopup, History, ResidentialSchools, \
     ContextualEthicalFraming, RelationalInterconnectedTeachings, \
-    Acknowledgements
+    Acknowledgements, OverheadMap
 
 from .schema import WelcomePopupSchema, HistorySchema, ResidentialSchoolsSchema, \
     ContextualEthicalFramingSchema, RelationalInterconnectedTeachingsSchema, \
-    AcknowledgementsSchema
+    AcknowledgementsSchema, OverheadMapSchema
 
 def get_interface_content_dict():
     return {
@@ -15,4 +15,5 @@ def get_interface_content_dict():
         'contextual_ethical_framing': ContextualEthicalFramingSchema.from_orm(ContextualEthicalFraming.get_solo()).dict(),
         'relational_interconnected_teachings': RelationalInterconnectedTeachingsSchema.from_orm(RelationalInterconnectedTeachings.get_solo()).dict(),
         'acknowledgements': AcknowledgementsSchema.from_orm(Acknowledgements.get_solo()).dict(),
+        'overhead_map': OverheadMapSchema.from_orm(OverheadMap.get_solo()).dict(),
     }

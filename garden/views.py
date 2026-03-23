@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import Feature
 from .schema import FeatureSchema
 from garden_app.settings import CACHE_SECONDS
@@ -18,5 +19,5 @@ def dashboard(request):
     return render(request, 'dashboard.html', {
         'features': json.dumps(data),
         'display_options': json.dumps({}),
-        'interface_content': json.dumps(get_interface_content_dict()),
+        'interface_content': json.dumps(get_interface_content_dict(), cls=DjangoJSONEncoder),
     })

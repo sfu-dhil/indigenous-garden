@@ -68,13 +68,7 @@ onMounted(() => {
           <div v-if="welcomePopupContent.content" v-html="welcomePopupContent.content" />
         </div>
         <div class="modal-footer">
-          <button data-bs-dismiss="modal" @click="displayStore.showHistory()" class="btn btn-primary ms-auto">
-            History
-          </button>
-          <button data-bs-dismiss="modal" @click="displayStore.showIndianResidentialSchoolsMap()" class="btn btn-primary">
-            Indian Residential Schools Map
-          </button>
-          <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary mx-auto" data-bs-dismiss="modal">Step into the Garden</button>
         </div>
       </div>
     </div>

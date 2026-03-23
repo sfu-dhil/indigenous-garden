@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from .models import WelcomePopup, History, ResidentialSchools, \
     ContextualEthicalFraming, RelationalInterconnectedTeachings, \
-    Acknowledgements, AcknowledgementsContentBlock
+    Acknowledgements, AcknowledgementsContentBlock, OverheadMap
 
 
 class WelcomePopupSchema(ModelSchema):
@@ -61,3 +61,8 @@ class AcknowledgementsSchema(ModelSchema):
         fields = [
             'heading', 'content',
         ]
+
+class OverheadMapSchema(ModelSchema):
+    class Meta:
+        model = OverheadMap
+        fields = ['date']

@@ -8,8 +8,7 @@ import { easeOut } from "ol/easing"
 import { Collection } from 'ol'
 import { useDataStore } from '../stores/data.js'
 import { useMapStore } from '../stores/map.js'
-import { useDisplayStore, useDisplaySettingStore } from '../stores/display.js'
-
+import { useDisplayStore, useDisplaySettingStore, useInterfaceContentStore } from '../stores/display.js'
 
 const mapStore = useMapStore()
 const {
@@ -31,6 +30,10 @@ const displaySettingStore = useDisplaySettingStore()
 const {
   isEditMode,
 } = storeToRefs(displaySettingStore)
+const interfaceContentStore = useInterfaceContentStore()
+const {
+  overheadMapContent,
+} = storeToRefs(interfaceContentStore)
 
 const mapRef = ref(null)
 const editFeatureRef = ref(null)
@@ -237,6 +240,12 @@ const {
         html='<i class="fa-solid fa-street-view"></i>'
         :onToggle="() => displayStore.showPanoramaView()"
       />
+      <ol-toggle-control
+        v-if="!!overheadMapContent.date"
+        className="show-date-taken"
+        :html="`Taken on ${new Date(overheadMapContent.date).toLocaleDateString()}`"
+        :title="`The overhead photo was taken on ${new Date(overheadMapContent.date).toLocaleDateString()}`"
+      />
     </ol-map>
   </div>
 </template>
@@ -270,6 +279,20 @@ const {
     left: .5em;
     top: 10em;
     z-index: 2;
+  }
+  .show-date-taken {
+    bottom: 0.25em;
+    right: 0.25em;
+    z-index: 2;
+    width: fit-content;
+  }
+  .show-date-taken button {
+    font-size: 0.8em;
+    font-weight: normal;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    width: fit-content;
+    border-radius: 0.5em;
   }
   // .rotation-correction {
   //   transform: rotate(345deg);

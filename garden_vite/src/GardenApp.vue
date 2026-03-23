@@ -43,6 +43,7 @@ const {
   historyContent,
   relationalInterconnectedTeachingsContent,
   residentialSchoolsContent,
+  overheadMapContent,
 } = storeToRefs(interfaceContentStore)
 const panoramaStore = usePanoramaStore()
 const {
@@ -66,6 +67,7 @@ contextualEthicalFramingContent.value = props.interfaceContent.contextual_ethica
 historyContent.value = props.interfaceContent.history
 relationalInterconnectedTeachingsContent.value = props.interfaceContent.relational_interconnected_teachings
 residentialSchoolsContent.value = props.interfaceContent.residential_schools
+overheadMapContent.value = props.interfaceContent.overhead_map
 
 if (displaySettingStore.isOverheadViewLocked()) {
   panoramaViewShown.value = false
@@ -74,12 +76,12 @@ if (displaySettingStore.isOverheadViewLocked()) {
   scene.value = lockView.value
 }
 const enableMap = computed(() => !displaySettingStore.isViewLocked() || displaySettingStore.isOverheadViewLocked())
-const displayMap = computed(() => panoramaViewShown.value ? 'd-none' : 'd-block')
+const displayMap = computed(() => !panoramaViewShown.value)
 </script>
 
 <template>
   <div class="app-wrapper" data-bs-theme="dark">
-    <GardenMap v-if="enableMap" :class="displayMap"></GardenMap>
+    <GardenMap v-if="enableMap && displayMap"></GardenMap>
     <PanoramaView v-if="panoramaViewShown"></PanoramaView>
     <Menu v-if="!isEditMode"></Menu>
     <ModalWelcomeMessage v-if="!isEditMode"></ModalWelcomeMessage>

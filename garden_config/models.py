@@ -58,10 +58,10 @@ class WelcomePopup(SingletonModel):
 
 class History(SingletonModel):
     heading = models.CharField(default='History of the SFU Indigenous Garden')
+    content_4 = models.TextField(verbose_name='Ground Breaking Ceremony Content', null=True, blank=True)
     content_1 = models.TextField(verbose_name='Introduction to History of the Garden Content', null=True, blank=True)
     content_2 = models.TextField(verbose_name='Design & Identifying the Plants Content', null=True, blank=True)
     content_3 = models.TextField(verbose_name='Usage of the Space Content', null=True, blank=True)
-    content_4 = models.TextField(verbose_name='Ground Breaking Ceremony Content', null=True, blank=True)
     content_5 = models.TextField(verbose_name='Future Goals, Directions and Dreams Content', null=True, blank=True)
 
     # relationships
@@ -191,4 +191,20 @@ class AcknowledgementsContentBlock(models.Model):
 
     def __str__(self):
         return self.heading
+
+class OverheadMap(SingletonModel):
+    date = models.DateField(null=True, blank=True)
+
+    # relationships
+
+    # write tracking fields
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'garden_config_overhead_map'
+        verbose_name = 'Overhead Map'
+
+    def __str__(self):
+        return 'Overhead Map'
 
