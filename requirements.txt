@@ -24,7 +24,7 @@ python-dotenv==1.2.1
 gunicorn==25.1.0
 
 # ffmpeg for hls/dash and video thumbnails
-pillow==12.1.1
+pillow==12.2.0
 python-ffmpeg==2.0.12
 natsort==8.4.0
 
