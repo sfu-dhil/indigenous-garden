@@ -23,7 +23,7 @@ def task_video_thumbnail_generator(object_pk):
         media_dir = Path(MEDIA_ROOT)
         thumbnail_path = media_dir / 'thumbnails' / f'{Path(original_file).name}.png'
 
-        if thumbnail_path.exists() and thumbnail_path.is_file:
+        if thumbnail_path.exists() and thumbnail_path.is_file():
             thumbnail_path.unlink(missing_ok=True)
 
         ffmpeg = FFmpeg() \
@@ -179,7 +179,7 @@ def task_video_thumbnails_vtt_generator(object_pk):
             .output(
                 f'{out_dir.absolute()}/storyboard_%d.jpg',
                 {
-                    'filter:v': f'fps=1/{THUMBNAIL_INTERVAL},scale=178:100',
+                    'filter:v': f'fps=1/{THUMBNAIL_INTERVAL},scale=256:144',
                 }
             )
         ffmpeg.execute()

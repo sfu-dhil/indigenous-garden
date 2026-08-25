@@ -3,7 +3,7 @@ import { useTemplateRef, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplayStore, useInterfaceContentStore } from '../../stores/display.js'
 import { toggleOffcanvas } from '../../helpers/utils.js'
-import { ImgComparisonSlider } from '@img-comparison-slider/vue';
+import { ImgComparisonSlider } from '@img-comparison-slider/vue'
 import VideoPlayerWrapper from '../VideoPlayerWrapper.vue'
 
 const displayStore = useDisplayStore()

@@ -104,11 +104,11 @@ onMounted(() => {
             <div class="carousel-indicators">
               <button ref="carousel-indicator-el" v-for="(image, index) in feature.images" type="button" @click="() => carouselTo(index)" data-bs-target="" :data-bs-slide-to="index"></button>
             </div>
-            <button type="button" class="carousel-control-prev" @click="carouselPrev" data-bs-target="" data-bs-slide="prev">
+            <button type="button" class="carousel-control-prev" @click="carouselPrev" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button type="button" class="carousel-control-next" @click="carouselNext" data-bs-target="" data-bs-slide="next">
+            <button type="button" class="carousel-control-next" @click="carouselNext" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>

@@ -229,8 +229,8 @@ onMounted(() => {
   font-size: 1.5em !important;
   pointer-events: auto;
   i {
-      cursor: pointer;
-    }
+    cursor: pointer;
+  }
 }
 .show-menu-control {
   left: .5em;

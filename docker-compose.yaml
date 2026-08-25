@@ -109,7 +109,9 @@ services:
     container_name: indigenous_garden_worker
     command: ./manage.py rqworker default
     healthcheck:
-      disable: true
+      test: rq info --interval 0 || exit 1
+      interval: 5s
+      retries: 10
     depends_on:
       app:
         condition: service_healthy

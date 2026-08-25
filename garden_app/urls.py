@@ -24,7 +24,7 @@ from django.urls import include, path
 
 admin.site.site_header = "Indigenous Garden"
 admin.site.site_title = "Indigenous Garden"
-admin.site.index_title = "Welcome to the Intertidal admin interface"
+admin.site.index_title = "Welcome to the Indigenous Garden admin interface"
 
 urlpatterns = [
     # health check ping endpoint

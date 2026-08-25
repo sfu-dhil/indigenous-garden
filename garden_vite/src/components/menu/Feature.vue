@@ -23,11 +23,6 @@ const {
 
 const offCanvasRef = ref()
 
-const isSafari = () => {
-  const userAgent = navigator.userAgent;
-  return userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1;
-}
-
 const feature = computed(() => selectedFeatureId.value ? useDataStore().getFeature(selectedFeatureId.value) : null)
 const editPointHref = computed(() => {
   if (canEdit.value) {

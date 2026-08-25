@@ -100,12 +100,6 @@ TEMPLATES = [
     },
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/django-cache',
-    }
-}
 ONE_MINUTE = 60
 ONE_HOUR = ONE_MINUTE * 60
 ONE_DAY = ONE_HOUR * 24
@@ -113,6 +107,12 @@ ONE_WEEK = ONE_DAY * 7
 ONE_MONTH = ONE_DAY * 30
 ONE_YEAR = ONE_DAY * 365
 CACHE_SECONDS = 1 if DEBUG else env('CACHE_SECONDS', default=ONE_WEEK) # 1 second if debugging else default 1 week
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/django-cache',
+    }
+}
 
 WSGI_APPLICATION = 'garden_app.wsgi.application'
 
