@@ -7,11 +7,11 @@ RUN npm upgrade -g npm \
     && rm -rf /var/lib/apt/lists/*
 
 # build js deps
-COPY garden_vite/package.json garden_vite/yarn.lock /app/
+COPY indigenous_garden_vite/package.json indigenous_garden_vite/yarn.lock /app/
 RUN yarn
 
 # run vite build
-COPY garden_vite /app
+COPY indigenous_garden_vite /app
 RUN yarn build
 
 FROM indigenous-garden-vite AS indigenous-garden-vite-prod
@@ -27,6 +27,8 @@ WORKDIR /app
 RUN apk update \
     && apk upgrade \
     && apk --no-cache add git libmagic curl ffmpeg \
+        gdal geos gdal-tools \
+        gdal-driver-webp gdal-driver-png gdal-driver-jpeg gdal-driver-heif \
     && pip install --no-cache-dir --upgrade pip \
     && rm -rf /var/cache/apk/*
 

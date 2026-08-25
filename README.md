@@ -17,6 +17,14 @@ The Indigenous Gardens grows on the traditional and unceded territories of the k
 Indigenous Garden Map will be available at `http://localhost:8080/`
 Indigenous Garden Admin will be available at `http://localhost:8080/admin/`
 
+### Import existing db
+
+    docker cp indigenous_garden.sql indigenous_garden_db:/indigenous_garden.sql
+    docker exec -it indigenous_garden_db bash
+
+        psql -U indigenous_garden -X indigenous_garden < /indigenous_garden.sql
+        exit
+
 ### Install/Switch the admin theme
 
     # Bootstrap
@@ -98,13 +106,13 @@ Create new migrations
 ### Yarn (javascript)
 
     # add new package
-    docker exec -it indigenous_garden_vite yarn add [package]
+    docker run --rm -it -v $PWD/indigenous_garden_vite/:/app/ -w /app node:25.5 yarn add [package]
 
     # update a package
-    docker exec -it indigenous_garden_vite yarn upgrade [package]
+    docker run --rm -it -v $PWD/indigenous_garden_vite/:/app/ -w /app node:25.5 yarn upgrade [package]
 
     # update all packages
-    docker exec -it indigenous_garden_vite yarn upgrade
+    docker run --rm -it -v $PWD/indigenous_garden_vite/:/app/ -w /app node:25.5 yarn upgrade
 
 After you update a dependency make sure to rebuild the images
 
@@ -172,38 +180,3 @@ example:
         --env POSTGRES_PASSWORD=password \
         tianon/postgres-upgrade:17-to-18 \
         --link
-
-## Creating map tiles of static image
-
-install `gdal` (via homebrew): `brew install gdal`
-
-Generate the files from some import source:
-
-```shell
-gdal2tiles --xyz --profile=raster --zoom=1-6 --tiledriver=WEBP --tilesize=128 .data/static-assets/images/garden.png .data/static-assets/images/garden
-```
-
-## Create multi resolution tiles for panorama image
-
-See [pannellum docs](https://github.com/mpetroff/pannellum/tree/master/utils/multires) for using docker.
-
-First download pannellum master locally
-
-```shell
-cd <pannellum folder>/utils/multires/
-docker build -t generate-panorama .
-```
-
-Then in this project
-
-    docker run --rm -it \
-        -v $PWD/.data/static-assets/images/:/data \
-        generate-panorama --output /data/panorama_location_1 /data/panorama_location_1.png
-
-    docker run --rm -it \
-        -v $PWD/.data/static-assets/images/:/data \
-        generate-panorama --output /data/panorama_location_2 /data/panorama_location_2.png
-
-    docker run --rm -it \
-        -v $PWD/.data/static-assets/images/:/data \
-        generate-panorama --output /data/panorama_location_3 /data/panorama_location_3.png
