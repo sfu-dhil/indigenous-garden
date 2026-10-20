@@ -101,7 +101,7 @@ watch(() => route.params.id, (newValue, oldValue) => {
       >
         <button @click="toggleFullscreen"
           type="button" class="btn btn-link text-light link-underline-opacity-0"
-          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Toggle Fullscreen Mode"
+          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" data-bs-title="Toggle Fullscreen Mode"
         >
           <i v-if="!isFullscreen" class="bi bi-fullscreen"></i>
           <i v-if="isFullscreen" class="bi bi-fullscreen-exit"></i>
@@ -119,16 +119,16 @@ watch(() => route.params.id, (newValue, oldValue) => {
           ></i>
         </button>
       </div>
-      <div v-if="!isFullscreen" class="z-3 position-absolute bottom-0 start-0 btn-group-vertical text-center">
+      <div v-if="!isFullscreen" class="z-3 position-absolute top-0 start-0 text-center top-left-btn-group-offset">
         <button @click="() => useDisplayStore().showMenuSidebar()"
           type="button" class="btn btn-link text-light link-underline-opacity-0"
-          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Show Menu"
+          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" data-bs-title="Show Menu"
         >
           <i class="bi bi-card-list"></i>
         </button>
         <button @click="() => useDisplayStore().showMapSelectSidebar()"
           type="button" class="btn btn-link text-light link-underline-opacity-0"
-          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Show Maps"
+          data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" data-bs-title="Show Maps"
         >
           <i class="fa-solid fa-map-location-dot"></i>
         </button>
@@ -149,8 +149,16 @@ watch(() => route.params.id, (newValue, oldValue) => {
   margin-top: 4em;
 }
 button.btn.btn-link {
-  font-size: 1.5em;
-  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  font-size: 1.75em;
+  // font-size: 2em;
+  // text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+
+  text-shadow: -2px -2px 0 #000,  2px -2px 0 #000, -2px  2px 0 #000,  2px  2px 0 #000,
+               -2px  0px 0 #000,  2px  0px 0 #000,  0px -2px 0 #000,  0px  2px 0 #000;
+  // sfu red CC0633
+  // color: #CC0633 !important;
+  // text-shadow: -2px -2px 0 #CC0633,  2px -2px 0 #CC0633, -2px  2px 0 #CC0633,  2px  2px 0 #CC0633,
+  //              -2px  0px 0 #CC0633,  2px  0px 0 #CC0633,  0px -2px 0 #CC0633,  0px  2px 0 #CC0633;
 }
 .rotation-correction {
   transform: rotate(315deg);

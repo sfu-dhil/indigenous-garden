@@ -10,8 +10,7 @@ import MultilingualLabelsFeatureListHeading from './content_blocks/MultilingualL
 const {
   featureSelectionSidebarShown: shown,
   featureSelectionSidebarFilterType: featureFilterType,
-  featureIdShown: shownId,
-  featureIdHover: hoverId,
+  featureIdHover,
 } = storeToRefs(useDisplayStore())
 
 const allObjects = await useFeaturesStore().getAll()
@@ -41,15 +40,15 @@ onMounted(() => {
 
 <template>
   <div ref="offCanvasRef" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1">
-    <div class="offcanvas-header">
-      <h2 class="offcanvas-title h5" v-if="featureFilterType === FeatureFilterTypes.plant">Plants</h2>
+    <div class="offcanvas-header" :class="{ 'pb-0': featureFilterType === FeatureFilterTypes.plant }">
+      <h2 class="offcanvas-title h5 ps-3" v-if="featureFilterType === FeatureFilterTypes.plant">Plants</h2>
       <h2 class="offcanvas-title h5" v-if="featureFilterType === FeatureFilterTypes.gardenFeature">Features</h2>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body" v-if="shown">
-      <div class="row g-0 px-3 first-nations-unicode" v-if="featureFilterType === FeatureFilterTypes.plant">
+    <div class="offcanvas-header pt-0" v-if="featureFilterType === FeatureFilterTypes.plant">
+      <div class="row g-0 px-3 first-nations-unicode w-100">
         <div class="col">
-          <i class="bi bi-circle-fill fs-6 pe-1" :style="`color: #0d6efd`" />
+          <i class="bi bi-circle-fill fs-6 pe-1" :style="`color: #7cb341`" />
           hən̓q̓əmin̓əm̓
         </div>
         <div class="col">
@@ -57,10 +56,12 @@ onMounted(() => {
           Sḵwx̱wú7mesh Sníchim
         </div>
       </div>
+    </div>
+    <div class="offcanvas-body" v-if="shown">
       <div v-for="object in objects" :key="object.id"
         class="card mt-3 w-100"
-        :class="{ 'hover': hoverId === object.id }"
-        @mouseover="() => hoverId = object.id" @mouseout="() => hoverId = null"
+        :class="{ 'hover': featureIdHover === object.id }"
+        @mouseover="() => featureIdHover = object.id" @mouseout="() => featureIdHover = null"
       >
         <img
           v-if="object.thumbnail"

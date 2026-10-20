@@ -20,7 +20,7 @@ const squamishLabels = computed(() => props.object.labels.filter((l) => l.langua
       <MultilingualLabel v-for="label in westernScientificLabels" :object="label" :muted="true" :withAudio="true" />
     </div>
     <div class="col first-nations-unicode" v-if="halkomelemLabels.length > 0">
-      <MultilingualLabel v-for="label in halkomelemLabels" :object="label" :withAudio="true" iconColor="#0d6efd" iconTitle="hən̓q̓əmin̓əm̓" />
+      <MultilingualLabel v-for="label in halkomelemLabels" :object="label" :withAudio="true" iconColor="#7cb341" iconTitle="hən̓q̓əmin̓əm̓" />
     </div>
     <div class="col first-nations-unicode" v-if="squamishLabels.length > 0">
       <MultilingualLabel v-for="label in squamishLabels" :object="label" :withAudio="true" iconColor="#ffc107" iconTitle="Sḵwx̱wú7mesh Sníchim" />

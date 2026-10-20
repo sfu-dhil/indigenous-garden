@@ -46,10 +46,10 @@ onMounted(() => {
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sfu-red mx-auto" data-bs-dismiss="modal">{{ welcomeModalContent.close_button_label || 'Close' }}</button>
-          <figure class="figure m-0 text-end">
+          <button type="button" class="btn btn-lg btn-sfu-red mx-auto my-0" data-bs-dismiss="modal">{{ welcomeModalContent.close_button_label || 'Close' }}</button>
+          <figure class="figure mx-auto my-0">
             <img
-              class="m-0" :src="indgLogoUrl"
+              class="m-0 oie-logo" :src="indgLogoUrl"
               alt="SFU Office of Indigenous Education Logo"
               loading="lazy" fetchpriority="low"
             />
@@ -63,6 +63,9 @@ onMounted(() => {
 <style lang="scss" scoped>
 .sfu-red {
   color: #CC0633;
+}
+.oie-logo {
+  max-height: 53.75px;
 }
 .btn-sfu-red {
   --bs-btn-color: #fff;
